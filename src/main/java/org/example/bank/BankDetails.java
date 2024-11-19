@@ -1,8 +1,8 @@
-package org.example;
+package org.example.bank;
 
 import java.util.Date;
 
-class BankDetails {
+public class BankDetails {
     private int detailsId;
     private String cardNumber;
     private Date expiryDate;

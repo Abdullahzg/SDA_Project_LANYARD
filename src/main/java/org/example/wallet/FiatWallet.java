@@ -1,9 +1,12 @@
-package org.example;
+package org.example.wallet;
+
+import org.example.ai.APIController;
+import org.example.currency.Owning;
 
 import java.util.Date;
 import java.util.List;
 
-class FiatWallet extends Wallet {
+public class FiatWallet extends Wallet {
     private List<Owning> ownings;
 
     public FiatWallet(int walletId, float balance, Date creationDate, List<Owning> ownings) {

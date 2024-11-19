@@ -1,8 +1,8 @@
-package org.example;
+package org.example.wallet;
 
 import java.util.Date;
 
-class SpotWallet extends Wallet {
+public class SpotWallet extends Wallet {
     private String currency;
     private float maxBalanceLimit;
 

@@ -1,15 +1,17 @@
-package org.example;
+package org.example.transaction;
+
+import org.example.user.User;
 
 import java.util.Date;
 
-class Transaction {
+public class Transaction {
     int transactionId;
     User user;
-    float amount;
-    Date timestamp;
-    String transactionType;  // "buy", "sell"
-    String coin;  // Optional, only used for crypto transactions
-    float coinRate;
+    public float amount;
+    public Date timestamp;
+    public String transactionType;  // "buy", "sell"
+    public String coin;  // Optional, only used for crypto transactions
+    public float coinRate;
 
     public Transaction(int transactionId, User user, float amount, Date timestamp, String transactionType, String coin, float coinRate) {
         this.transactionId = transactionId;

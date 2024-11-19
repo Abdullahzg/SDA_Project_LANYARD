@@ -1,4 +1,15 @@
-package org.example;
+package org.example.controller;
+
+import org.example.ai.APIController;
+import org.example.bank.BankDetails;
+import org.example.bank.BankDetailsIDGenerator;
+import org.example.currency.Owning;
+import org.example.user.Customer;
+import org.example.user.User;
+import org.example.wallet.FiatWallet;
+import org.example.wallet.SpotWallet;
+import org.example.wallet.Wallet;
+import org.example.wallet.WalletIDGenerator;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-class CryptoSystem {
+public class CryptoSystem {
     private List<Customer> customers;
     private Customer loggedInCustomer; // Add logged-in customer
     private APIController api;
@@ -18,17 +29,17 @@ class CryptoSystem {
     int activeUsers;
     String systemStatus; // "operational" or "maintenance"
 
-    CryptoSystem(String apiS) {
+    public CryptoSystem(String apiS) {
         api = new APIController(apiS);
         customers = new ArrayList<>();
         loggedInCustomer = null; // Initially, no customer is logged in
     }
 
-    void printTopNumber(int i) {
+    public void printTopNumber(int i) {
         api.printTopCoins(i);
     }
 
-    void printSingleCoin(String i) {
+    public void printSingleCoin(String i) {
         api.printSingleCoin(i);
     }
 
@@ -65,7 +76,7 @@ class CryptoSystem {
     }
 
 
-    void takeCustomerInput() {
+    public void takeCustomerInput() {
         Scanner scanner = new Scanner(System.in);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(false); // Ensure strict date parsing
@@ -157,7 +168,7 @@ class CryptoSystem {
         }
     }
 
-    void viewAllCustomers() {
+    public void viewAllCustomers() {
         if (customers.isEmpty()) {
             System.out.println("No customers available.");
         } else {
@@ -175,7 +186,7 @@ class CryptoSystem {
         }
     }
 
-    void setLoggedInCustomer(Customer customer) {
+    public void setLoggedInCustomer(Customer customer) {
         loggedInCustomer = customer;
         if (customer != null) {
             System.out.println("Logged in as: " + customer.getName() + " (ID: " + customer.getUserId() + ")");
@@ -184,15 +195,15 @@ class CryptoSystem {
         }
     }
 
-    Customer getLoggedInCustomer() {
+    public Customer getLoggedInCustomer() {
         return loggedInCustomer;
     }
 
-    List<Customer> getCustomers(){
+    public List<Customer> getCustomers(){
         return customers;
     }
 
-    void depositToSpotWallet() {
+    public void depositToSpotWallet() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return;
@@ -229,7 +240,7 @@ class CryptoSystem {
     }
 
 
-    void withdrawFromSpotWallet() {
+    public void withdrawFromSpotWallet() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return;
@@ -264,7 +275,7 @@ class CryptoSystem {
         }
     }
 
-    void transferBetweenWallets() {
+    public void transferBetweenWallets() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return;

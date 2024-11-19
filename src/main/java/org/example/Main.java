@@ -1,5 +1,8 @@
 package org.example;
 
+import org.example.controller.CryptoSystem;
+import org.example.user.Customer;
+
 import java.util.Scanner;
 
 public class Main {

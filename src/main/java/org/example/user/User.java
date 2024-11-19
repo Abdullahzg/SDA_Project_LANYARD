@@ -1,8 +1,8 @@
-package org.example;
+package org.example.user;
 
 import java.util.Date;
 
-class User {
+public class User {
     private int userId;
     private String name;
     private Date birthDate;

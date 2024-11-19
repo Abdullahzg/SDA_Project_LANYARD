@@ -1,9 +1,9 @@
-package org.example;
+package org.example.wallet;
 
-class WalletIDGenerator {
+public class WalletIDGenerator {
     private static int walletIdCounter = 1;
 
-    static int generateWalletId() {
+    public static int generateWalletId() {
         return walletIdCounter++;
     }
 }

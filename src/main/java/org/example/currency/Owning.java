@@ -1,8 +1,8 @@
-package org.example;
+package org.example.currency;
 
 import java.util.Date;
 
-class Owning {
+public class Owning {
     private int owningId;
     private float amount;
     private String coin;

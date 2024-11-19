@@ -1,8 +1,8 @@
-package org.example;
+package org.example.wallet;
 
 import java.util.Date;
 
-abstract class Wallet {
+public abstract class Wallet {
     protected int walletId;
     protected float balance;
     protected Date creationDate;

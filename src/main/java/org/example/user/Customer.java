@@ -1,17 +1,24 @@
-package org.example;
+package org.example.user;
+
+import org.example.ai.APIController;
+import org.example.bank.BankDetails;
+import org.example.currency.Owning;
+import org.example.transaction.Transaction;
+import org.example.wallet.FiatWallet;
+import org.example.wallet.SpotWallet;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-class Customer extends User{
+public class Customer extends User {
     private SpotWallet spotWallet;
     private FiatWallet fiatWallet;
     private BankDetails bankDetails;
     private List<Transaction> transactions;
 
-    Customer(int userId, String name, Date birthDate, String phone, String email, Date accountCreationDate, Date lastLoginDate, String accountStatus, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails){
+    public Customer(int userId, String name, Date birthDate, String phone, String email, Date accountCreationDate, Date lastLoginDate, String accountStatus, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails){
         super(userId,name, birthDate,phone,email, accountCreationDate,lastLoginDate,accountStatus);
         this.spotWallet = spotWallet;
         this.fiatWallet = fiatWallet;

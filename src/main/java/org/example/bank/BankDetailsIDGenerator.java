@@ -1,10 +1,10 @@
-package org.example;
+package org.example.bank;
 
 // Utility for generating unique Bank Details IDs
-class BankDetailsIDGenerator {
+public class BankDetailsIDGenerator {
     private static int detailsIdCounter = 1;
 
-    static int generateDetailsId() {
+    public static int generateDetailsId() {
         return detailsIdCounter++;
     }
 }

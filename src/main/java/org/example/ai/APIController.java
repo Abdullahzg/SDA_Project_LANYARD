@@ -1,4 +1,4 @@
-package org.example;
+package org.example.ai;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -6,7 +6,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-class APIController {
+public class APIController {
     private String apiKey;
 
     public APIController(String api) {
