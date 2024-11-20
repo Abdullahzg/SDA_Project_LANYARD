@@ -4,4 +4,4 @@
 mvn clean compile
 
 # Run the application
-mvn exec:java -Dexec.mainClass="org.example.Main"
+mvn exec:java -Dexec.mainClass='org.example.Main'

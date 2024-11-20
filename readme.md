@@ -72,12 +72,7 @@ target/
     cd lanyard_project
     ```
 
-2. Copy the `.env.example` file to `.env` and fill out the necessary configuration:
-    ```sh
-    cp .env.example .env
-    ```
-
-3. Install the dependencies:
+2. Install the dependencies:
     ```sh
     mvn clean install
     ```

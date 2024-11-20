@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
+            <version>42.2.23</version> <!-- Use a stable version available in the Maven repository -->
         </dependency>
     </dependencies>
 </project>
