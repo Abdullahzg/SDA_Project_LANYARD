@@ -77,6 +77,22 @@ target/
     mvn clean install
     ```
 
+### Configuration
+
+Before running the application, you need to set up the database configuration. Follow these steps:
+
+1. Copy the example `db.properties` file to create your own configuration file:
+    ```sh
+    cp src/main/resources/db.properties.example src/main/resources/db.properties
+    ```
+
+2. Open the `src/main/resources/db.properties` file and fill in your NeonDB database credentials:
+    ```properties
+    db.url=jdbc:your_database_url
+    db.username=your_username
+    db.password=your_password
+    ```
+
 ### Running the Application
 
 To compile and run the application, you can use the provided `run.sh` script:
