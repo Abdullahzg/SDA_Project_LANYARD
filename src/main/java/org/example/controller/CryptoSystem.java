@@ -4,8 +4,12 @@ import org.example.ai.APIController;
 import org.example.bank.BankDetails;
 import org.example.bank.BankDetailsIDGenerator;
 import org.example.currency.Owning;
+import org.example.transaction.Transaction;
+import org.example.user.Admin;
 import org.example.user.Customer;
 import org.example.user.User;
+import org.example.useractions.AuthService;
+import org.example.useractions.Referral;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
 import org.example.wallet.Wallet;
@@ -20,42 +24,68 @@ import java.util.Scanner;
 
 public class CryptoSystem {
     private List<Customer> customers;
+    private List<Admin> admin;
     private Customer loggedInCustomer; // Add logged-in customer
+    private Admin loggedInAdmin;
     private APIController api;
-
     float systemBalance;
     float transactionFees;
     Date lastBackupDate;
     int activeUsers;
     String systemStatus; // "operational" or "maintenance"
-
     public CryptoSystem(String apiS) {
         api = new APIController(apiS);
         customers = new ArrayList<>();
         loggedInCustomer = null; // Initially, no customer is logged in
-    }
 
+        admin = new ArrayList<>();
+
+    }
     public void printTopNumber(int i) {
         api.printTopCoins(i);
     }
-
     public void printSingleCoin(String i) {
         api.printSingleCoin(i);
     }
-
     public void viewCustomerTransactions() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return;
         }
-
         loggedInCustomer.displayTransactions();
+        loggedInCustomer.applyFilters();
     }
+    public void viewTransactionHistory() {
+        if (loggedInAdmin == null) {
+            System.out.println("No Admin is logged in. Please login first.");
+            return;
+        }
+        Scanner myObj = new Scanner(System.in);
+        loggedInAdmin.viewTransaction();
 
-    void addNewCustomer(String name, Date birthDate, String phone, String email, String accountStatus,
-                        float spotWalletBalance, String currency, float maxBalanceLimit,
-                        String cardNumber, Date expiryDate, String bankName, String accountHolderName,
-                        String billingAddress, float fiatWalletBalance, List<Owning> fiatOwnings) {
+        System.out.println("Do you want to flag transaction for review? (Y/N)");
+        String ans = myObj.nextLine();
+        if (ans.equalsIgnoreCase("Y")) {
+            flagForReview();
+        }
+    }
+    void flagForReview() {
+        Scanner myObj = new Scanner(System.in);
+        System.out.println("Enter Transaction ID: ");
+        String id = myObj.nextLine();
+        //if the transaction id is found in the db
+        //call the following function
+        //transaction.flagForReview_t(transaction);
+        //notifyTeam(transaction);
+    }
+    void notifyTeam(Transaction transaction) {
+        transaction.notifyTeam(transaction);
+        System.out.println("Team has been Notified.");
+    }
+    public void addNewCustomer(String name, Date birthDate, String phone, String email, String accountStatus,
+                               float spotWalletBalance, String currency, float maxBalanceLimit,
+                               String cardNumber, Date expiryDate, String bankName, String accountHolderName,
+                               String billingAddress, float fiatWalletBalance, List<Owning> fiatOwnings) {
         // Generate unique IDs
         int userId = User.getIDs();
         int spotWalletId = WalletIDGenerator.generateWalletId();
@@ -72,10 +102,63 @@ public class CryptoSystem {
         Customer newCustomer = new Customer(userId, name, birthDate, phone, email, currentDate, currentDate, accountStatus, spotWallet, fiatWallet, bankDetails);
         customers.add(newCustomer);
 
+        setLoggedInCustomer(newCustomer);
+
         System.out.println("Customer added successfully! User ID: " + userId);
     }
+    public void addNewAdmin(String name, Date birthDate, String phone, String email, String accountStatus) {
+        // Generate a unique Admin ID
+        int adminId = User.getIDs();
 
+        // Create necessary dates
+        Date currentDate = new Date(); // Current date for account creation and last login
 
+        // Create and add new Admin
+        Admin newAdmin = new Admin(adminId, name, birthDate, email, phone, currentDate, currentDate, accountStatus);
+        admin.add(newAdmin);
+        setLoggedInAdmin(newAdmin);
+
+        System.out.println("Admin added successfully! Admin ID: " + adminId);
+    }
+    public void takeAdminInput() {
+        Scanner scanner = new Scanner(System.in);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false); // Ensure strict date parsing
+
+        try {
+            // Input personal details
+            System.out.print("Enter Admin Name: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Enter Birth Date (yyyy-MM-dd): ");
+            Date birthDate;
+            while (true) {
+                try {
+                    birthDate = dateFormat.parse(scanner.nextLine());
+                    break;
+                } catch (ParseException e) {
+                    System.out.print("Invalid date format. Please enter the birth date in yyyy-MM-dd format: ");
+                }
+            }
+
+            System.out.print("Enter Phone Number: ");
+            String phone = scanner.nextLine();
+
+            System.out.print("Enter Email: ");
+            String email = scanner.nextLine();
+
+            System.out.print("Enter Account Status (active/inactive): ");
+            String accountStatus = scanner.nextLine();
+
+            // Call addNewAdmin with gathered inputs
+            addNewAdmin(name, birthDate, phone, email, accountStatus);
+        } catch (Exception e) {
+            System.out.println("An error occurred while processing input: " + e.getMessage());
+        }
+    }
+    public void setLoggedInAdmin(Admin loggedInAdmin) {
+        this.loggedInAdmin = loggedInAdmin;
+    }
     public void takeCustomerInput() {
         Scanner scanner = new Scanner(System.in);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -167,7 +250,6 @@ public class CryptoSystem {
             System.out.println("An error occurred while processing input: " + e.getMessage());
         }
     }
-
     public void viewAllCustomers() {
         if (customers.isEmpty()) {
             System.out.println("No customers available.");
@@ -185,7 +267,6 @@ public class CryptoSystem {
             }
         }
     }
-
     public void setLoggedInCustomer(Customer customer) {
         loggedInCustomer = customer;
         if (customer != null) {
@@ -194,15 +275,16 @@ public class CryptoSystem {
             System.out.println("Logged out successfully.");
         }
     }
-
     public Customer getLoggedInCustomer() {
         return loggedInCustomer;
     }
-
-    public List<Customer> getCustomers(){
+    public Admin getLoggedInAdmin()
+    {
+        return loggedInAdmin;
+    }
+    List<Customer> getCustomers(){
         return customers;
     }
-
     public void depositToSpotWallet() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -238,8 +320,6 @@ public class CryptoSystem {
             System.out.println("Deposit canceled.");
         }
     }
-
-
     public void withdrawFromSpotWallet() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -274,7 +354,6 @@ public class CryptoSystem {
             System.out.println("Withdrawal canceled.");
         }
     }
-
     public void transferBetweenWallets() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -375,8 +454,6 @@ public class CryptoSystem {
 
         loggedInCustomer.sellCoin(api, coinCode, usdtAmount);
     }
-
-
     public void viewCustomerOwnings() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -386,8 +463,45 @@ public class CryptoSystem {
 
         loggedInCustomer.getFiatWallet().viewOwnings(api);
     }
+    public void viewFeedbacks() {
+        System.out.println("Displaying all feedbacks...");
 
+    }
+    public void sendNotification(String message) {
+        System.out.println("Sending notification: " + message);
 
+    }
+    public boolean register(User user) {
+        if (user == null) {
+            System.out.println("No user is logged in. Please log in to register a wallet.");
+            return false;
+        }
 
+        System.out.println("Registering a new wallet for user: " + user.getName());
+        AuthService authService = new AuthService();
+        if (authService.registerNewUser(this)==true)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public boolean giveFeedback(int customerid){
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to register a wallet.");
+            return false;
+        }
+        //Feedback feedback(customerid);
+        //feedback.
+        return true;
+
+    }
+    public void referFriend()
+    {
+        Referral refer=new Referral();
+        refer.referFriend();
+    }
 
 }

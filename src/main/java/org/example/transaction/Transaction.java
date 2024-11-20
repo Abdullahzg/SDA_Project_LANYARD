@@ -10,9 +10,9 @@ public class Transaction {
     int transactionId;
     User user;
     float amount;
-    Date timestamp;
-    String transactionType;  // "buy", "sell"
-    String coin;  // Optional, only used for crypto transactions
+    public Date timestamp;
+    public String transactionType;  // "buy", "sell"
+    public String coin;  // Optional, only used for crypto transactions
     float coinRate;
     boolean sus;
 

@@ -35,6 +35,12 @@ src/
 │               ├── transaction/  
 │               ├── user/  
 │               └── wallet/  
+│   └── resources/  
+│       └── db.properties
+│       └── db.properties.example
+├── test/  
+│   └── java/  
+│   └── resources/  
 target/  
 ├── classes/  
 │   └── org/  
@@ -104,7 +110,8 @@ To compile and run the application, you can use the provided `run.sh` script:
 ## Dependencies
 
 - com.mashape.unirest:unirest-java:1.4.9
-- org.postgresql:postgresql
+- org.postgresql:postgresql:42.7.4
+- com.googlecode.json-simple:json-simple:1.1.1
 
 ## License 
 

@@ -152,8 +152,12 @@ public class Customer extends User {
                 System.out.printf("Transaction ID: %d | Type: %s | Coin: %s | Amount: %.2f | Rate: %.2f | Date: %s\n",
                         transaction.getTransactionId(), transaction.transactionType,
                         transaction.coin != null ? transaction.coin : "N/A",
-                        transaction.amount, transaction.coinRate, transaction.timestamp);
+                        transaction.getAmount(), transaction.getCoinRate(), transaction.timestamp);
             }
         }
+    }
+
+    public void applyFilters() {
+
     }
 }
