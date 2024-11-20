@@ -11,8 +11,21 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        try (var connection =  DBHandler.connect()){
-            System.out.println("Connected to the PostgreSQL database.");
+        try (var connection = DBHandler.connect()) {
+            if (connection != null) {
+                System.out.println("Connected to the PostgreSQL database.");
+                try (var stmt = connection.createStatement()) {
+                    var sql = "CREATE TABLE products (" +
+                            "    id SERIAL PRIMARY KEY," +
+                            "    name VARCHAR(255) NOT NULL," +
+                            "    price DECIMAL(10, 2) NOT NULL" +
+                            ");";
+                    stmt.executeUpdate(sql);
+                    System.out.println("Created Products table.");
+                }
+            } else {
+                System.err.println("Failed to connect to the database.");
+            }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }

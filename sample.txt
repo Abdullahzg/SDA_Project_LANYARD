@@ -1,4 +1,4 @@
-class Coin {
+lass Coin {
     private int coinId;
     private float rate;
 

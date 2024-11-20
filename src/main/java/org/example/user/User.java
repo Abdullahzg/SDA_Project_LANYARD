@@ -33,6 +33,10 @@ public class User {
         IDs++; // Increment the static ID counter
     }
 
+    public User() {
+
+    }
+
     public static int getIDs(){return IDs;}
 
     public int getUserId() { return userId; }
