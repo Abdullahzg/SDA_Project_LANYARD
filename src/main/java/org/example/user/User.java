@@ -20,6 +20,10 @@ public class User {
     Date lastLoginDate;
     String accountStatus;
 
+    public User()
+    {
+
+    }
     public User(int userId, String name, Date birthDate, String phone, String email,
                 Date accountCreationDate, Date lastLoginDate, String accountStatus) {
         this.userId = userId;
@@ -31,10 +35,6 @@ public class User {
         this.lastLoginDate = lastLoginDate; // Use the provided lastLoginDate
         this.accountStatus = accountStatus; // Use the provided accountStatus
         IDs++; // Increment the static ID counter
-    }
-
-    public User() {
-
     }
 
     public static int getIDs(){return IDs;}

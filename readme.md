@@ -113,6 +113,6 @@ To compile and run the application, you can use the provided `run.sh` script:
 - org.postgresql:postgresql:42.7.4
 - com.googlecode.json-simple:json-simple:1.1.1
 
-## License 
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

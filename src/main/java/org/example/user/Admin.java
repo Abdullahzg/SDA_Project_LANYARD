@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Admin extends User {
     // Constructor
-    public Admin(int AdminId, String name, Date birthDate, String email, String phone, Date accountCreationDate, Date lastLoginDate, String accountStatus) {
+    public Admin(int AdminId,String name,Date birthDate, String email, String phone,Date accountCreationDate,Date lastLoginDate, String accountStatus) {
         super(AdminId,name, birthDate,phone,email, accountCreationDate,lastLoginDate,accountStatus);
     }
 

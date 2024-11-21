@@ -32,13 +32,10 @@ public class Feedback {
         this.status = false;
         this.response = "\0";
     }
-
     public void giveFeedback(int userid) {
         displayForm(userid);
     }
-
-    public boolean displayForm(int userID)
-    {
+    public boolean displayForm(int userID) {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please fill out the feedback form for User ID: " + userID);
@@ -88,7 +85,6 @@ public class Feedback {
         System.out.println("Status: " + feedback.status);
         System.out.println("Response: " + feedback.response);
     }
-
     public boolean storeFeedback(String feedback) {
         System.out.println("\nFeedback getting stored in database");
         //write query to store in database
@@ -96,15 +92,12 @@ public class Feedback {
         //else return false
 
     }
-
-    public boolean validateForm(String feedback, String subject, int priorityLevel)
-    {
+    public boolean validateForm(String feedback, String subject, int priorityLevel) {
         System.out.println("\nValidating Feedback details");
         if (subject == null || subject.trim().isEmpty()) {
             System.out.println("Subject cannot be empty.");
             return false;
         }
-
         if (feedback == null || feedback.trim().isEmpty()) {
             System.out.println("Feedback cannot be empty.");
             return false;
@@ -113,10 +106,8 @@ public class Feedback {
             System.out.println("Priority level must be between 1 and 3.");
             return false;
         }
-
         return true;
     }
-
     public boolean notifyAdmin(Feedback feedback) {
         System.out.println("\nAdmin being Notified...");
         return true;
