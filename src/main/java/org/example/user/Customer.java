@@ -12,11 +12,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-public class Customer extends User {
+public class Customer extends User{
     private SpotWallet spotWallet;
     private FiatWallet fiatWallet;
     private BankDetails bankDetails;
     private List<Transaction> transactions;
+
 
     public Customer(int userId, String name, Date birthDate, String phone, String email, Date accountCreationDate, Date lastLoginDate, String accountStatus, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails){
         super(userId,name, birthDate,phone,email, accountCreationDate,lastLoginDate,accountStatus);
@@ -52,6 +53,9 @@ public class Customer extends User {
         int transactionId = transactions.size() + 1; // Generate transaction ID
         Transaction transaction = new Transaction(transactionId, this, amount, new Date(), transactionType, coin, coinRate);
         transactions.add(transaction);
+
+        transaction.saveTransactionToFile(transaction);
+
         System.out.println("Transaction recorded successfully.");
     }
 
@@ -83,6 +87,7 @@ public class Customer extends User {
         } else {
             System.out.println("Purchase canceled.");
         }
+
     }
     public void sellCoin(APIController api, String coinCode, float usdtAmount) {
         FiatWallet fiatWallet = getFiatWallet();
@@ -141,8 +146,6 @@ public class Customer extends User {
         }
     }
 
-
-
     public void displayTransactions() {
         if (transactions.isEmpty()) {
             System.out.println("No transactions available for this customer.");
@@ -157,7 +160,21 @@ public class Customer extends User {
         }
     }
 
-    public void applyFilters() {
+    public List<Transaction> applyFilters() {
+        List<Transaction> suspiciousTransactions = new ArrayList<>();
+        System.out.println("Applying filters to transaction history...");
+        for (Transaction transaction1 : transactions)
+        {
+            if (transaction1.applyFilters_t(transaction1))
+            {
+                suspiciousTransactions.add(transaction1);
+            }
+        }
+        return suspiciousTransactions;
+    }
 
+    public void flagForReview()
+    {
+        System.out.println("Flagging for review");
     }
 }

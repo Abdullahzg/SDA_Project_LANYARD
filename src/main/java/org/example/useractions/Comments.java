@@ -14,7 +14,7 @@ public class Comments {
         this.comment = comment;
     }
 
-    public void addComment(User user, String comment, Transaction trans)
+    public void addComment(User user,String comment,Transaction trans)
     {
         //save comment in the db with the user id and transaction id
         System.out.println("Comment");

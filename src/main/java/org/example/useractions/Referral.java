@@ -1,10 +1,10 @@
 package org.example.useractions;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Referral {
-    public void referFriend()
-    {
-        if (submitForm()==true)
+    public void referFriend() {
+        if (submitForm())
         {
             System.out.print("Referral is a success");
         }
@@ -13,8 +13,7 @@ public class Referral {
             System.out.print("Referral failed");
         }
     }
-    public boolean submitForm()
-    {
+    public boolean submitForm() {
         System.out.print("Submit the following details for the form: ");
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter your ID : ");
@@ -32,10 +31,10 @@ public class Referral {
         String friend_name = scanner.nextLine();
         System.out.print("Enter your friend's email : ");
         String friend_email = scanner.nextLine();
-        if (validateFormat(friend_email)==true)
+        if (validateFormat(friend_email))
         {
             System.out.print("Email is correct");
-            if (sendReferral(friend_email)==true)
+            if (sendReferral(friend_email))
             {
                 System.out.print("Email is sent successfully");
                 return true;
@@ -52,15 +51,22 @@ public class Referral {
         }
 
     }
-    public boolean validateFormat(String email)
-    {
+    public boolean validateFormat(String email) {
         //email being checked if it is in correct format
         String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
         return email != null && email.matches(emailRegex);
     }
-
-    public boolean sendReferral(String email)
-    {
+    public String generateReferralCode(int userId) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuilder referralCode = new StringBuilder();
+        referralCode.append(String.format("ID%03d-", userId)); // Pads userId to ensure 3 digits
+        for (int i = 0; i < 5; i++) {
+            referralCode.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return referralCode.toString();
+    }
+    public boolean sendReferral(String email) {
         System.out.print("Sending email...");
         return true;
 

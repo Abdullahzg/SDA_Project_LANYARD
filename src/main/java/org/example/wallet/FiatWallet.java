@@ -104,4 +104,3 @@ public class FiatWallet extends Wallet {
 
 
 }
-

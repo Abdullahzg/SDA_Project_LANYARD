@@ -121,6 +121,6 @@ mvn clean javafx:run
 - org.openjfx:javafx-controls:22.0.2
 - org.openjfx:javafx-fxml:22.0.2
 
-## License 
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

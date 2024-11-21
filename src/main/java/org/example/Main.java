@@ -1,13 +1,12 @@
 package org.example;
 
+import java.util.Scanner;
 import org.example.controller.CryptoSystem;
 import org.example.db.DBHandler;
 import org.example.user.Admin;
 import org.example.user.Customer;
 
 import java.sql.SQLException;
-import java.util.Scanner;
-
 
 public class Main {
     public static void main(String[] args) {
@@ -16,7 +15,7 @@ public class Main {
             if (connection != null) {
                 System.out.println("Connected to the PostgreSQL database.");
                 try (var stmt = connection.createStatement()) {
-                    var sql = "CREATE TABLE products (" +
+                    var sql = "CREATE TABLE IF NOT EXISTS products (" +
                             "    id SERIAL PRIMARY KEY," +
                             "    name VARCHAR(255) NOT NULL," +
                             "    price DECIMAL(10, 2) NOT NULL" +
@@ -148,6 +147,7 @@ public class Main {
 
                 case 11:
                     System.out.print("Feedback: ");
+
                     if (csMain.giveFeedback(loggedInCustomer.getUserId()))
                     {
                         System.out.println("Feedback submitted successfully!");
@@ -161,6 +161,7 @@ public class Main {
                 case 12:
                 {
                     System.out.print("Registering new Customer...");
+
                     if (csMain.register(loggedInCustomer))
                     {
                         System.out.print("Customer successfully registered!");

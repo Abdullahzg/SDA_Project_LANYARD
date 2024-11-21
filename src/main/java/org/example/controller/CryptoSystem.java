@@ -1,10 +1,10 @@
 package org.example.controller;
 
-import org.example.ai.APIController;
+import org.example.*;
 import org.example.bank.BankDetails;
 import org.example.bank.BankDetailsIDGenerator;
-import org.example.currency.Owning;
 import org.example.transaction.Transaction;
+import org.example.transaction.TransferService;
 import org.example.user.Admin;
 import org.example.user.Customer;
 import org.example.user.User;
@@ -14,6 +14,8 @@ import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
 import org.example.wallet.Wallet;
 import org.example.wallet.WalletIDGenerator;
+import org.example.ai.APIController;
+import org.example.currency.Owning;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -459,8 +461,6 @@ public class CryptoSystem {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return;
         }
-
-
         loggedInCustomer.getFiatWallet().viewOwnings(api);
     }
     public void viewFeedbacks() {
@@ -479,7 +479,7 @@ public class CryptoSystem {
 
         System.out.println("Registering a new wallet for user: " + user.getName());
         AuthService authService = new AuthService();
-        if (authService.registerNewUser(this)==true)
+        if (authService.registerNewUser(this))
         {
             return true;
         }
@@ -498,10 +498,31 @@ public class CryptoSystem {
         return true;
 
     }
-    public void referFriend()
-    {
+    public void referFriend() {
         Referral refer=new Referral();
         refer.referFriend();
+    }
+    public void viewPortfolio(int UserID)
+    {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to view your portfolio.");
+            return;
+        }
+        int userId = loggedInCustomer.getUserId();
+        System.out.printf("Displaying portfolio for logged-in customer: %s (ID: %d)\n",
+                loggedInCustomer.getName(), userId);
+        System.out.println("========================================");
+        viewPortfolio(userId);
+    }
+    public void transferFIAT() {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to perform a transfer.");
+
+        }
+
+        TransferService transferService = new TransferService();
+        System.out.println("\n--- FIAT Transfer Form ---");
+        transferService.transferFIAT(this);
     }
 
 }
