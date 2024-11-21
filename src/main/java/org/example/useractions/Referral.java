@@ -1,10 +1,10 @@
-package org.example;
-import java.util.Scanner;
+package org.example.useractions;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Referral {
     public void referFriend() {
-        if (submitForm()==true)
+        if (submitForm())
         {
             System.out.print("Referral is a success");
         }
@@ -31,10 +31,10 @@ public class Referral {
         String friend_name = scanner.nextLine();
         System.out.print("Enter your friend's email : ");
         String friend_email = scanner.nextLine();
-        if (validateFormat(friend_email)==true)
+        if (validateFormat(friend_email))
         {
             System.out.print("Email is correct");
-            if (sendReferral(friend_email)==true)
+            if (sendReferral(friend_email))
             {
                 System.out.print("Email is sent successfully");
                 return true;

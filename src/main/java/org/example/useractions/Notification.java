@@ -1,4 +1,4 @@
-package org.example;
+package org.example.useractions;
 
 public class Notification {
     int notificationID;

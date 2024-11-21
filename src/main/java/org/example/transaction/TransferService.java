@@ -1,4 +1,7 @@
-package org.example;
+package org.example.transaction;
+import org.example.controller.CryptoSystem;
+import org.example.user.Customer;
+
 import java.util.Scanner;
 import java.util.Date;
 
@@ -15,7 +18,7 @@ public class TransferService {
 
         submitForm(cryptoSystem, receiverId, amount);
     }
-    public void submitForm(CryptoSystem cryptoSystem,int receiverId, float amount) {
+    public void submitForm(CryptoSystem cryptoSystem, int receiverId, float amount) {
         System.out.println("\nTransfer Form");
         boolean isValid = validateForm(cryptoSystem, receiverId, amount);
         if (!isValid) {

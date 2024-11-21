@@ -1,4 +1,4 @@
-package org.example;
+package org.example.currency;
 
 import java.util.Date;
 

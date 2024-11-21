@@ -1,5 +1,6 @@
-package org.example;
+package org.example.transaction;
 
+import org.example.user.User;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,9 +10,9 @@ public class Transaction {
     int transactionId;
     User user;
     float amount;
-    Date timestamp;
-    String transactionType;  // "buy", "sell"
-    String coin;  // Optional, only used for crypto transactions
+    public Date timestamp;
+    public String transactionType;  // "buy", "sell"
+    public String coin;  // Optional, only used for crypto transactions
     float coinRate;
     boolean sus;
 
@@ -182,12 +183,4 @@ public class Transaction {
         transaction.sus=state;
     }
 
-}
-
-class TransactionIDGenerator {
-    private static int counter = 1;
-
-    public static int generate() {
-        return counter++;
-    }
 }

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.useractions;
 import java.util.Scanner;
 
 public class Feedback {
