@@ -1,5 +1,4 @@
 package org.example.controller;
-
 import org.example.bank.BankDetails;
 import org.example.bank.BankDetailsIDGenerator;
 import org.example.transaction.Transaction;
@@ -523,45 +522,41 @@ public class CryptoSystem {
         }
         Scanner sc = new Scanner(System.in);
         Comments comments=new Comments();
-        System.out.print("Would you like it to be anonymous? (Y/n)") ;
-        char ans=sc.next().charAt(0);
-        if (ans=='Y'){
-            if (comments.addAnonymousComment(transactionID,comment))
-            {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        else if (ans=='n')
+        int userid=loggedInCustomer.getUserId();
+        if (comments.addComment(userid,comment,transactionID))
         {
-            int userid=loggedInCustomer.getUserId();
-            if (comments.addComment(userid,comment,transactionID))
-            {
-                return true;
-            }
-            else
-                return false;
+            return true;
         }
         else
-        {
-            System.out.print("Wrong input. Exiting...");
             return false;
-        }
+
 
     }
     public void selectFeedback() {
-        if (loggedInCustomer == null) {
-            System.out.print("No customer is logged in. Exiting...");
+        if (loggedInAdmin == null) {
+            System.out.print("No Admin is logged in. Exiting...");
+            return;
         }
         Feedback feedback=new Feedback();
         feedback.selectFeedback();
     }
     public boolean reviewFeedback(int feedbackID,int priority) {
-        if (loggedInCustomer == null) {
-            System.out.print("No customer is logged in. Exiting...");
+        if (loggedInAdmin == null) {
+            System.out.print("No admin is logged in. Exiting...");
         }
+        return true;
+    }
+    public boolean respondDirectly(int feedbackID)
+    {
+        if (loggedInAdmin == null) {
+            System.out.print("No loggedInAdmin is logged in. Exiting...");
+            return false;
+        }
+        Feedback feedback=new Feedback();
+        System.out.print("Enter response: ");
+        Scanner sc = new Scanner(System.in);
+        String response=sc.nextLine();
+        feedback.respondDirectly(feedbackID,response);
         return true;
     }
 }

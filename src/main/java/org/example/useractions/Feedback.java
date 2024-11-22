@@ -7,7 +7,7 @@ public class Feedback {
     String subject;
     String feedback;
     int priority_level;
-    boolean status;
+    String status;
     String response;
     int userID;
     private static int generateFeedbackId() {
@@ -23,8 +23,8 @@ public class Feedback {
     public Feedback(int Userid) {
         this.feedbackId = generateFeedbackId();
         this.userID = Userid;
-        this.status = false;
-        this.response = "";
+        this.status = "-";
+        this.response = "-";
     }
     public Feedback(String subject,int userID, String feedback, int priority_level) {
         this.feedbackId = generateFeedbackId();
@@ -32,7 +32,7 @@ public class Feedback {
         this.feedback = feedback;
         this.priority_level = priority_level;
         this.userID = userID;
-        this.status = false;
+        this.status = "-";
         this.response = "\0";
     }
     public void giveFeedback(int userid) {
@@ -57,10 +57,10 @@ public class Feedback {
             priorityLevel1 = scanner.nextInt();
         }
         scanner.nextLine();
-        if (validateForm(feedback1,subject1,priorityLevel1)==true){
+        if (validateForm(feedback1, subject1, priorityLevel1)){
             //make feedback
             Feedback feedback2 = new Feedback(subject1,userID,feedback1,priority_level);
-            if (storeFeedback(feedback)==true)
+            if (storeFeedback(feedback))
             {
                 displayDetails(feedback2);
                 if (notifyAdmin(feedback2,userID))
@@ -128,7 +128,7 @@ public class Feedback {
         //write an sql query to find the feedback in the feedback table
         //if not found exit while returning false
         //if found
-            //phir write a query to change the status of that feedback to true
+            //phir write a query to change the status of that feedback to "viewed by Admin"
         // if having an error return false
 
         return true;
@@ -145,5 +145,15 @@ public class Feedback {
         //write an sql query to add the response in the feedback table with the feedback of the id given
         return true;
     }
+
+    public boolean updateFeedbackStatus(int FeedbackID,String response) {
+        this.status = "Admin has responded";
+        //write a sql query to update the feedback table
+        Notification notification = new Notification();
+        notification.addNotification(this.userID,response,"feedback response from admin");
+        return true;
+
+    }
+
 
 }
