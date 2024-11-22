@@ -12,4 +12,8 @@ public class Notification {
         this.userid = user;
         this.notificationText = notificationText;
     }
+
+    public Notification() {
+
+    }
 }

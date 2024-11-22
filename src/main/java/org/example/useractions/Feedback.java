@@ -17,6 +17,9 @@ public class Feedback {
         this.feedback = feedback;
         this.feedbackId = generateFeedbackId();
     }
+    public Feedback() {
+
+    }
     public Feedback(int Userid) {
         this.feedbackId = generateFeedbackId();
         this.userID = Userid;
@@ -60,7 +63,10 @@ public class Feedback {
             if (storeFeedback(feedback)==true)
             {
                 displayDetails(feedback2);
-                notifyAdmin(feedback2);
+                if (notifyAdmin(feedback2,userID))
+                {
+                    System.out.println("Successfully Notified");
+                }
                 return true;
             }
             else
@@ -108,8 +114,36 @@ public class Feedback {
         }
         return true;
     }
-    public boolean notifyAdmin(Feedback feedback) {
+    public boolean notifyAdmin(Feedback feedback,int userID) {
         System.out.println("\nAdmin being Notified...");
+        //write an sql query to add the notification and the user id with it
         return true;
     }
+
+    public void selectFeedback(){
+        //write an sql query to show all feedbacks
+
+    }
+    public boolean reviewFeedback(int feedbackID,int priority) {
+        //write an sql query to find the feedback in the feedback table
+        //if not found exit while returning false
+        //if found
+            //phir write a query to change the status of that feedback to true
+        // if having an error return false
+
+        return true;
+    }
+    public boolean respondDirectly(int feedbackID,String response) {
+        if (insertResponse(feedbackID,response))
+        {
+            System.out.println("Successfully added response to the feedback");
+            return true;
+        }
+        return false;
+    }
+    public boolean insertResponse(int FeedbackID,String response) {
+        //write an sql query to add the response in the feedback table with the feedback of the id given
+        return true;
+    }
+
 }

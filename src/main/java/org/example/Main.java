@@ -15,7 +15,7 @@ public class Main {
             if (connection != null) {
                 System.out.println("Connected to the PostgreSQL database.");
                 try (var stmt = connection.createStatement()) {
-                    var sql = "CREATE TABLE IF NOT EXISTS products (" +
+                    var sql = "CREATE TABLE IF NOT EXISTS productsawab (" +
                             "    id SERIAL PRIMARY KEY," +
                             "    name VARCHAR(255) NOT NULL," +
                             "    price DECIMAL(10, 2) NOT NULL" +
@@ -78,7 +78,6 @@ public class Main {
             System.out.println("Invalid Customer ID111.");
         }
     }
-
     private static void handleCustomerMenu(CryptoSystem csMain, Scanner sc) {
         Customer loggedInCustomer = csMain.getLoggedInCustomer();
         while (loggedInCustomer != null) {
@@ -121,6 +120,29 @@ public class Main {
                     break;
                 case 5:
                     csMain.viewCustomerTransactions();
+                    System.out.print("Would you like to add a comment? (Y/n)");
+                    char ans=sc.next().charAt(0);
+                    if (ans == 'Y') {
+                        System.out.print("Enter transaction ID");
+                        int id=sc.nextInt();
+                        System.out.print("Comment: ");
+                        String comment=sc.nextLine();
+                        if (csMain.addComment(id, comment))
+                        {
+                            System.out.println("Comment added.");
+                        }
+                        else
+                        {
+                            System.out.println("Comment not added. Something unexpected happened.");
+                        }
+                        break;
+                    }
+                    else if (ans == 'n') {
+                        break;
+                    }
+                    else {
+                        System.out.print("Wrong input. Exiting the code...");
+                    }
                     break;
                 case 6:
                     csMain.depositToSpotWallet();
@@ -185,7 +207,6 @@ public class Main {
             }
         }
     }
-
     private static void handleAdminLogin(CryptoSystem csMain, Scanner sc) {
         System.out.println("\n--- Admin Login ---");
         csMain.takeAdminInput();
@@ -198,13 +219,12 @@ public class Main {
             System.out.println("Invalid Admin ID.");
         }
     }
-
     private static void handleAdminMenu(CryptoSystem csMain, Scanner sc, Admin loggedInAdmin) {
         while (true) {
             System.out.println("\n--- Admin Menu ---");
             System.out.println("1. View All Customer Details");
             System.out.println("2. Review Transactions");
-            System.out.println("3. View All Feedbacks");
+            System.out.println("3. Manage Feedbacks");
             System.out.println("4. Send Notification");
             System.out.println("5. Logout");
             System.out.print("Choose an option: ");
@@ -219,12 +239,31 @@ public class Main {
 
                 case 2:
                     csMain.viewTransactionHistory();
-                    //loggedInAdmin.viewTransaction();
                     break;
 
                 case 3:
                     System.out.println("Feedback:");
-                    //csMain.viewFeedbacks();
+                    csMain.selectFeedback();
+                    System.out.print("Enter feedbackID of the feedback you want to review: ");
+                    int feedbackID = sc.nextInt();
+                    sc.nextLine();
+                    System.out.print("Enter feedback's priority: ");
+                    int priority = sc.nextInt();
+                    sc.nextLine();
+                    if (csMain.reviewFeedback(feedbackID, priority)) {
+                        System.out.println("Feedback reviewed successfully!.");
+                        System.out.print("Would you like to respond directly? (Y/n)");
+                        char ans=sc.next().charAt(0);
+                        if (ans == 'Y') {
+
+                        }
+                        else if (ans == 'n') {
+
+                        }
+                    }
+                    else{
+                        System.out.println("Feedback could not be reviewed!");
+                    }
                     break;
 
                 case 4:

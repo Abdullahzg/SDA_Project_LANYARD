@@ -1,15 +1,12 @@
 package org.example.controller;
 
-import org.example.*;
 import org.example.bank.BankDetails;
 import org.example.bank.BankDetailsIDGenerator;
 import org.example.transaction.Transaction;
-import org.example.transaction.TransferService;
+import org.example.useractions.*;
 import org.example.user.Admin;
 import org.example.user.Customer;
 import org.example.user.User;
-import org.example.useractions.AuthService;
-import org.example.useractions.Referral;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
 import org.example.wallet.Wallet;
@@ -463,10 +460,6 @@ public class CryptoSystem {
         }
         loggedInCustomer.getFiatWallet().viewOwnings(api);
     }
-    public void viewFeedbacks() {
-        System.out.println("Displaying all feedbacks...");
-
-    }
     public void sendNotification(String message) {
         System.out.println("Sending notification: " + message);
 
@@ -502,8 +495,7 @@ public class CryptoSystem {
         Referral refer=new Referral();
         refer.referFriend();
     }
-    public void viewPortfolio(int UserID)
-    {
+    public void viewPortfolio(int UserID) {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to view your portfolio.");
             return;
@@ -524,5 +516,52 @@ public class CryptoSystem {
         System.out.println("\n--- FIAT Transfer Form ---");
         transferService.transferFIAT(this);
     }
+    public boolean addComment(int transactionID,String comment){
+        if (loggedInCustomer == null) {
+            System.out.print("No customer is logged in. Please log in to perform a transfer.");
+            return false;
+        }
+        Scanner sc = new Scanner(System.in);
+        Comments comments=new Comments();
+        System.out.print("Would you like it to be anonymous? (Y/n)") ;
+        char ans=sc.next().charAt(0);
+        if (ans=='Y'){
+            if (comments.addAnonymousComment(transactionID,comment))
+            {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else if (ans=='n')
+        {
+            int userid=loggedInCustomer.getUserId();
+            if (comments.addComment(userid,comment,transactionID))
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+        {
+            System.out.print("Wrong input. Exiting...");
+            return false;
+        }
 
+    }
+    public void selectFeedback() {
+        if (loggedInCustomer == null) {
+            System.out.print("No customer is logged in. Exiting...");
+        }
+        Feedback feedback=new Feedback();
+        feedback.selectFeedback();
+    }
+    public boolean reviewFeedback(int feedbackID,int priority) {
+        if (loggedInCustomer == null) {
+            System.out.print("No customer is logged in. Exiting...");
+        }
+        return true;
+    }
 }
