@@ -2,36 +2,42 @@ package org.example;
 
 import java.util.Scanner;
 import org.example.controller.CryptoSystem;
-import org.example.db.DBHandler;
+import org.example.db.HibernateUtil;
+import org.example.db.models.User;
 import org.example.user.Admin;
 import org.example.user.Customer;
-
-import java.sql.SQLException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public class Main {
     public static void main(String[] args) {
-//        testing db connection
-        try (var connection = DBHandler.connect()) {
-            if (connection != null) {
-                System.out.println("Connected to the PostgreSQL database.");
-                try (var stmt = connection.createStatement()) {
-                    var sql = "CREATE TABLE IF NOT EXISTS productsawab (" +
-                            "    id SERIAL PRIMARY KEY," +
-                            "    name VARCHAR(255) NOT NULL," +
-                            "    price DECIMAL(10, 2) NOT NULL" +
-                            ");";
-                    stmt.executeUpdate(sql);
-                    System.out.println("Created Products table.");
-                }
-            } else {
-                System.err.println("Failed to connect to the database.");
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-//        testing db connection
+        try {
+            // Get the SessionFactory
+            Session session = HibernateUtil.getSessionFactory().openSession();
 
-        CryptoSystem csMain = new CryptoSystem("81c671a9-bdd6-4752-b892-76cb9691060c");
+            // Start a transaction
+            Transaction transaction = session.beginTransaction();
+
+            // Perform database operations
+            // Create an entity
+            User entity = new User();
+            entity.setName("Test Name 3");
+            session.persist(entity);
+
+            // Commit the transaction
+            transaction.commit();
+
+            // Close the session
+            session.close();
+        } catch (Exception e) {
+            System.err.println("Error in database operation: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            // Shutdown the SessionFactory when done
+            HibernateUtil.shutdown();
+        }
+
+        CryptoSystem csMain = CryptoSystem.getInstance("81c671a9-bdd6-4752-b892-76cb9691060c");
         Scanner sc = new Scanner(System.in);
 
         while (true) {
