@@ -7,8 +7,6 @@ Lanyard is a Java-based application that utilizes various packages and dependenc
 ## Project Structure
 
 ```
-.env  
-.env.example  
 .gitignore  
 .idea/  
 │   ├── aws.xml  
@@ -31,13 +29,12 @@ src/
 │               ├── bank/  
 │               ├── controller/  
 │               ├── currency/  
-│               ├── model/  
+│               ├── db/  
 │               ├── transaction/  
-│               ├── user/  
+│               ├── user/
+│               ├── useractions/    
 │               └── wallet/  
-│   └── resources/  
-│       └── db.properties
-│       └── db.properties.example
+├────── resources/  
 ├── test/  
 │   └── java/  
 │   └── resources/  
@@ -48,19 +45,18 @@ target/
 │           ├── ai/  
 │           ├── bank/  
 │           ├── controller/  
-│           ├── currency/  
-│           ├── json-simple-1.1.1.jar  
-│           ├── Main.class  
-│           ├── model/  
-│           ├── sample.txt  
-│           ├── transaction/  
+│           ├── currency/
+│           ├── db/    
+│           ├── transaction/
 │           ├── user/  
+│           ├── useractions/    
 │           └── wallet/  
 ├── generated-sources/  
 │   └── annotations/  
 └── maven-status/  
     └── maven-compiler-plugin/  
-        └── compile/  
+        └── compile/
+            └── default-compile/  
 ```
 
 ## Getting Started
@@ -101,10 +97,20 @@ Before running the application, you need to set up the database configuration. F
 
 ### Running the Application
 
-To compile and run the application, you can use the provided `run.sh` script:
+#### Command-Line Interface (CLI)
+
+To run the command-line interface, use the following command:
 
 ```sh
 ./run.sh
+```
+
+#### Graphical User Interface (GUI)
+
+To run the JavaFX graphical user interface, use the following command:
+
+```sh
+mvn clean javafx:run
 ```
 
 ## Dependencies
@@ -112,6 +118,8 @@ To compile and run the application, you can use the provided `run.sh` script:
 - com.mashape.unirest:unirest-java:1.4.9
 - org.postgresql:postgresql:42.7.4
 - com.googlecode.json-simple:json-simple:1.1.1
+- org.openjfx:javafx-controls:22.0.2
+- org.openjfx:javafx-fxml:22.0.2
 
 ## License
 
