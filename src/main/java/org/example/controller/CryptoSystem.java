@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CryptoSystem {
+    private static CryptoSystem instance;
     private List<Customer> customers;
     private List<Admin> admin;
     private Customer loggedInCustomer; // Add logged-in customer
@@ -31,13 +32,19 @@ public class CryptoSystem {
     Date lastBackupDate;
     int activeUsers;
     String systemStatus; // "operational" or "maintenance"
-    public CryptoSystem(String apiS) {
+
+    private CryptoSystem(String apiS) {
         api = new APIController(apiS);
         customers = new ArrayList<>();
-        loggedInCustomer = null; // Initially, no customer is logged in
-
+        loggedInCustomer = null;
         admin = new ArrayList<>();
+    }
 
+    public static CryptoSystem getInstance(String apiS) {
+        if (instance == null) {
+            instance = new CryptoSystem(apiS);
+        }
+        return instance;
     }
     public void printTopNumber(int i) {
         api.printTopCoins(i);

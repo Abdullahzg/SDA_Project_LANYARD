@@ -8,15 +8,6 @@ Lanyard is a Java-based application that utilizes various packages and dependenc
 
 ```
 .gitignore  
-.idea/  
-│   ├── aws.xml  
-│   ├── compiler.xml  
-│   ├── encodings.xml  
-│   ├── jarRepositories.xml  
-│   ├── misc.xml  
-│   ├── uiDesigner.xml  
-│   ├── vcs.xml  
-│   └── workspace.xml  
 pom.xml  
 readme.md  
 run.sh  
@@ -38,32 +29,13 @@ src/
 ├── test/  
 │   └── java/  
 │   └── resources/  
-target/  
-├── classes/  
-│   └── org/  
-│       └── example/  
-│           ├── ai/  
-│           ├── bank/  
-│           ├── controller/  
-│           ├── currency/
-│           ├── db/    
-│           ├── transaction/
-│           ├── user/  
-│           ├── useractions/    
-│           └── wallet/  
-├── generated-sources/  
-│   └── annotations/  
-└── maven-status/  
-    └── maven-compiler-plugin/  
-        └── compile/
-            └── default-compile/  
 ```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Java 17
+- Java 23
 - Maven
 
 ### Installation
@@ -74,25 +46,22 @@ target/
     cd lanyard_project
     ```
 
-2. Install the dependencies:
-    ```sh
-    mvn clean install
-    ```
-
 ### Configuration
 
 Before running the application, you need to set up the database configuration. Follow these steps:
 
-1. Copy the example `db.properties` file to create your own configuration file:
+1. Copy the example `database.properties` file to create your own configuration file:
     ```sh
-    cp src/main/resources/db.properties.example src/main/resources/db.properties
+    cp src/main/resources/database.properties.example src/main/resources/database.properties
     ```
 
-2. Open the `src/main/resources/db.properties` file and fill in your NeonDB database credentials:
+2. Open the `src/main/resources/database.properties` file and fill in your database credentials:
     ```properties
-    db.url=jdbc:your_database_url
-    db.username=your_username
-    db.password=your_password
+      hibernate.connection.driver_class=org.postgresql.Driver
+      hibernate.connection.url=jdbc:your_database_url
+      hibernate.connection.username=your_username
+      hibernate.connection.password=your_password
+      hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
     ```
 
 ### Running the Application
@@ -120,6 +89,10 @@ mvn clean javafx:run
 - com.googlecode.json-simple:json-simple:1.1.1
 - org.openjfx:javafx-controls:22.0.2
 - org.openjfx:javafx-fxml:22.0.2
+- org.hibernate.orm:hibernate-core:6.3.1.Final
+- org.hibernate.orm:hibernate-c3p0:6.3.1.Final
+- jakarta.persistence:jakarta.persistence-api:3.1.0
+- com.mchange:c3p0:0.9.5.5
 
 ## License
 
