@@ -1,3 +1,5 @@
-db.url=
-db.username=
-db.password=
+hibernate.connection.driver_class=org.postgresql.Driver
+hibernate.connection.url=
+hibernate.connection.username=
+hibernate.connection.password=
+hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect

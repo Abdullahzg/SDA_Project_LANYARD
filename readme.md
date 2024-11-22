@@ -57,9 +57,11 @@ Before running the application, you need to set up the database configuration. F
 
 2. Open the `src/main/resources/database.properties` file and fill in your database credentials:
     ```properties
-    db.url=jdbc:your_database_url
-    db.username=your_username
-    db.password=your_password
+      hibernate.connection.driver_class=org.postgresql.Driver
+      hibernate.connection.url=jdbc:your_database_url
+      hibernate.connection.username=your_username
+      hibernate.connection.password=your_password
+      hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
     ```
 
 ### Running the Application
