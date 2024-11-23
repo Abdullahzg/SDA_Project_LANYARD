@@ -4,6 +4,8 @@ import java.util.Scanner;
 import org.example.controller.CryptoSystem;
 import org.example.user.Admin;
 import org.example.user.Customer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,7 +13,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\n--- Login Menu ---");
+            System.out.println("\n--- Menu ---");
             System.out.println("1. Customer");
             System.out.println("2. Admin");
             System.out.println("3. Exit");
@@ -44,7 +46,7 @@ public class Main {
         handleCustomerMenu(csMain, sc);
     }
 
-    private static Customer handleCustomerRegistration(CryptoSystem csMain, Scanner sc) {
+    private static @Nullable Customer handleCustomerRegistration(@NotNull CryptoSystem csMain, Scanner sc) {
         System.out.println("\n--- Customer Registration ---");
         csMain.takeCustomerInput();
         Customer loggedInCustomer = csMain.getLoggedInCustomer();
@@ -58,7 +60,7 @@ public class Main {
         }
     }
 
-    private static Customer handleCustomerLogin(CryptoSystem csMain, Scanner sc) {
+    private static @Nullable Customer handleCustomerLogin(@NotNull CryptoSystem csMain, @NotNull Scanner sc) {
         System.out.println("\n--- Customer Login ---");
         System.out.print("Enter Customer Email: ");
         String email = sc.nextLine();
@@ -75,7 +77,7 @@ public class Main {
         }
     }
 
-    private static void handleCustomerMenu(CryptoSystem csMain, Scanner sc) {
+    private static void handleCustomerMenu(CryptoSystem csMain, @NotNull Scanner sc) {
         Customer loggedInCustomer = null;
 
         while (true) {
@@ -113,18 +115,19 @@ public class Main {
         while (loggedInCustomer != null) {
             System.out.println("\n--- Customer Menu ---");
             System.out.println("1. View Your Details");
-            System.out.println("2. Buy Coin");
-            System.out.println("3. Sell Coin");
+            System.out.println("2. Buy FIAT");
+            System.out.println("3. Sell FIAT");
             System.out.println("4. View Owned Coins");
             System.out.println("5. View Your Transactions");
-            System.out.println("6. Deposit Funds");
-            System.out.println("7. Withdraw Funds");
-            System.out.println("8. Transfer Funds");
-            System.out.println("9. Display Top Coins");
-            System.out.println("10. View Details of a Single Coin");
-            System.out.println("11. Give Feedback");
-            System.out.println("12. Refer Friend");
-            System.out.println("13. Logout");
+            System.out.println("6. Deposit Funds into Spot Wallet");
+            System.out.println("7. Withdraw Funds from Spot Wallet");
+            System.out.println("8. Transfer Funds Between Wallets");
+            System.out.println("9. Transfer FIAT to Another User");
+            System.out.println("10. Display Top Coins");
+            System.out.println("11. View Details of Single Coin");
+            System.out.println("12. Give Feedback");
+            System.out.println("13. Refer Friend");
+            System.out.println("14. Logout");
             System.out.print("Choose an option: ");
 
             int choice = sc.nextInt();
@@ -132,12 +135,12 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                {   System.out.println("Customer Details:");
+                    System.out.println("Customer Details:");
                     System.out.println("Name: " + loggedInCustomer.getName());
                     System.out.println("Email: " + loggedInCustomer.getEmail());
                     System.out.println("Phone: " + loggedInCustomer.getPhone());
                     break;
-                }
+
                 case 2:
                     csMain.buyCoinForLoggedInCustomer();
                     break;
@@ -156,20 +159,15 @@ public class Main {
                         int id=sc.nextInt();
                         System.out.print("Comment: ");
                         String comment=sc.nextLine();
-                        if (csMain.addComment(id, comment))
-                        {
+                        if (csMain.addComment(id, comment)) {
                             System.out.println("Comment added.");
-                        }
-                        else
-                        {
+                        } else {
                             System.out.println("Comment not added. Something unexpected happened.");
                         }
                         break;
-                    }
-                    else if (ans == 'n') {
+                    } else if (ans == 'n') {
                         break;
-                    }
-                    else {
+                    } else {
                         System.out.print("Wrong input. Exiting the code...");
                     }
                     break;
@@ -183,46 +181,43 @@ public class Main {
                     csMain.transferBetweenWallets();
                     break;
                 case 9:
-                {
+                    csMain.transferFiatToAnotherUser(sc);
+                    break;
+                case 10:
                     System.out.print("Enter the number of top coins to display: ");
                     int numCoins = sc.nextInt();
                     sc.nextLine();
                     csMain.printTopNumber(numCoins);
                     break;
-                }
-                case 10:
+                case 11:
                     System.out.print("Enter the code of the coin: ");
                     String coinCode = sc.nextLine();
                     csMain.printSingleCoin(coinCode);
                     break;
-
-                case 11:
+                case 12:
                     System.out.print("Feedback: ");
 
-                    if (csMain.giveFeedback(loggedInCustomer.getUserId()))
-                    {
+                    if (csMain.giveFeedback(loggedInCustomer.getUserId())) {
                         System.out.println("Feedback submitted successfully!");
                     }
-                    else
-                    {
+                    else {
                         System.out.println("Feedback could not be submitted!");
                     }
                     break;
-
-                case 12:
+                case 13:
                     csMain.referFriend();
                     break;
-                case 13:
+                case 14:
                     System.out.println("Logging out...");
                     csMain.setLoggedInCustomer(null);
                     return;
-
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
         }
     }
-    private static void adminUser(CryptoSystem csMain, Scanner sc) {
+
+    private static void adminUser(@NotNull CryptoSystem csMain, Scanner sc) {
         System.out.println("\n--- Admin Login ---");
         csMain.takeAdminInput();
         Admin loggedInAdmin = csMain.getLoggedInAdmin();
@@ -234,7 +229,8 @@ public class Main {
             System.out.println("Invalid Admin ID.");
         }
     }
-    private static void handleAdminMenu(CryptoSystem csMain, Scanner sc, Admin loggedInAdmin) {
+
+    private static void handleAdminMenu(CryptoSystem csMain, @NotNull Scanner sc, Admin loggedInAdmin) {
         while (true) {
             System.out.println("\n--- Admin Menu ---");
             System.out.println("1. View All Customer Details");

@@ -8,8 +8,10 @@ import org.example.db.models.trans.TransactionsModel;
 import org.example.db.models.user.CustomerModel;
 import org.example.db.models.user.UserModel;
 import org.example.trans.Transaction;
+import org.example.useractions.Feedback;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -18,7 +20,7 @@ public class Customer extends User{
     private FiatWallet fiatWallet;
     private BankDetails bankDetails;
     private List<Transaction> transactions;
-
+    private List<Feedback> feedbacks;
 
     public Customer(int userId, String name, Date birthDate, String address, String phone, String email, Date accountCreationDate, Date lastLoginDate, String accountStatus, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails){
         super(userId,name, birthDate,address,phone,email, accountCreationDate,lastLoginDate,accountStatus);
@@ -26,14 +28,17 @@ public class Customer extends User{
         this.fiatWallet = fiatWallet;
         this.bankDetails = bankDetails;
         this.transactions = new ArrayList<>();
+        this.feedbacks = new ArrayList<>();
     }
 
-    public static void addNewCustomerDB(User user, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails) {
+    public static void addNewCustomerDB(@NotNull User user, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails) {
         DBHandler.saveCustomer(new CustomerModel(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), new Date(), new Date(), "active"), spotWallet, fiatWallet, bankDetails));
     }
 
     public SpotWallet getSpotWallet() { return spotWallet; }
+
     public FiatWallet getFiatWallet() { return fiatWallet; }
+
     public List<Transaction> getTransactions() { return transactions; }
 
     public void setSpotWallet(SpotWallet spotWallet) {this.spotWallet = spotWallet;}
@@ -41,6 +46,7 @@ public class Customer extends User{
     public BankDetails getBankDetails() {
         return bankDetails;
     }
+
     public void setBankDetails(BankDetails bankDetails) {
         this.bankDetails = bankDetails;
 
@@ -65,7 +71,7 @@ public class Customer extends User{
         System.out.println("Transaction recorded successfully.");
     }
 
-    public void buyCoin(APIController api, String coinCode, float amount) {
+    public void buyCoin(@NotNull APIController api, String coinCode, float amount) {
         FiatWallet fiatWallet = getFiatWallet();
 
         // Fetch exchange rate for the coin
@@ -95,6 +101,7 @@ public class Customer extends User{
         }
 
     }
+
     public void sellCoin(APIController api, String coinCode, float usdtAmount) {
         FiatWallet fiatWallet = getFiatWallet();
 

@@ -3,6 +3,7 @@ package org.example.wallet;
 import org.example.ai.APIController;
 import org.example.currency.Owning;
 import org.example.db.DBHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 import java.util.List;
@@ -58,6 +59,7 @@ public class FiatWallet extends Wallet {
             System.out.println("Insufficient balance to buy coins.");
         }
     }
+
     public String viewOwningsn(APIController api) {
         if (ownings.isEmpty()) {
             return "No coins owned in the Fiat Wallet.";
@@ -149,8 +151,15 @@ public class FiatWallet extends Wallet {
     @Override
     public void depositOrWithdrawDB(String type) {
         // Update the database
-        DBHandler.depositOrWithdrawFiatWalletDB(this, type);
+        DBHandler.depositOrWithdrawFiatWalletDB(this, type, false, 0.0);
     }
 
+    public void transferFiatToAnotherUser(float amountToSend, @NotNull FiatWallet recipientWallet) {
+        recipientWallet.deposit(amountToSend);
+        withdraw(amountToSend);
 
+        // Update the database
+        DBHandler.depositOrWithdrawFiatWalletDB(this, "Withdrawal", false, 0.0);
+        DBHandler.depositOrWithdrawFiatWalletDB(recipientWallet, "deposit", true, amountToSend);
+    }
 }

@@ -1,4 +1,6 @@
 package org.example.useractions;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Scanner;
 
 public class Feedback {
@@ -13,19 +15,23 @@ public class Feedback {
     private static int generateFeedbackId() {
         return feedbackCounter++;
     }
+
     public Feedback(String feedback) {
         this.feedback = feedback;
         this.feedbackId = generateFeedbackId();
     }
+
     public Feedback() {
 
     }
+
     public Feedback(int Userid) {
         this.feedbackId = generateFeedbackId();
         this.userID = Userid;
         this.status = "-";
         this.response = "-";
     }
+
     public Feedback(String subject,int userID, String feedback, int priority_level) {
         this.feedbackId = generateFeedbackId();
         this.subject = subject;
@@ -35,9 +41,11 @@ public class Feedback {
         this.status = "-";
         this.response = "\0";
     }
+
     public void giveFeedback(int userid) {
         displayForm(userid);
     }
+
     public boolean displayForm(int userID) {
 
         Scanner scanner = new Scanner(System.in);
@@ -82,7 +90,8 @@ public class Feedback {
 
 
     }
-    public void displayDetails(Feedback feedback) {
+
+    public void displayDetails(@NotNull Feedback feedback) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\nFeedback Submitted by User ID " + feedback.userID);
         System.out.println("Subject: " + feedback.subject);
@@ -91,6 +100,7 @@ public class Feedback {
         System.out.println("Status: " + feedback.status);
         System.out.println("Response: " + feedback.response);
     }
+
     public boolean storeFeedback(String feedback) {
         System.out.println("\nFeedback getting stored in database");
         //write query to store in database
@@ -98,6 +108,7 @@ public class Feedback {
         //else return false
 
     }
+
     public boolean validateForm(String feedback, String subject, int priorityLevel) {
         System.out.println("\nValidating Feedback details");
         if (subject == null || subject.trim().isEmpty()) {
@@ -114,6 +125,7 @@ public class Feedback {
         }
         return true;
     }
+
     public boolean notifyAdmin(Feedback feedback,int userID) {
         System.out.println("\nAdmin being Notified...");
         //write an sql query to add the notification and the user id with it
@@ -124,6 +136,7 @@ public class Feedback {
         //write an sql query to show all feedbacks
 
     }
+
     public boolean reviewFeedback(int feedbackID,int priority) {
         //write an sql query to find the feedback in the feedback table
         //if not found exit while returning false
@@ -133,6 +146,7 @@ public class Feedback {
 
         return true;
     }
+
     public boolean respondDirectly(int feedbackID,String response) {
         if (insertResponse(feedbackID,response))
         {
@@ -141,6 +155,7 @@ public class Feedback {
         }
         return false;
     }
+
     public boolean insertResponse(int FeedbackID,String response) {
         //write an sql query to add the response in the feedback table with the feedback of the id given
         return true;
@@ -149,11 +164,9 @@ public class Feedback {
     public boolean updateFeedbackStatus(int FeedbackID,String response) {
         this.status = "Admin has responded";
         //write a sql query to update the feedback table
-        Notification notification = new Notification();
-        notification.addNotification(this.userID,response,"feedback response from admin");
+//        Notification notification = new Notification();
+//        notification.addNotification(this.userID,response,"feedback response from admin");
         return true;
 
     }
-
-
 }

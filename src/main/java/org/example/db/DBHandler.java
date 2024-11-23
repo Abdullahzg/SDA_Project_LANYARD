@@ -15,6 +15,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
@@ -197,7 +198,7 @@ public class DBHandler {
         }
     }
 
-    public static void depositOrWithdrawFiatWalletDB(FiatWallet fiatWallet, String type) {
+    public static void depositOrWithdrawFiatWalletDB(@NotNull FiatWallet fiatWallet, String type, boolean isFIATTransfer, double amountToSend) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
@@ -208,7 +209,12 @@ public class DBHandler {
                 fiatWalletModel.setLastActivityDate(new Date());
                 session.merge(fiatWalletModel);
                 transaction.commit();
-                System.out.printf("%s successful! New Fiat Wallet Balance: %.2f\n", type, fiatWallet.getBalance());
+                if (isFIATTransfer) {
+                    System.out.printf("Successfully transferred %.2f USDT to the recipient's wallet.\n", amountToSend);
+                }
+                if (!isFIATTransfer) {
+                    System.out.printf("%s successful! New Fiat Wallet Balance: %.2f\n", type, fiatWallet.getBalance());
+                }
             } else {
                 System.out.println("Fiat Wallet not found in the database.");
             }

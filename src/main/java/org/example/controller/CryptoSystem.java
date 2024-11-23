@@ -14,8 +14,11 @@ import org.example.wallet.Wallet;
 import org.example.wallet.WalletIDGenerator;
 import org.example.ai.APIController;
 import org.example.currency.Owning;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -58,6 +61,7 @@ public class CryptoSystem {
     JSONArray giveTopCoins(int i){
         return api.giveTopCoins(i);
     }
+
     void depositToSpotWalletn(float depositAmount) {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -68,6 +72,7 @@ public class CryptoSystem {
 
         spotWallet.deposit(depositAmount);
     }
+
     void withdrawFromSpotWalletn(float withdrawAmount) {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -78,6 +83,7 @@ public class CryptoSystem {
 
         spotWallet.withdraw(withdrawAmount);
     }
+
     void transferBetweenWalletsn(int choice, float transferAmount) {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -117,6 +123,7 @@ public class CryptoSystem {
         targetWallet.deposit(convertedAmount);
 
     }
+
     public String viewCustomerOwningsn() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -126,6 +133,7 @@ public class CryptoSystem {
 
         return  loggedInCustomer.getFiatWallet().viewOwningsn(api);
     }
+
     public void viewCustomerTransactions() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -149,6 +157,7 @@ public class CryptoSystem {
             flagForReview();
         }
     }
+
     void flagForReview() {
         Scanner myObj = new Scanner(System.in);
         System.out.println("Enter Transaction ID: ");
@@ -159,7 +168,7 @@ public class CryptoSystem {
         // notifyTeam(transaction);
     }
 
-    void notifyTeam(Transaction transaction) {
+    void notifyTeam(@NotNull Transaction transaction) {
         transaction.notifyTeam(transaction);
         System.out.println("Team has been Notified.");
     }
@@ -645,6 +654,7 @@ public class CryptoSystem {
 
 
     }
+
     public void selectFeedback() {
         if (loggedInAdmin == null) {
             System.out.print("No Admin is logged in. Exiting...");
@@ -653,6 +663,7 @@ public class CryptoSystem {
         Feedback feedback=new Feedback();
         feedback.selectFeedback();
     }
+
     public boolean reviewFeedback(int feedbackID,int priority) {
         if (loggedInAdmin == null) {
             System.out.print("No admin is logged in. Exiting...");
@@ -660,8 +671,7 @@ public class CryptoSystem {
         return true;
     }
 
-    public boolean respondDirectly(int feedbackID)
-    {
+    public boolean respondDirectly(int feedbackID) {
         if (loggedInAdmin == null) {
             System.out.print("No loggedInAdmin is logged in. Exiting...");
             return false;
@@ -672,5 +682,72 @@ public class CryptoSystem {
         String response=sc.nextLine();
         feedback.respondDirectly(feedbackID,response);
         return true;
+    }
+
+    public void transferFiatToAnotherUser(Scanner scanner) {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to perform a transfer.");
+            return;
+        }
+
+        // Take email input for the recipient
+        System.out.print("Enter the recipient's email: ");
+        String recipientEmail = scanner.nextLine();
+        if (recipientEmail.equalsIgnoreCase(loggedInCustomer.getEmail())) {
+            System.out.println("You cannot transfer to yourself. Transfer canceled.");
+            return;
+        }
+        Customer recipient = getCustomerByEmail(recipientEmail);
+        if (recipient == null) {
+            System.out.println("Recipient not found. Transfer canceled.");
+            return;
+        }
+
+        // Display the user's current balance
+        float currentBalance = loggedInCustomer.getFiatWallet().getBalance();
+        if (currentBalance <= 0) {
+            System.out.println("You have no balance to transfer.");
+            return;
+        }
+
+        System.out.printf("Your current balance: %.2f\n", currentBalance);
+
+        // Take input for the amount to send
+        System.out.print("Enter the amount to send: ");
+        float amountToSend = scanner.nextFloat();
+        scanner.nextLine(); // Consume leftover newline
+
+        // Validate the amount
+        if (amountToSend <= 0 || amountToSend > currentBalance) {
+            System.out.println("Invalid amount. Transfer canceled.");
+            return;
+        }
+
+        // Display how much the user will have left if they send
+        float remainingBalance = currentBalance - amountToSend;
+        System.out.printf("You will have %.2f left after the transfer.\n", remainingBalance);
+
+        // Confirm the transfer
+        System.out.print("Confirm transfer? (yes/no): ");
+        String confirmation = scanner.nextLine().trim().toLowerCase();
+        if (!confirmation.equals("yes")) {
+            System.out.println("Transfer canceled.");
+            return;
+        }
+
+        // Perform the transfer
+        FiatWallet senderWallet = loggedInCustomer.getFiatWallet();
+        FiatWallet recipientWallet = recipient.getFiatWallet();
+        senderWallet.transferFiatToAnotherUser(amountToSend, recipientWallet);
+
+        System.out.println("Transfer successful!");
+
+        // Send notification email to recipient
+        String emailSubject = "Lanyard | FIAT Transfer Notification";
+        String emailBody = "You have received a FIAT transfer of $" + amountToSend + " from " + loggedInCustomer.getName()
+                + " (" + loggedInCustomer.getEmail() + ").";
+
+        Email email = new Email(recipient.getEmail(), emailSubject, emailBody);
+        email.sendEmail("smtp.gmail.com", "587");
     }
 }
