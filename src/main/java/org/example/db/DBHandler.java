@@ -110,14 +110,51 @@ public class DBHandler {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            if (existingOwning != null) {
-                OwningsModel existingOwningModel = new OwningsModel(synthID, existingOwning.getAmount() + (amount / exchangeRate), coinCode, new Date(), walletId);
+
+            // Fetch the existing owning from the database
+            Query<OwningsModel> query = session.createQuery("FROM OwningsModel WHERE walletId = :walletId AND coin = :coinCode", OwningsModel.class);
+            query.setParameter("walletId", walletId);
+            query.setParameter("coinCode", coinCode);
+            OwningsModel existingOwningModel = query.uniqueResult();
+
+            if (existingOwningModel != null) {
+                // Update the existing owning
+                existingOwningModel.setAmount(existingOwningModel.getAmount() + (amount / exchangeRate));
+                existingOwningModel.setPurchaseDate(new Date());
+                existingOwningModel.setPurchaseRate(exchangeRate);
                 session.merge(existingOwningModel);
             } else {
+                // Create a new owning
                 OwningsModel newOwning = new OwningsModel(synthID, amount / exchangeRate, coinCode, new Date(), walletId);
                 newOwning.setPurchaseDate(new Date());
                 newOwning.setPurchaseRate(exchangeRate);
                 session.merge(newOwning);
+            }
+
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public static void updateOwningAfterSell(Owning selectedOwning, String coinCode, float usdtAmount, float exchangeRate, int walletId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            if (selectedOwning.getAmount() > 0) {
+                // Update the existing owning
+                OwningsModel existingOwningModel = new OwningsModel(selectedOwning.getOwningId(), selectedOwning.getAmount(), coinCode, selectedOwning.getPurchaseDate(), walletId);
+                existingOwningModel.setPurchaseRate(selectedOwning.getPurchaseRate());
+                session.merge(existingOwningModel);
+            } else {
+                // Remove the owning if the amount is zero
+                Query query = session.createQuery("DELETE FROM OwningsModel WHERE owningId = :owningId");
+                query.setParameter("owningId", selectedOwning.getOwningId());
+                query.executeUpdate();
             }
             transaction.commit();
         } catch (HibernateException e) {

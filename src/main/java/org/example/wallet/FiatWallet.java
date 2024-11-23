@@ -86,6 +86,7 @@ public class FiatWallet extends Wallet {
 
         return result.toString().trim(); // Remove trailing newline
     }
+
     public void sellCoin(String coinCode, float usdtAmount, float exchangeRate) {
         Owning selectedOwning = null;
 
@@ -124,8 +125,10 @@ public class FiatWallet extends Wallet {
             ownings.remove(selectedOwning);
             System.out.println("You no longer own any " + coinCode + ".");
         }
-    }
 
+        // Update the database
+        DBHandler.updateOwningAfterSell(selectedOwning, coinCode, usdtAmount, exchangeRate, this.walletId);
+    }
 
     public void viewOwnings(APIController api) {
         if (ownings.isEmpty()) {
