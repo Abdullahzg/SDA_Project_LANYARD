@@ -592,4 +592,18 @@ public class CryptoSystem {
         }
         return true;
     }
+
+    public boolean respondDirectly(int feedbackID)
+    {
+        if (loggedInAdmin == null) {
+            System.out.print("No loggedInAdmin is logged in. Exiting...");
+            return false;
+        }
+        Feedback feedback=new Feedback();
+        System.out.print("Enter response: ");
+        Scanner sc = new Scanner(System.in);
+        String response=sc.nextLine();
+        feedback.respondDirectly(feedbackID,response);
+        return true;
+    }
 }

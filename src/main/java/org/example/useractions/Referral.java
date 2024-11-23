@@ -60,7 +60,7 @@ public class Referral {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new Random();
         StringBuilder referralCode = new StringBuilder();
-        referralCode.append(String.format("ID%03d-", userId)); // Pads userId to ensure 3 digits
+        referralCode.append(String.format("ID%03d-", userId));
         for (int i = 0; i < 5; i++) {
             referralCode.append(chars.charAt(random.nextInt(chars.length())));
         }

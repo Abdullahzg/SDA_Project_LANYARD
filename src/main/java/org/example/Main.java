@@ -274,7 +274,7 @@ public class Main {
                         System.out.print("Would you like to respond directly? (Y/n)");
                         char ans=sc.next().charAt(0);
                         if (ans == 'Y') {
-
+                            csMain.respondDirectly(feedbackID);
                         }
                         else if (ans == 'n') {
 
