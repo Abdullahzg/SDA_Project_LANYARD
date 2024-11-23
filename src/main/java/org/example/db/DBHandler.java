@@ -9,6 +9,7 @@ import org.example.db.models.user.UserModel;
 import org.example.db.models.wallet.FiatWalletModel;
 import org.example.db.models.wallet.SpotWalletModel;
 import org.example.db.util.HibernateUtil;
+import org.example.wallet.SpotWallet;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -179,6 +180,29 @@ public class DBHandler {
             dbTransaction.commit();
         } catch (HibernateException e) {
             if (dbTransaction != null) dbTransaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public static void depositOrWithdrawSpotWalletDB(SpotWallet spotWallet, String type) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            SpotWalletModel spotWalletModel = session.get(SpotWalletModel.class, spotWallet.getWalletId());
+            if (spotWalletModel != null) {
+                spotWalletModel.setBalance(spotWallet.getBalance());
+                spotWalletModel.setLastActivityDate(spotWallet.getLastActivityDate());
+                session.merge(spotWalletModel);
+                transaction.commit();
+                System.out.printf("%s successful! New Spot Wallet Balance: %.2f\n", type, spotWallet.getBalance());
+            } else {
+                System.out.println("Spot Wallet not found in the database.");
+            }
+        } catch (HibernateException e) {
+            if (transaction != null) transaction.rollback();
             e.printStackTrace();
         } finally {
             session.close();

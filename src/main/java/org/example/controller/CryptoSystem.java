@@ -405,11 +405,9 @@ public class CryptoSystem {
         float newBalance = spotWallet.getBalance() + depositAmount;
 
         if (newBalance > spotWallet.getMaxBalanceLimit()) {
-            System.out.printf("Deposit exceeds the maximum allowed balance of %.2f.\n",
-                    spotWallet.getMaxBalanceLimit());
+            System.out.printf("Deposit exceeds the maximum allowed balance of %.2f.\n", spotWallet.getMaxBalanceLimit());
             System.out.printf("Current Spot Wallet Balance: %.2f\n", spotWallet.getBalance());
-            System.out.printf("Maximum Deposit Allowed: %.2f\n",
-                    spotWallet.getMaxBalanceLimit() - spotWallet.getBalance());
+            System.out.printf("Maximum Deposit Allowed: %.2f\n", spotWallet.getMaxBalanceLimit() - spotWallet.getBalance());
             return;
         }
 
@@ -421,7 +419,7 @@ public class CryptoSystem {
 
         if (confirmation.equals("yes")) {
             spotWallet.deposit(depositAmount);
-            System.out.printf("Deposit successful! New Spot Wallet Balance: %.2f\n", spotWallet.getBalance());
+            spotWallet.depositOrWithdrawDB("Deposit");
         } else {
             System.out.println("Deposit canceled.");
         }
@@ -456,7 +454,7 @@ public class CryptoSystem {
 
         if (confirmation.equals("yes")) {
             spotWallet.withdraw(withdrawAmount);
-            System.out.printf("Withdrawal successful! New Spot Wallet Balance: %.2f\n", spotWallet.getBalance());
+            spotWallet.depositOrWithdrawDB("Withdrawal");
         } else {
             System.out.println("Withdrawal canceled.");
         }
