@@ -58,6 +58,38 @@ public class APIController {
             e.printStackTrace();
         }
     }
+    public JSONArray giveTopCoins(int top){
+        try {
+            HttpResponse<String> response = Unirest.post("https://api.livecoinwatch.com/coins/list")
+                    .header("content-type", "application/json")
+                    .header("x-api-key", apiKey)
+                    .body("{\n\t\"currency\": \"USDT\",\n\t\"sort\": \"rank\",\n\t\"order\": \"ascending\",\n\t\"offset\": 0,\n\t\"limit\": "+top+",\n\t\"meta\": true\n}")
+                    .asString();
+            JSONArray coinsArray = new JSONArray(response.getBody());
+
+            return coinsArray;
+        } catch (UnirestException e) {
+            System.err.println("An error occurred while making the API request: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public JSONObject giveSingleCoin(String code) {
+        try {
+            HttpResponse<String> response = Unirest.post("https://api.livecoinwatch.com/coins/single")
+                    .header("content-type", "application/json")
+                    .header("x-api-key", apiKey)
+                    .body("{\n\t\"currency\": \"USD\",\n\t\"code\": \"" + code + "\",\n\t\"meta\": true\n}")
+                    .asString();
+
+            JSONObject coin = new JSONObject(response.getBody());
+            return coin;
+        } catch (UnirestException e) {
+            System.err.println("An error occurred while making the API request: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
     public void printSingleCoin(String code) {
         try {
             HttpResponse<String> response = Unirest.post("https://api.livecoinwatch.com/coins/single")

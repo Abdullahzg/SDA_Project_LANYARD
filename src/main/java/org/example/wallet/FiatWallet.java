@@ -63,7 +63,29 @@ public class FiatWallet extends Wallet {
             System.out.println("Insufficient balance to buy coins.");
         }
     }
+    public String viewOwningsn(APIController api) {
+        if (ownings.isEmpty()) {
+            return "No coins owned in the Fiat Wallet.";
+        }
 
+        StringBuilder result = new StringBuilder();
+        for (Owning owning : ownings) {
+            // Fetch the current exchange rate for the coin
+            float currentRate = api.getExchangeRate(owning.getCoin(), "USDT");
+            if (currentRate <= 0) {
+                result.append(String.format("%s,%.4f,Unable to fetch rate\n",
+                        owning.getCoin(), owning.getAmount()));
+            } else {
+                // Calculate the current USDT value
+                float currentValue = owning.getAmount() * currentRate;
+                String images=api.giveSingleCoin(owning.getCoin()).getString("png32");
+                result.append(String.format("%s,%s,%.4f,%.2f\n",
+                        images,owning.getCoin(), owning.getAmount(), currentValue));
+            }
+        }
+
+        return result.toString().trim(); // Remove trailing newline
+    }
     public void sellCoin(String coinCode, float usdtAmount, float exchangeRate) {
         Owning selectedOwning = null;
 

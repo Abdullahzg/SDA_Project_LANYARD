@@ -15,6 +15,7 @@ import org.example.wallet.WalletIDGenerator;
 import org.example.ai.APIController;
 import org.example.currency.Owning;
 import org.hibernate.Session;
+import org.json.JSONArray;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,6 +56,77 @@ public class CryptoSystem {
         api.printSingleCoin(i);
     }
 
+    JSONArray giveTopCoins(int i){
+        return api.giveTopCoins(i);
+    }
+    void depositToSpotWalletn(float depositAmount) {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to perform this action.");
+            return;
+        }
+
+        SpotWallet spotWallet = loggedInCustomer.getSpotWallet();
+
+        spotWallet.deposit(depositAmount);
+    }
+    void withdrawFromSpotWalletn(float withdrawAmount) {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to perform this action.");
+            return;
+        }
+
+        SpotWallet spotWallet = loggedInCustomer.getSpotWallet();
+
+        spotWallet.withdraw(withdrawAmount);
+    }
+    void transferBetweenWalletsn(int choice, float transferAmount) {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to perform this action.");
+            return;
+        }
+
+        SpotWallet spotWallet = loggedInCustomer.getSpotWallet();
+        FiatWallet fiatWallet = loggedInCustomer.getFiatWallet();
+
+
+
+        // Fetch the exchange rate for USDT to USD
+        float exchangeRate = api.getExchangeRate("USDT", "USD");
+        if (exchangeRate <= 0) {
+            System.out.println("Failed to retrieve the exchange rate. Transfer canceled.");
+            return;
+        }
+
+        // If transferring from Spot (USD) to Fiat (USDT), invert the exchange rate
+        if (choice == 1) {
+            exchangeRate = 1 / exchangeRate;
+        }
+
+        Wallet sourceWallet = (choice == 1) ? spotWallet : fiatWallet;
+        Wallet targetWallet = (choice == 1) ? fiatWallet : spotWallet;
+
+
+        // Check for insufficient funds in the source wallet
+        if (sourceWallet.getBalance() < transferAmount) {
+            System.out.println("Insufficient balance. Transfer canceled.");
+            return;
+        }
+
+        float convertedAmount = transferAmount * exchangeRate;
+
+        sourceWallet.withdraw(transferAmount);
+        targetWallet.deposit(convertedAmount);
+
+    }
+    public String viewCustomerOwningsn() {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to perform this action.");
+            return null;
+        }
+
+
+        return  loggedInCustomer.getFiatWallet().viewOwningsn(api);
+    }
     public void viewCustomerTransactions() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -78,7 +150,6 @@ public class CryptoSystem {
             flagForReview();
         }
     }
-
     void flagForReview() {
         Scanner myObj = new Scanner(System.in);
         System.out.println("Enter Transaction ID: ");
@@ -510,14 +581,30 @@ public class CryptoSystem {
         System.out.println("Sending notification: " + message);
 
     }
+    public boolean register(User user) {
+        if (user == null) {
+            System.out.println("No user is logged in. Please log in to register a wallet.");
+            return false;
+        }
 
-    public boolean giveFeedback(int customerid) {
+        System.out.println("Registering a new wallet for user: " + user.getName());
+        AuthService authService = new AuthService();
+        if (authService.registerNewUser(this))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public boolean giveFeedback(int customerid){
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to register a wallet.");
             return false;
         }
-        // Feedback feedback(customerid);
-        // feedback.
+        //Feedback feedback(customerid);
+        //feedback.
         return true;
 
     }
@@ -556,39 +643,28 @@ public class CryptoSystem {
             return false;
         }
         Scanner sc = new Scanner(System.in);
-        Comments comments = new Comments();
-        System.out.print("Would you like it to be anonymous? (Y/n)");
-        char ans = sc.next().charAt(0);
-        if (ans == 'Y') {
-            if (comments.addAnonymousComment(transactionID, comment)) {
-                return true;
-            } else {
-                return false;
-            }
-        } else if (ans == 'n') {
-            int userid = loggedInCustomer.getUserId();
-            if (comments.addComment(userid, comment, transactionID)) {
-                return true;
-            } else
-                return false;
-        } else {
-            System.out.print("Wrong input. Exiting...");
-            return false;
+        Comments comments=new Comments();
+        int userid=loggedInCustomer.getUserId();
+        if (comments.addComment(userid,comment,transactionID))
+        {
+            return true;
         }
+        else
+            return false;
+
 
     }
-
     public void selectFeedback() {
-        if (loggedInCustomer == null) {
-            System.out.print("No customer is logged in. Exiting...");
+        if (loggedInAdmin == null) {
+            System.out.print("No Admin is logged in. Exiting...");
+            return;
         }
-        Feedback feedback = new Feedback();
+        Feedback feedback=new Feedback();
         feedback.selectFeedback();
     }
-
-    public boolean reviewFeedback(int feedbackID, int priority) {
-        if (loggedInCustomer == null) {
-            System.out.print("No customer is logged in. Exiting...");
+    public boolean reviewFeedback(int feedbackID,int priority) {
+        if (loggedInAdmin == null) {
+            System.out.print("No admin is logged in. Exiting...");
         }
         return true;
     }
