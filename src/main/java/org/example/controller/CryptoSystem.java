@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.bank.BankDetails;
 import org.example.bank.BankDetailsIDGenerator;
+import org.example.db.util.HibernateUtil;
 import org.example.transaction.Transaction;
 import org.example.useractions.*;
 import org.example.user.Admin;
@@ -13,13 +14,11 @@ import org.example.wallet.Wallet;
 import org.example.wallet.WalletIDGenerator;
 import org.example.ai.APIController;
 import org.example.currency.Owning;
+import org.hibernate.Session;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CryptoSystem {
     private static CryptoSystem instance;
@@ -47,12 +46,15 @@ public class CryptoSystem {
         }
         return instance;
     }
+
     public void printTopNumber(int i) {
         api.printTopCoins(i);
     }
+
     public void printSingleCoin(String i) {
         api.printSingleCoin(i);
     }
+
     public void viewCustomerTransactions() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -61,6 +63,7 @@ public class CryptoSystem {
         loggedInCustomer.displayTransactions();
         loggedInCustomer.applyFilters();
     }
+
     public void viewTransactionHistory() {
         if (loggedInAdmin == null) {
             System.out.println("No Admin is logged in. Please login first.");
@@ -75,23 +78,26 @@ public class CryptoSystem {
             flagForReview();
         }
     }
+
     void flagForReview() {
         Scanner myObj = new Scanner(System.in);
         System.out.println("Enter Transaction ID: ");
         String id = myObj.nextLine();
-        //if the transaction id is found in the db
-        //call the following function
-        //transaction.flagForReview_t(transaction);
-        //notifyTeam(transaction);
+        // if the transaction id is found in the db
+        // call the following function
+        // transaction.flagForReview_t(transaction);
+        // notifyTeam(transaction);
     }
+
     void notifyTeam(Transaction transaction) {
         transaction.notifyTeam(transaction);
         System.out.println("Team has been Notified.");
     }
+
     public void addNewCustomer(String name, Date birthDate, String phone, String email, String accountStatus,
-                               float spotWalletBalance, String currency, float maxBalanceLimit,
-                               String cardNumber, Date expiryDate, String bankName, String accountHolderName,
-                               String billingAddress, float fiatWalletBalance, List<Owning> fiatOwnings) {
+            float spotWalletBalance, String currency, float maxBalanceLimit,
+            String cardNumber, Date expiryDate, String bankName, String accountHolderName,
+            String billingAddress, float fiatWalletBalance, List<Owning> fiatOwnings) {
         // Generate unique IDs
         int userId = User.getIDs();
         int spotWalletId = WalletIDGenerator.generateWalletId();
@@ -102,16 +108,22 @@ public class CryptoSystem {
         Date currentDate = new Date(); // Current date for creation
         SpotWallet spotWallet = new SpotWallet(spotWalletId, spotWalletBalance, currentDate, currency, maxBalanceLimit);
         FiatWallet fiatWallet = new FiatWallet(fiatWalletId, fiatWalletBalance, currentDate, fiatOwnings);
-        BankDetails bankDetails = new BankDetails(bankDetailsId, cardNumber, expiryDate, bankName, accountHolderName, billingAddress);
+        BankDetails bankDetails = new BankDetails(bankDetailsId, cardNumber, expiryDate, bankName, accountHolderName,
+                billingAddress);
 
         // Create and add new customer
-        Customer newCustomer = new Customer(userId, name, birthDate, phone, email, currentDate, currentDate, accountStatus, spotWallet, fiatWallet, bankDetails);
+        Customer newCustomer = new Customer(userId, name, birthDate, phone, email, currentDate, currentDate,
+                accountStatus, spotWallet, fiatWallet, bankDetails);
         customers.add(newCustomer);
+
+        User user = new User(userId, name, birthDate, billingAddress, phone, email, currentDate, currentDate, "active");
+        Customer.addNewCustomerDB(user, spotWallet, fiatWallet, bankDetails);
 
         setLoggedInCustomer(newCustomer);
 
         System.out.println("Customer added successfully! User ID: " + userId);
     }
+
     public void addNewAdmin(String name, Date birthDate, String phone, String email, String accountStatus) {
         // Generate a unique Admin ID
         int adminId = User.getIDs();
@@ -126,6 +138,7 @@ public class CryptoSystem {
 
         System.out.println("Admin added successfully! Admin ID: " + adminId);
     }
+
     public void takeAdminInput() {
         Scanner scanner = new Scanner(System.in);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -162,9 +175,11 @@ public class CryptoSystem {
             System.out.println("An error occurred while processing input: " + e.getMessage());
         }
     }
+
     public void setLoggedInAdmin(Admin loggedInAdmin) {
         this.loggedInAdmin = loggedInAdmin;
     }
+
     public void takeCustomerInput() {
         Scanner scanner = new Scanner(System.in);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -191,9 +206,6 @@ public class CryptoSystem {
 
             System.out.print("Enter Email: ");
             String email = scanner.nextLine();
-
-            System.out.print("Enter Account Status (active/inactive): ");
-            String accountStatus = scanner.nextLine();
 
             // SpotWallet inputs
             System.out.print("Enter Spot Wallet Balance: ");
@@ -222,7 +234,10 @@ public class CryptoSystem {
                 System.out.print("Enter Amount: ");
                 float amount = scanner.nextFloat();
                 scanner.nextLine(); // Consume leftover newline
-                fiatOwnings.add(new Owning(i + 1, amount, coin));
+                Owning owning = new Owning();
+                owning.setCoin(coin);
+                owning.setAmount(amount);
+                fiatOwnings.add(owning);
             }
 
             // BankDetails inputs
@@ -249,13 +264,17 @@ public class CryptoSystem {
             System.out.print("Enter Billing Address: ");
             String billingAddress = scanner.nextLine();
 
-            // Call addNewCustomer with gathered inputs
-            addNewCustomer(name, birthDate, phone, email, accountStatus, spotWalletBalance, currency, maxBalanceLimit,
-                    cardNumber, expiryDate, bankName, accountHolderName, billingAddress, fiatWalletBalance, fiatOwnings);
+            // Create local instance
+            addNewCustomer(name, birthDate, phone, email, "active", spotWalletBalance, currency, maxBalanceLimit,
+                    cardNumber, expiryDate, bankName, accountHolderName, billingAddress, fiatWalletBalance,
+                    fiatOwnings);
+
+            System.out.println("Customer added successfully!");
         } catch (Exception e) {
             System.out.println("An error occurred while processing input: " + e.getMessage());
         }
     }
+
     public void viewAllCustomers() {
         if (customers.isEmpty()) {
             System.out.println("No customers available.");
@@ -273,6 +292,7 @@ public class CryptoSystem {
             }
         }
     }
+
     public void setLoggedInCustomer(Customer customer) {
         loggedInCustomer = customer;
         if (customer != null) {
@@ -281,16 +301,19 @@ public class CryptoSystem {
             System.out.println("Logged out successfully.");
         }
     }
+
     public Customer getLoggedInCustomer() {
         return loggedInCustomer;
     }
-    public Admin getLoggedInAdmin()
-    {
+
+    public Admin getLoggedInAdmin() {
         return loggedInAdmin;
     }
-    List<Customer> getCustomers(){
+
+    List<Customer> getCustomers() {
         return customers;
     }
+
     public void depositToSpotWallet() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -307,9 +330,11 @@ public class CryptoSystem {
         float newBalance = spotWallet.getBalance() + depositAmount;
 
         if (newBalance > spotWallet.getMaxBalanceLimit()) {
-            System.out.printf("Deposit exceeds the maximum allowed balance of %.2f.\n", spotWallet.getMaxBalanceLimit());
+            System.out.printf("Deposit exceeds the maximum allowed balance of %.2f.\n",
+                    spotWallet.getMaxBalanceLimit());
             System.out.printf("Current Spot Wallet Balance: %.2f\n", spotWallet.getBalance());
-            System.out.printf("Maximum Deposit Allowed: %.2f\n", spotWallet.getMaxBalanceLimit() - spotWallet.getBalance());
+            System.out.printf("Maximum Deposit Allowed: %.2f\n",
+                    spotWallet.getMaxBalanceLimit() - spotWallet.getBalance());
             return;
         }
 
@@ -326,6 +351,7 @@ public class CryptoSystem {
             System.out.println("Deposit canceled.");
         }
     }
+
     public void withdrawFromSpotWallet() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -360,6 +386,7 @@ public class CryptoSystem {
             System.out.println("Withdrawal canceled.");
         }
     }
+
     public void transferBetweenWallets() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -397,7 +424,8 @@ public class CryptoSystem {
         Wallet sourceWallet = (choice == 1) ? spotWallet : fiatWallet;
         Wallet targetWallet = (choice == 1) ? fiatWallet : spotWallet;
 
-        System.out.printf("Current %s Wallet Balance: %.2f\n", (choice == 1) ? "Spot" : "Fiat", sourceWallet.getBalance());
+        System.out.printf("Current %s Wallet Balance: %.2f\n", (choice == 1) ? "Spot" : "Fiat",
+                sourceWallet.getBalance());
         System.out.print("Enter the amount to transfer: ");
         float transferAmount = scanner.nextFloat();
         scanner.nextLine(); // Consume leftover newline
@@ -413,8 +441,10 @@ public class CryptoSystem {
         System.out.printf("Exchange Rate: 1 USDT = %.2f USD\n", 1 / exchangeRate);
         System.out.printf("Amount after conversion: %.2f %s\n", convertedAmount, (choice == 1) ? "USDT" : "USD");
 
-        System.out.printf("New %s Wallet Balance (after transfer): %.2f\n", (choice == 1) ? "Spot" : "Fiat", sourceWallet.getBalance() - transferAmount);
-        System.out.printf("New %s Wallet Balance (after transfer): %.2f\n", (choice == 1) ? "Fiat" : "Spot", targetWallet.getBalance() + convertedAmount);
+        System.out.printf("New %s Wallet Balance (after transfer): %.2f\n", (choice == 1) ? "Spot" : "Fiat",
+                sourceWallet.getBalance() - transferAmount);
+        System.out.printf("New %s Wallet Balance (after transfer): %.2f\n", (choice == 1) ? "Fiat" : "Spot",
+                targetWallet.getBalance() + convertedAmount);
 
         System.out.print("Confirm transfer? (yes/no): ");
         String confirmation = scanner.nextLine().trim().toLowerCase();
@@ -427,6 +457,7 @@ public class CryptoSystem {
             System.out.println("Transfer canceled.");
         }
     }
+
     public void buyCoinForLoggedInCustomer() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -443,6 +474,7 @@ public class CryptoSystem {
 
         loggedInCustomer.buyCoin(api, coinCode, amount);
     }
+
     public void sellCoinForLoggedInCustomer() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -460,6 +492,7 @@ public class CryptoSystem {
 
         loggedInCustomer.sellCoin(api, coinCode, usdtAmount);
     }
+
     public void viewCustomerOwnings() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
@@ -467,10 +500,12 @@ public class CryptoSystem {
         }
         loggedInCustomer.getFiatWallet().viewOwnings(api);
     }
+
     public void sendNotification(String message) {
         System.out.println("Sending notification: " + message);
 
     }
+
     public boolean register(User user) {
         if (user == null) {
             System.out.println("No user is logged in. Please log in to register a wallet.");
@@ -479,29 +514,29 @@ public class CryptoSystem {
 
         System.out.println("Registering a new wallet for user: " + user.getName());
         AuthService authService = new AuthService();
-        if (authService.registerNewUser(this))
-        {
+        if (authService.registerNewUser(this)) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
-    public boolean giveFeedback(int customerid){
+
+    public boolean giveFeedback(int customerid) {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to register a wallet.");
             return false;
         }
-        //Feedback feedback(customerid);
-        //feedback.
+        // Feedback feedback(customerid);
+        // feedback.
         return true;
 
     }
+
     public void referFriend() {
-        Referral refer=new Referral();
+        Referral refer = new Referral();
         refer.referFriend();
     }
+
     public void viewPortfolio(int UserID) {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to view your portfolio.");
@@ -513,6 +548,7 @@ public class CryptoSystem {
         System.out.println("========================================");
         viewPortfolio(userId);
     }
+
     public void transferFIAT() {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform a transfer.");
@@ -523,49 +559,44 @@ public class CryptoSystem {
         System.out.println("\n--- FIAT Transfer Form ---");
         transferService.transferFIAT(this);
     }
-    public boolean addComment(int transactionID,String comment){
+
+    public boolean addComment(int transactionID, String comment) {
         if (loggedInCustomer == null) {
             System.out.print("No customer is logged in. Please log in to perform a transfer.");
             return false;
         }
         Scanner sc = new Scanner(System.in);
-        Comments comments=new Comments();
-        System.out.print("Would you like it to be anonymous? (Y/n)") ;
-        char ans=sc.next().charAt(0);
-        if (ans=='Y'){
-            if (comments.addAnonymousComment(transactionID,comment))
-            {
+        Comments comments = new Comments();
+        System.out.print("Would you like it to be anonymous? (Y/n)");
+        char ans = sc.next().charAt(0);
+        if (ans == 'Y') {
+            if (comments.addAnonymousComment(transactionID, comment)) {
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
-        }
-        else if (ans=='n')
-        {
-            int userid=loggedInCustomer.getUserId();
-            if (comments.addComment(userid,comment,transactionID))
-            {
+        } else if (ans == 'n') {
+            int userid = loggedInCustomer.getUserId();
+            if (comments.addComment(userid, comment, transactionID)) {
                 return true;
-            }
-            else
+            } else
                 return false;
-        }
-        else
-        {
+        } else {
             System.out.print("Wrong input. Exiting...");
             return false;
         }
 
     }
+
     public void selectFeedback() {
         if (loggedInCustomer == null) {
             System.out.print("No customer is logged in. Exiting...");
         }
-        Feedback feedback=new Feedback();
+        Feedback feedback = new Feedback();
         feedback.selectFeedback();
     }
-    public boolean reviewFeedback(int feedbackID,int priority) {
+
+    public boolean reviewFeedback(int feedbackID, int priority) {
         if (loggedInCustomer == null) {
             System.out.print("No customer is logged in. Exiting...");
         }

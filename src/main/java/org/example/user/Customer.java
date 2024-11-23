@@ -3,14 +3,14 @@ package org.example.user;
 import org.example.ai.APIController;
 import org.example.bank.BankDetails;
 import org.example.currency.Owning;
+import org.example.db.DBHandler;
+import org.example.db.models.CustomerModel;
+import org.example.db.models.UserModel;
 import org.example.transaction.Transaction;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Customer extends User{
     private SpotWallet spotWallet;
@@ -25,6 +25,10 @@ public class Customer extends User{
         this.fiatWallet = fiatWallet;
         this.bankDetails = bankDetails;
         this.transactions = new ArrayList<>();
+    }
+
+    public static void addNewCustomerDB(User user, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails) {
+        DBHandler.saveCustomer(new CustomerModel(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), new Date(), new Date(), "active"), spotWallet, fiatWallet, bankDetails));
     }
 
     public SpotWallet getSpotWallet() { return spotWallet; }
@@ -54,7 +58,7 @@ public class Customer extends User{
         Transaction transaction = new Transaction(transactionId, this, amount, new Date(), transactionType, coin, coinRate);
         transactions.add(transaction);
 
-        transaction.saveTransactionToFile(transaction);
+        Transaction.saveTransactionToFile(transaction);
 
         System.out.println("Transaction recorded successfully.");
     }
@@ -160,7 +164,7 @@ public class Customer extends User{
         }
     }
 
-    public List<Transaction> applyFilters() {
+    public void applyFilters() {
         List<Transaction> suspiciousTransactions = new ArrayList<>();
         System.out.println("Applying filters to transaction history...");
         for (Transaction transaction1 : transactions)
@@ -170,7 +174,6 @@ public class Customer extends User{
                 suspiciousTransactions.add(transaction1);
             }
         }
-        return suspiciousTransactions;
     }
 
     public void flagForReview()

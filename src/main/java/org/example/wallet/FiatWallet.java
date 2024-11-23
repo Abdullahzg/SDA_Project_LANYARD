@@ -2,6 +2,9 @@ package org.example.wallet;
 
 import org.example.ai.APIController;
 import org.example.currency.Owning;
+import org.example.db.DBHandler;
+import org.example.db.models.FiatWalletModel;
+import org.hibernate.Session;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +15,11 @@ public class FiatWallet extends Wallet {
     public FiatWallet(int walletId, float balance, Date creationDate, List<Owning> ownings) {
         super(walletId, balance, creationDate);
         this.ownings = ownings;
+    }
+
+    public static void addNewFiatWalletDB(int fiatWalletId, float fiatWalletBalance, Date currentDate, List<Owning> fiatOwnings, Session session) {
+         Owning.addNewOwningsDB(fiatOwnings, fiatWalletId, session);
+         DBHandler.saveFiatWallet(new FiatWalletModel(fiatWalletId, fiatWalletBalance, currentDate, fiatOwnings), session);
     }
 
     private int generateOwningId() {

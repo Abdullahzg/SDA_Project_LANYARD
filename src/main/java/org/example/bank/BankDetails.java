@@ -1,5 +1,9 @@
 package org.example.bank;
 
+import org.example.db.DBHandler;
+import org.example.db.models.BankDetailsModel;
+import org.hibernate.Session;
+
 import java.util.Date;
 
 public class BankDetails {
@@ -17,6 +21,10 @@ public class BankDetails {
         this.bankName = bankName;
         this.accountHolderName = accountHolderName;
         this.billingAddress = billingAddress;
+    }
+
+    public static void addNewBankDetails(int bankDetailsId, String cardNumber, Date expiryDate, String bankName, String accountHolderName, String billingAddress, Session session) {
+        DBHandler.saveBankDetails(new BankDetailsModel(bankDetailsId, cardNumber, expiryDate, bankName, accountHolderName, billingAddress), session);
     }
 
     public String getBankName() { return bankName; }
