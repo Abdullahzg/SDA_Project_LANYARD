@@ -1,6 +1,13 @@
 package org.example.db.util;
 
-import org.example.db.models.*;
+import org.example.db.models.bank.BankDetailsModel;
+import org.example.db.models.currency.OwningsModel;
+import org.example.db.models.trans.TransactionsModel;
+import org.example.db.models.user.CustomerModel;
+import org.example.db.models.user.UserModel;
+import org.example.db.models.wallet.FiatWalletModel;
+import org.example.db.models.wallet.SpotWalletModel;
+import org.example.db.models.wallet.WalletModel;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 

@@ -2,12 +2,8 @@ package org.example;
 
 import java.util.Scanner;
 import org.example.controller.CryptoSystem;
-import org.example.db.util.HibernateUtil;
-import org.example.db.models.UserModel;
 import org.example.user.Admin;
 import org.example.user.Customer;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,16 +1,10 @@
 package org.example.user;
 
-import org.example.bank.BankDetails;
 import org.example.db.DBHandler;
-import org.example.db.models.CustomerModel;
-import org.example.db.models.UserModel;
-import org.example.db.util.HibernateUtil;
-import org.example.wallet.FiatWallet;
-import org.example.wallet.SpotWallet;
-import org.hibernate.Session;
+import org.example.db.models.user.CustomerModel;
+import org.example.db.models.user.UserModel;
 
 import java.util.Date;
-import java.util.Optional;
 
 public class User {
     private int userId;

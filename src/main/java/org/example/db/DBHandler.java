@@ -1,7 +1,13 @@
 package org.example.db;
 
 import org.example.currency.Owning;
-import org.example.db.models.*;
+import org.example.db.models.bank.BankDetailsModel;
+import org.example.db.models.currency.OwningsModel;
+import org.example.db.models.trans.TransactionsModel;
+import org.example.db.models.user.CustomerModel;
+import org.example.db.models.user.UserModel;
+import org.example.db.models.wallet.FiatWalletModel;
+import org.example.db.models.wallet.SpotWalletModel;
 import org.example.db.util.HibernateUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -9,7 +15,6 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.util.Date;
-import java.util.List;
 
 public class DBHandler {
     public static void saveUser(UserModel user) {
@@ -159,6 +164,21 @@ public class DBHandler {
             transaction.commit();
         } catch (HibernateException e) {
             if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public static void saveTransaction(TransactionsModel transaction) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction dbTransaction = null;
+        try {
+            dbTransaction = session.beginTransaction();
+            session.merge(transaction);
+            dbTransaction.commit();
+        } catch (HibernateException e) {
+            if (dbTransaction != null) dbTransaction.rollback();
             e.printStackTrace();
         } finally {
             session.close();

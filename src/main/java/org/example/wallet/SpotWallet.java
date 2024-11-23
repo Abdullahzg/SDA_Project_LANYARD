@@ -1,7 +1,7 @@
 package org.example.wallet;
 
 import org.example.db.DBHandler;
-import org.example.db.models.SpotWalletModel;
+import org.example.db.models.wallet.SpotWalletModel;
 import org.hibernate.Session;
 
 import java.util.Date;

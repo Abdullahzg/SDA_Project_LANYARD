@@ -1,8 +1,5 @@
 package org.example.useractions;
 
-import org.example.transaction.Transaction;
-import org.example.user.User;
-
 public class Comments {
     int commentID;
     int userID;

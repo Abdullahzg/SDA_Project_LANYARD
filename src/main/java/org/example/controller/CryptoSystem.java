@@ -2,8 +2,8 @@ package org.example.controller;
 
 import org.example.bank.BankDetails;
 import org.example.bank.BankDetailsIDGenerator;
-import org.example.db.util.HibernateUtil;
-import org.example.transaction.Transaction;
+import org.example.trans.Transaction;
+import org.example.trans.TransferService;
 import org.example.useractions.*;
 import org.example.user.Admin;
 import org.example.user.Customer;
@@ -14,7 +14,6 @@ import org.example.wallet.Wallet;
 import org.example.wallet.WalletIDGenerator;
 import org.example.ai.APIController;
 import org.example.currency.Owning;
-import org.hibernate.Session;
 import org.json.JSONArray;
 
 import java.text.ParseException;

@@ -1,4 +1,4 @@
-package org.example.db.models;
+package org.example.db.models.currency;
 
 import jakarta.persistence.*;
 

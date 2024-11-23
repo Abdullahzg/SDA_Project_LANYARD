@@ -1,7 +1,10 @@
-package org.example.db.models;
+package org.example.db.models.user;
 
 import jakarta.persistence.*;
 import org.example.bank.BankDetails;
+import org.example.db.models.bank.BankDetailsModel;
+import org.example.db.models.wallet.FiatWalletModel;
+import org.example.db.models.wallet.SpotWalletModel;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
 

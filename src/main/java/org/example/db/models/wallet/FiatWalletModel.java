@@ -1,8 +1,9 @@
 // FIATWalletModel.java
-package org.example.db.models;
+package org.example.db.models.wallet;
 
 import jakarta.persistence.*;
 import org.example.currency.Owning;
+import org.example.db.models.currency.OwningsModel;
 
 import java.util.Date;
 import java.util.List;
