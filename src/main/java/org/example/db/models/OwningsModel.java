@@ -7,7 +7,7 @@ import java.util.Date;
 @Entity
 @Table(name = "ownings")
 public class OwningsModel {
-    @Id
+    @Idi
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int owningId;
 
