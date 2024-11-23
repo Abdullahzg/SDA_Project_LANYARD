@@ -2,6 +2,8 @@ package org.example.db.models;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "ownings")
 public class OwningsModel {
@@ -15,18 +17,24 @@ public class OwningsModel {
     @Column(nullable = false)
     private String coin;
 
-    @Column(nullable = false)
     private float purchaseRate;
 
+    private Date purchaseDate;
+
     private float profitLoss;
+
+    @Column(name = "wallet_id", nullable = false)
+    private int walletId; // Add this field
 
     public OwningsModel() {
     }
 
-    public OwningsModel(int owningId, float amount, String coin, int fiatWalletId) {
+    public OwningsModel(int owningId, float amount, String coin, Date purchaseDate, int walletId) {
         this.owningId = owningId;
         this.amount = amount;
         this.coin = coin;
+        this.purchaseDate = purchaseDate;
+        this.walletId = walletId; // Ensure this line is present
     }
 
     // Getters and Setters
@@ -68,5 +76,21 @@ public class OwningsModel {
 
     public void setProfitLoss(float profitLoss) {
         this.profitLoss = profitLoss;
+    }
+
+    public Date getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(Date purchaseDate) {
+        this.purchaseDate = purchaseDate;
+    }
+
+    public int getWalletId() {
+        return walletId;
+    }
+
+    public void setWalletId(int walletId) {
+        this.walletId = walletId;
     }
 }

@@ -25,10 +25,6 @@ public class Owning {
 
     }
 
-    public static void addNewOwningsDB(List<Owning> fiatOwnings, int fiatWalletId, Session session) {
-        DBHandler.saveOwnings(fiatOwnings, fiatWalletId, session);
-    }
-
     public int getOwningId() { return owningId; }
     public float getAmount() { return amount; }
     public void setAmount(float amount) { this.amount = amount; }

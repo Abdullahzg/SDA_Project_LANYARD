@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.Date;
 import java.util.List;
 
 public class DBHandler {
@@ -83,24 +84,6 @@ public class DBHandler {
         }
     }
 
-    public static void saveOwnings(List<Owning> fiatOwnings, int fiatWalletId, Session session) {
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            for (Owning owning : fiatOwnings) {
-                OwningsModel owningsModel = new OwningsModel(owning.getOwningId(), owning.getAmount(), owning.getCoin(), fiatWalletId);
-                session.merge(owningsModel);
-            }
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null)
-                transaction.rollback();
-            e.printStackTrace();
-        }
-    }
-
-
-
     public static CustomerModel getCustomerByEmail(String email) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         CustomerModel customer = null;
@@ -120,5 +103,28 @@ public class DBHandler {
         }
 
         return customer;
+    }
+
+    public static void saveOrUpdateOwning(int synthID, Owning existingOwning, String coinCode, float amount, float exchangeRate, int walletId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            if (existingOwning != null) {
+                OwningsModel existingOwningModel = new OwningsModel(synthID, existingOwning.getAmount() + (amount / exchangeRate), coinCode, new Date(), walletId);
+                session.merge(existingOwningModel);
+            } else {
+                OwningsModel newOwning = new OwningsModel(synthID, amount / exchangeRate, coinCode, new Date(), walletId);
+                newOwning.setPurchaseDate(new Date());
+                newOwning.setPurchaseRate(exchangeRate);
+                session.merge(newOwning);
+            }
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 }

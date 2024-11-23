@@ -21,7 +21,7 @@ public class FiatWalletModel extends WalletModel {
     public FiatWalletModel(int fiatWalletId, float fiatWalletBalance, Date currentDate, List<Owning> fiatOwnings) {
         super(fiatWalletId, fiatWalletBalance, currentDate);
         this.ownings = fiatOwnings.stream()
-                .map(owning -> new OwningsModel(owning.getOwningId(), owning.getAmount(), owning.getCoin(), fiatWalletId))
+                .map(owning -> new OwningsModel(owning.getOwningId(), owning.getAmount(), owning.getCoin(), new Date(), fiatWalletId))
                 .collect(Collectors.toList());
     }
 

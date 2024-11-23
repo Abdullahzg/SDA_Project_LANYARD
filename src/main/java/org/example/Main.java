@@ -128,8 +128,7 @@ public class Main {
             System.out.println("10. View Details of a Single Coin");
             System.out.println("11. Give Feedback");
             System.out.println("12. Register New User");
-            System.out.println("13. Refer a Friend");
-            System.out.println("14. Logout");
+            System.out.println("13. Logout");
             System.out.print("Choose an option: ");
 
             int choice = sc.nextInt();
@@ -215,23 +214,9 @@ public class Main {
                     break;
 
                 case 12:
-                {
-                    System.out.print("Registering new Customer...");
-
-                    if (csMain.register(loggedInCustomer))
-                    {
-                        System.out.print("Customer successfully registered!");
-                    }
-                    else
-                    {
-                        System.out.print("Customer has not been Registered");
-                    }
-                    break;
-                }
-                case 13:
                     csMain.referFriend();
                     break;
-                case 14:
+                case 13:
                     System.out.println("Logging out...");
                     csMain.setLoggedInCustomer(null);
                     return;
