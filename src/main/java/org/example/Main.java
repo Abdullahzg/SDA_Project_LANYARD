@@ -123,7 +123,7 @@ public class Main {
             System.out.println("9. Display Top Coins");
             System.out.println("10. View Details of a Single Coin");
             System.out.println("11. Give Feedback");
-            System.out.println("12. Register New User");
+            System.out.println("12. Refer Friend");
             System.out.println("13. Logout");
             System.out.print("Choose an option: ");
 

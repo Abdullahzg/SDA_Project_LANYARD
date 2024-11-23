@@ -59,5 +59,7 @@ public abstract class Wallet {
         this.lastActivityDate = lastActivityDate;
     }
 
+    public abstract void depositOrWithdrawDB(String type);
+
 }
 

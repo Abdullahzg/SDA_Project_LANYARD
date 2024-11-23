@@ -525,6 +525,16 @@ public class CryptoSystem {
         if (confirmation.equals("yes")) {
             sourceWallet.withdraw(transferAmount);
             targetWallet.deposit(convertedAmount);
+
+            // Update the database
+            if (choice == 1) {
+                spotWallet.depositOrWithdrawDB("Withdrawal");
+                fiatWallet.depositOrWithdrawDB("Deposit");
+            } else {
+                fiatWallet.depositOrWithdrawDB("Withdrawal");
+                spotWallet.depositOrWithdrawDB("Deposit");
+            }
+
             System.out.println("Transfer successful!");
         } else {
             System.out.println("Transfer canceled.");
@@ -578,23 +588,7 @@ public class CryptoSystem {
         System.out.println("Sending notification: " + message);
 
     }
-    public boolean register(User user) {
-        if (user == null) {
-            System.out.println("No user is logged in. Please log in to register a wallet.");
-            return false;
-        }
 
-        System.out.println("Registering a new wallet for user: " + user.getName());
-        AuthService authService = new AuthService();
-        if (authService.registerNewUser(this))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
     public boolean giveFeedback(int customerid){
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to register a wallet.");

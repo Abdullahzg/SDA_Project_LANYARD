@@ -146,5 +146,11 @@ public class FiatWallet extends Wallet {
         }
     }
 
+    @Override
+    public void depositOrWithdrawDB(String type) {
+        // Update the database
+        DBHandler.depositOrWithdrawFiatWalletDB(this, type);
+    }
+
 
 }

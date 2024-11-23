@@ -9,6 +9,7 @@ import org.example.db.models.user.UserModel;
 import org.example.db.models.wallet.FiatWalletModel;
 import org.example.db.models.wallet.SpotWalletModel;
 import org.example.db.util.HibernateUtil;
+import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -56,19 +57,6 @@ public class DBHandler {
         try {
             transaction = session.beginTransaction();
             session.merge(bankDetails);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null)
-                transaction.rollback();
-            e.printStackTrace();
-        }
-    }
-
-    public static void saveFiatWallet(FiatWalletModel fiatWallet, Session session) {
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            session.merge(fiatWallet);
             transaction.commit();
         } catch (HibernateException e) {
             if (transaction != null)
@@ -194,12 +182,35 @@ public class DBHandler {
             SpotWalletModel spotWalletModel = session.get(SpotWalletModel.class, spotWallet.getWalletId());
             if (spotWalletModel != null) {
                 spotWalletModel.setBalance(spotWallet.getBalance());
-                spotWalletModel.setLastActivityDate(spotWallet.getLastActivityDate());
+                spotWalletModel.setLastActivityDate(new Date());
                 session.merge(spotWalletModel);
                 transaction.commit();
                 System.out.printf("%s successful! New Spot Wallet Balance: %.2f\n", type, spotWallet.getBalance());
             } else {
                 System.out.println("Spot Wallet not found in the database.");
+            }
+        } catch (HibernateException e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public static void depositOrWithdrawFiatWalletDB(FiatWallet fiatWallet, String type) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            FiatWalletModel fiatWalletModel = session.get(FiatWalletModel.class, fiatWallet.getWalletId());
+            if (fiatWalletModel != null) {
+                fiatWalletModel.setBalance(fiatWallet.getBalance());
+                fiatWalletModel.setLastActivityDate(new Date());
+                session.merge(fiatWalletModel);
+                transaction.commit();
+                System.out.printf("%s successful! New Fiat Wallet Balance: %.2f\n", type, fiatWallet.getBalance());
+            } else {
+                System.out.println("Fiat Wallet not found in the database.");
             }
         } catch (HibernateException e) {
             if (transaction != null) transaction.rollback();

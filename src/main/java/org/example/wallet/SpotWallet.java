@@ -26,6 +26,7 @@ public class SpotWallet extends Wallet {
     public float getMaxBalanceLimit() { return maxBalanceLimit; }
     public void setMaxBalanceLimit(float maxBalanceLimit) { this.maxBalanceLimit = maxBalanceLimit; }
 
+    @Override
     public void depositOrWithdrawDB(String type) {
         // Update the database
         DBHandler.depositOrWithdrawSpotWalletDB(this, type);
