@@ -12,6 +12,7 @@ import org.example.wallet.Wallet;
 import org.example.wallet.WalletIDGenerator;
 import org.example.ai.APIController;
 import org.example.currency.Owning;
+import org.json.JSONArray;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,6 +52,77 @@ public class CryptoSystem {
     }
     public void printSingleCoin(String i) {
         api.printSingleCoin(i);
+    }
+    JSONArray giveTopCoins(int i){
+        return api.giveTopCoins(i);
+    }
+    void depositToSpotWalletn(float depositAmount) {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to perform this action.");
+            return;
+        }
+
+        SpotWallet spotWallet = loggedInCustomer.getSpotWallet();
+
+        spotWallet.deposit(depositAmount);
+    }
+    void withdrawFromSpotWalletn(float withdrawAmount) {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to perform this action.");
+            return;
+        }
+
+        SpotWallet spotWallet = loggedInCustomer.getSpotWallet();
+
+        spotWallet.withdraw(withdrawAmount);
+    }
+    void transferBetweenWalletsn(int choice, float transferAmount) {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to perform this action.");
+            return;
+        }
+
+        SpotWallet spotWallet = loggedInCustomer.getSpotWallet();
+        FiatWallet fiatWallet = loggedInCustomer.getFiatWallet();
+
+
+
+        // Fetch the exchange rate for USDT to USD
+        float exchangeRate = api.getExchangeRate("USDT", "USD");
+        if (exchangeRate <= 0) {
+            System.out.println("Failed to retrieve the exchange rate. Transfer canceled.");
+            return;
+        }
+
+        // If transferring from Spot (USD) to Fiat (USDT), invert the exchange rate
+        if (choice == 1) {
+            exchangeRate = 1 / exchangeRate;
+        }
+
+        Wallet sourceWallet = (choice == 1) ? spotWallet : fiatWallet;
+        Wallet targetWallet = (choice == 1) ? fiatWallet : spotWallet;
+
+
+        // Check for insufficient funds in the source wallet
+        if (sourceWallet.getBalance() < transferAmount) {
+            System.out.println("Insufficient balance. Transfer canceled.");
+            return;
+        }
+
+        float convertedAmount = transferAmount * exchangeRate;
+
+        sourceWallet.withdraw(transferAmount);
+        targetWallet.deposit(convertedAmount);
+
+    }
+    public String viewCustomerOwningsn() {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to perform this action.");
+            return null;
+        }
+
+
+        return  loggedInCustomer.getFiatWallet().viewOwningsn(api);
     }
     public void viewCustomerTransactions() {
         if (loggedInCustomer == null) {
