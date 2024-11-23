@@ -1,6 +1,7 @@
-package org.example.db.models;
+package org.example.db.models.user;
 
 import jakarta.persistence.*;
+
 import java.util.Date;
 
 @Entity

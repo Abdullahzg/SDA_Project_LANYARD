@@ -1,7 +1,8 @@
-package org.example.db.models;
+package org.example.db.models.trans;
 
 import jakarta.persistence.*;
-import org.example.user.Customer;
+import org.example.db.models.user.CustomerModel;
+
 import java.util.Date;
 
 @Entity
@@ -23,6 +24,16 @@ public class TransactionsModel {
     private boolean sus;
 
     public TransactionsModel() {
+    }
+
+    public TransactionsModel(CustomerModel customer, float amount, Date timestamp, String transactionType, String coin, float coinRate, boolean sus) {
+        this.customer = customer;
+        this.amount = amount;
+        this.timestamp = timestamp;
+        this.transactionType = transactionType;
+        this.coin = coin;
+        this.coinRate = coinRate;
+        this.sus = sus;
     }
 
     // Getters and setters

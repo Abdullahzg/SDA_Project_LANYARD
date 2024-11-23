@@ -2,8 +2,8 @@ package org.example.controller;
 
 import org.example.bank.BankDetails;
 import org.example.bank.BankDetailsIDGenerator;
-import org.example.db.util.HibernateUtil;
-import org.example.transaction.Transaction;
+import org.example.trans.Transaction;
+import org.example.trans.TransferService;
 import org.example.useractions.*;
 import org.example.user.Admin;
 import org.example.user.Customer;
@@ -14,7 +14,6 @@ import org.example.wallet.Wallet;
 import org.example.wallet.WalletIDGenerator;
 import org.example.ai.APIController;
 import org.example.currency.Owning;
-import org.hibernate.Session;
 import org.json.JSONArray;
 
 import java.text.ParseException;
@@ -406,11 +405,9 @@ public class CryptoSystem {
         float newBalance = spotWallet.getBalance() + depositAmount;
 
         if (newBalance > spotWallet.getMaxBalanceLimit()) {
-            System.out.printf("Deposit exceeds the maximum allowed balance of %.2f.\n",
-                    spotWallet.getMaxBalanceLimit());
+            System.out.printf("Deposit exceeds the maximum allowed balance of %.2f.\n", spotWallet.getMaxBalanceLimit());
             System.out.printf("Current Spot Wallet Balance: %.2f\n", spotWallet.getBalance());
-            System.out.printf("Maximum Deposit Allowed: %.2f\n",
-                    spotWallet.getMaxBalanceLimit() - spotWallet.getBalance());
+            System.out.printf("Maximum Deposit Allowed: %.2f\n", spotWallet.getMaxBalanceLimit() - spotWallet.getBalance());
             return;
         }
 
@@ -422,7 +419,7 @@ public class CryptoSystem {
 
         if (confirmation.equals("yes")) {
             spotWallet.deposit(depositAmount);
-            System.out.printf("Deposit successful! New Spot Wallet Balance: %.2f\n", spotWallet.getBalance());
+            spotWallet.depositOrWithdrawDB("Deposit");
         } else {
             System.out.println("Deposit canceled.");
         }
@@ -457,7 +454,7 @@ public class CryptoSystem {
 
         if (confirmation.equals("yes")) {
             spotWallet.withdraw(withdrawAmount);
-            System.out.printf("Withdrawal successful! New Spot Wallet Balance: %.2f\n", spotWallet.getBalance());
+            spotWallet.depositOrWithdrawDB("Withdrawal");
         } else {
             System.out.println("Withdrawal canceled.");
         }
@@ -528,6 +525,16 @@ public class CryptoSystem {
         if (confirmation.equals("yes")) {
             sourceWallet.withdraw(transferAmount);
             targetWallet.deposit(convertedAmount);
+
+            // Update the database
+            if (choice == 1) {
+                spotWallet.depositOrWithdrawDB("Withdrawal");
+                fiatWallet.depositOrWithdrawDB("Deposit");
+            } else {
+                fiatWallet.depositOrWithdrawDB("Withdrawal");
+                spotWallet.depositOrWithdrawDB("Deposit");
+            }
+
             System.out.println("Transfer successful!");
         } else {
             System.out.println("Transfer canceled.");
@@ -581,23 +588,7 @@ public class CryptoSystem {
         System.out.println("Sending notification: " + message);
 
     }
-    public boolean register(User user) {
-        if (user == null) {
-            System.out.println("No user is logged in. Please log in to register a wallet.");
-            return false;
-        }
 
-        System.out.println("Registering a new wallet for user: " + user.getName());
-        AuthService authService = new AuthService();
-        if (authService.registerNewUser(this))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
     public boolean giveFeedback(int customerid){
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to register a wallet.");

@@ -1,6 +1,6 @@
 package org.example.user;
 
-import org.example.transaction.Transaction;
+import org.example.trans.Transaction;
 
 import java.util.Date;
 import java.util.List;

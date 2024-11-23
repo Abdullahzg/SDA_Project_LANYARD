@@ -16,7 +16,7 @@ public class Notification {
     public Notification() {
 
     }
-    public boolean =(int userID,String text,String type){
+    public boolean addNotification(int userID,String text,String type){
         this.notificationText = text;
         this.notificationType = type;
         this.userid = userID;

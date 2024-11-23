@@ -1,7 +1,5 @@
-package org.example.useractions;
+package org.example.trans;
 import org.example.controller.CryptoSystem;
-import org.example.transaction.Transaction;
-import org.example.transaction.TransactionIDGenerator;
 import org.example.user.Customer;
 
 import java.util.Scanner;

@@ -1,5 +1,10 @@
-package org.example.transaction;
+package org.example.trans;
 
+import org.example.db.DBHandler;
+import org.example.db.models.trans.TransactionsModel;
+import org.example.db.models.user.CustomerModel;
+import org.example.db.models.user.UserModel;
+import org.example.user.Customer;
 import org.example.user.User;
 import java.io.*;
 import java.util.ArrayList;
@@ -29,6 +34,28 @@ public class Transaction {
     public Transaction() {
         sus=false;
     }
+
+    public static void saveTransactionToDB(Transaction transaction, Customer customer, float amount, String transactionType, String coin, float coinRate) {
+        // Fetch the existing CustomerModel from the database
+        CustomerModel customerModel = DBHandler.getCustomerByEmail(customer.getEmail());
+        if (customerModel == null) {
+            throw new IllegalStateException("Customer not found in the database.");
+        }
+
+        // Create a new TransactionsModel instance
+        TransactionsModel transactionsModel = new TransactionsModel();
+        transactionsModel.setCustomer(customerModel);
+        transactionsModel.setAmount(amount);
+        transactionsModel.setTimestamp(new Date());
+        transactionsModel.setTransactionType(transactionType);
+        transactionsModel.setCoin(coin);
+        transactionsModel.setCoinRate(coinRate);
+        transactionsModel.setSus(transaction.applyFilters_t(transaction));
+
+        // Save the transaction to the database
+        DBHandler.saveTransaction(transactionsModel);
+    }
+
     // Getters and setters
     public int getTransactionId() { return transactionId; }
     public User getUser() { return user; }

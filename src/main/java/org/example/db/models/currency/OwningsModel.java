@@ -1,4 +1,4 @@
-package org.example.db.models;
+package org.example.db.models.currency;
 
 import jakarta.persistence.*;
 
@@ -7,7 +7,7 @@ import java.util.Date;
 @Entity
 @Table(name = "ownings")
 public class OwningsModel {
-    @Idi
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int owningId;
 

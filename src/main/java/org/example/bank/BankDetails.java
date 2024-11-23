@@ -1,7 +1,7 @@
 package org.example.bank;
 
 import org.example.db.DBHandler;
-import org.example.db.models.BankDetailsModel;
+import org.example.db.models.bank.BankDetailsModel;
 import org.hibernate.Session;
 
 import java.util.Date;

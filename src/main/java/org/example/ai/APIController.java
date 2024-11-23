@@ -51,8 +51,6 @@ public class APIController {
                 System.out.println("Market Cap: " + cap);
                 System.out.println("----------------------------");
             }
-            // Print the response
-            System.out.println("Response: " + response.getBody());
         } catch (UnirestException e) {
             System.err.println("An error occurred while making the API request: " + e.getMessage());
             e.printStackTrace();
@@ -125,9 +123,6 @@ public class APIController {
             System.out.println("Volume: " + volume);
             System.out.println("Market Cap: " + cap);
             System.out.println("----------------------------");
-
-            // Print the response
-            System.out.println("Response: " + response.getBody());
         } catch (UnirestException e) {
             System.err.println("An error occurred while making the API request: " + e.getMessage());
             e.printStackTrace();

@@ -4,9 +4,10 @@ import org.example.ai.APIController;
 import org.example.bank.BankDetails;
 import org.example.currency.Owning;
 import org.example.db.DBHandler;
-import org.example.db.models.CustomerModel;
-import org.example.db.models.UserModel;
-import org.example.transaction.Transaction;
+import org.example.db.models.trans.TransactionsModel;
+import org.example.db.models.user.CustomerModel;
+import org.example.db.models.user.UserModel;
+import org.example.trans.Transaction;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
 
@@ -58,7 +59,8 @@ public class Customer extends User{
         Transaction transaction = new Transaction(transactionId, this, amount, new Date(), transactionType, coin, coinRate);
         transactions.add(transaction);
 
-        Transaction.saveTransactionToFile(transaction);
+        // Save the transaction to the db
+        Transaction.saveTransactionToDB(transaction, this, amount, transactionType, coin, coinRate);
 
         System.out.println("Transaction recorded successfully.");
     }

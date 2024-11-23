@@ -11,24 +11,26 @@ Lanyard is a Java-based application that utilizes various packages and dependenc
 pom.xml  
 readme.md  
 run.sh  
-src/  
-├── main/  
-│   └── java/  
-│       └── org/  
-│           └── example/  
-│               ├── ai/  
-│               ├── bank/  
-│               ├── controller/  
-│               ├── currency/  
-│               ├── db/  
-│               ├── transaction/  
-│               ├── user/
-│               ├── useractions/    
-│               └── wallet/  
-├────── resources/  
-├── test/  
-│   └── java/  
-│   └── resources/  
+src/
+├── main/
+│   ├── java/
+│   │   └── org/
+│   │       └── example/
+│   │           ├── ai/
+│   │           ├── bank/
+│   │           ├── controller/
+│   │           ├── currency/
+│   │           ├── db/
+│   │           │   ├── models/
+│   │           │   └── util/
+│   │           ├── transaction/
+│   │           ├── user/
+│   │           ├── useractions/
+│   │           └── wallet/
+│   └── resources/
+└── test/
+    ├── java/
+    └── resources/
 ```
 
 ## Getting Started

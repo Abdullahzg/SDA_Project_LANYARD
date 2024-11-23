@@ -3,11 +3,6 @@ package org.example.wallet;
 import org.example.ai.APIController;
 import org.example.currency.Owning;
 import org.example.db.DBHandler;
-import org.example.db.models.FiatWalletModel;
-import org.example.db.util.HibernateUtil;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import java.util.Date;
 import java.util.List;
@@ -86,6 +81,7 @@ public class FiatWallet extends Wallet {
 
         return result.toString().trim(); // Remove trailing newline
     }
+
     public void sellCoin(String coinCode, float usdtAmount, float exchangeRate) {
         Owning selectedOwning = null;
 
@@ -124,8 +120,10 @@ public class FiatWallet extends Wallet {
             ownings.remove(selectedOwning);
             System.out.println("You no longer own any " + coinCode + ".");
         }
-    }
 
+        // Update the database
+        DBHandler.updateOwningAfterSell(selectedOwning, coinCode, usdtAmount, exchangeRate, this.walletId);
+    }
 
     public void viewOwnings(APIController api) {
         if (ownings.isEmpty()) {
@@ -146,6 +144,12 @@ public class FiatWallet extends Wallet {
                 }
             }
         }
+    }
+
+    @Override
+    public void depositOrWithdrawDB(String type) {
+        // Update the database
+        DBHandler.depositOrWithdrawFiatWalletDB(this, type);
     }
 
 

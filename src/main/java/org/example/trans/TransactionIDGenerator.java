@@ -1,4 +1,4 @@
-package org.example.transaction;
+package org.example.trans;
 
 public class TransactionIDGenerator {
     private static int counter = 1;
