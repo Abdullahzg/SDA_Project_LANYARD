@@ -2,6 +2,12 @@ package org.example.wallet;
 
 import org.example.ai.APIController;
 import org.example.currency.Owning;
+import org.example.db.DBHandler;
+import org.example.db.models.FiatWalletModel;
+import org.example.db.util.HibernateUtil;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.util.Date;
 import java.util.List;
@@ -27,11 +33,28 @@ public class FiatWallet extends Wallet {
             // Deduct the amount from the wallet
             withdraw(amount);
 
-            // Add a new Owning
-            Owning newOwning = new Owning(ownings.size() + 1, amount / exchangeRate, coinCode);
-            newOwning.setPurchaseDate(new Date());
-            newOwning.setPurchaseRate(exchangeRate);
-            ownings.add(newOwning);
+            // Check if the coin is already owned
+            Owning existingOwning = null;
+            for (Owning owning : ownings) {
+                if (owning.getCoin().equalsIgnoreCase(coinCode)) {
+                    existingOwning = owning;
+                    break;
+                }
+            }
+
+            if (existingOwning != null) {
+                // Increase the amount of the existing owning
+                existingOwning.setAmount(existingOwning.getAmount() + (amount / exchangeRate));
+            } else {
+                // Add a new Owning
+                Owning newOwning = new Owning(ownings.size() + 1, amount / exchangeRate, coinCode);
+                newOwning.setPurchaseDate(new Date());
+                newOwning.setPurchaseRate(exchangeRate);
+                ownings.add(newOwning);
+            }
+
+            // Save or update the owning in the database
+            DBHandler.saveOrUpdateOwning(ownings.size() + 1, existingOwning, coinCode, amount, exchangeRate, this.walletId);
 
             System.out.printf("Successfully bought %.4f %s at a rate of %.2f USDT per unit.\n",
                     amount / exchangeRate, coinCode, exchangeRate);

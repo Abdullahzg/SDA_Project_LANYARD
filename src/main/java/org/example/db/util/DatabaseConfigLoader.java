@@ -1,4 +1,4 @@
-package org.example.db;
+package org.example.db.util;
 
 import org.hibernate.cfg.Configuration;
 import java.io.IOException;

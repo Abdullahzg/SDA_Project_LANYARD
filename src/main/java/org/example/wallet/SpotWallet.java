@@ -1,5 +1,9 @@
 package org.example.wallet;
 
+import org.example.db.DBHandler;
+import org.example.db.models.SpotWalletModel;
+import org.hibernate.Session;
+
 import java.util.Date;
 
 public class SpotWallet extends Wallet {
@@ -10,6 +14,10 @@ public class SpotWallet extends Wallet {
         super(walletId, balance, creationDate);
         this.currency = currency;
         this.maxBalanceLimit = maxBalanceLimit;
+    }
+
+    public static void addNewSpotWalletDB(int spotWalletId, float spotWalletBalance, Date currentDate, String currency, float maxBalanceLimit, Session session) {
+         DBHandler.saveSpotWallet(new SpotWalletModel(spotWalletId, spotWalletBalance, currentDate, currency, maxBalanceLimit), session);
     }
 
     public String getCurrency() { return currency; }

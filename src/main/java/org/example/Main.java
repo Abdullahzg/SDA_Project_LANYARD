@@ -2,8 +2,8 @@ package org.example;
 
 import java.util.Scanner;
 import org.example.controller.CryptoSystem;
-import org.example.db.HibernateUtil;
-import org.example.db.models.User;
+import org.example.db.util.HibernateUtil;
+import org.example.db.models.UserModel;
 import org.example.user.Admin;
 import org.example.user.Customer;
 import org.hibernate.Session;
@@ -11,39 +11,13 @@ import org.hibernate.Transaction;
 
 public class Main {
     public static void main(String[] args) {
-        try {
-            // Get the SessionFactory
-            Session session = HibernateUtil.getSessionFactory().openSession();
-
-            // Start a transaction
-            Transaction transaction = session.beginTransaction();
-
-            // Perform database operations
-            // Create an entity
-            User entity = new User();
-            entity.setName("Test Name 3");
-            session.persist(entity);
-
-            // Commit the transaction
-            transaction.commit();
-
-            // Close the session
-            session.close();
-        } catch (Exception e) {
-            System.err.println("Error in database operation: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // Shutdown the SessionFactory when done
-            HibernateUtil.shutdown();
-        }
-
         CryptoSystem csMain = CryptoSystem.getInstance("81c671a9-bdd6-4752-b892-76cb9691060c");
         Scanner sc = new Scanner(System.in);
 
         while (true) {
             System.out.println("\n--- Login Menu ---");
-            System.out.println("1. Login as Customer");
-            System.out.println("2. Login as Admin");
+            System.out.println("1. Customer");
+            System.out.println("2. Admin");
             System.out.println("3. Exit");
             System.out.print("Choose an option: ");
 
@@ -52,11 +26,11 @@ public class Main {
 
             switch (loginChoice) {
                 case 1:
-                    handleCustomerLogin(csMain, sc);
+                    customerUser(csMain, sc);
                     break;
 
                 case 2:
-                    handleAdminLogin(csMain, sc);
+                    adminUser(csMain, sc);
                     break;
 
                 case 3:
@@ -69,22 +43,77 @@ public class Main {
             }
         }
     }
-    private static void handleCustomerLogin(CryptoSystem csMain, Scanner sc) {
-        System.out.println("\n--- Customer Login ---");
+
+    private static void customerUser(CryptoSystem csMain, Scanner sc) {
+        handleCustomerMenu(csMain, sc);
+    }
+
+    private static Customer handleCustomerRegistration(CryptoSystem csMain, Scanner sc) {
+        System.out.println("\n--- Customer Registration ---");
         csMain.takeCustomerInput();
         Customer loggedInCustomer = csMain.getLoggedInCustomer();
 
+        if (loggedInCustomer != null) {
+            System.out.println("Customer registered successfully! Welcome, " + loggedInCustomer.getName());
+            return loggedInCustomer;
+        } else {
+            System.out.println("Customer registration failed.");
+            return null;
+        }
+    }
+
+    private static Customer handleCustomerLogin(CryptoSystem csMain, Scanner sc) {
+        System.out.println("\n--- Customer Login ---");
+        System.out.print("Enter Customer Email: ");
+        String email = sc.nextLine();
+
+        Customer loggedInCustomer = csMain.getCustomerByEmail(email);
 
         if (loggedInCustomer != null) {
             csMain.setLoggedInCustomer(loggedInCustomer);
             System.out.println("Welcome, " + loggedInCustomer.getName());
-            handleCustomerMenu(csMain, sc);
+            return loggedInCustomer;
         } else {
-            System.out.println("Invalid Customer ID111.");
+            System.out.println("Invalid Customer Email.");
+            return null;
         }
     }
+
     private static void handleCustomerMenu(CryptoSystem csMain, Scanner sc) {
-        Customer loggedInCustomer = csMain.getLoggedInCustomer();
+        Customer loggedInCustomer = null;
+
+        while (true) {
+            System.out.println("\n--- Menu ---");
+            System.out.println("1. Login");
+            System.out.println("2. Register");
+            System.out.println("3. Exit");
+            System.out.print("Choose an option: ");
+
+            int loginChoice = sc.nextInt();
+            sc.nextLine(); // Consume newline
+
+            if (loginChoice == 1) {
+                loggedInCustomer = handleCustomerLogin(csMain, sc);
+                if (loggedInCustomer == null) {
+                    continue;
+                }
+                break;
+            }
+            else if (loginChoice == 2) {
+                loggedInCustomer = handleCustomerRegistration(csMain, sc);
+                if (loggedInCustomer == null) {
+                    continue;
+                }
+                break;
+            } else if (loginChoice == 3) {
+                    System.out.println("Exiting the system. Goodbye!");
+                    sc.close();
+                    return;
+            } else {
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+
         while (loggedInCustomer != null) {
             System.out.println("\n--- Customer Menu ---");
             System.out.println("1. View Your Details");
@@ -99,8 +128,7 @@ public class Main {
             System.out.println("10. View Details of a Single Coin");
             System.out.println("11. Give Feedback");
             System.out.println("12. Register New User");
-            System.out.println("13. Refer a Friend");
-            System.out.println("14. Logout");
+            System.out.println("13. Logout");
             System.out.print("Choose an option: ");
 
             int choice = sc.nextInt();
@@ -186,23 +214,9 @@ public class Main {
                     break;
 
                 case 12:
-                {
-                    System.out.print("Registering new Customer...");
-
-                    if (csMain.register(loggedInCustomer))
-                    {
-                        System.out.print("Customer successfully registered!");
-                    }
-                    else
-                    {
-                        System.out.print("Customer has not been Registered");
-                    }
-                    break;
-                }
-                case 13:
                     csMain.referFriend();
                     break;
-                case 14:
+                case 13:
                     System.out.println("Logging out...");
                     csMain.setLoggedInCustomer(null);
                     return;
@@ -212,7 +226,7 @@ public class Main {
             }
         }
     }
-    private static void handleAdminLogin(CryptoSystem csMain, Scanner sc) {
+    private static void adminUser(CryptoSystem csMain, Scanner sc) {
         System.out.println("\n--- Admin Login ---");
         csMain.takeAdminInput();
         Admin loggedInAdmin = csMain.getLoggedInAdmin();

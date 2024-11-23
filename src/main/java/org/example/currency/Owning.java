@@ -1,6 +1,10 @@
 package org.example.currency;
 
+import org.example.db.DBHandler;
+import org.hibernate.Session;
+
 import java.util.Date;
+import java.util.List;
 
 public class Owning {
     private int owningId;
@@ -20,6 +24,7 @@ public class Owning {
     {
 
     }
+
     public int getOwningId() { return owningId; }
     public float getAmount() { return amount; }
     public void setAmount(float amount) { this.amount = amount; }
@@ -38,7 +43,6 @@ public class Owning {
         System.out.printf("Portfolio for Customer ID: %d\n", userId);
         System.out.println("========================================");
 
-        //write the sql query to fetch the fiat wallet details of the user from the db
         //display the details
         //do the same for spot wallet
         System.out.println("========================================");
