@@ -8,6 +8,8 @@ import org.example.db.models.wallet.SpotWalletModel;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "customers")
 public class CustomerModel {
@@ -46,6 +48,12 @@ public class CustomerModel {
         this.bankDetails = new BankDetailsModel(bankDetails.getDetailsId(), bankDetails.getCardNumber(),
                 bankDetails.getExpiryDate(), bankDetails.getBankName(),
                 bankDetails.getAccountHolderName(), bankDetails.getBillingAddress());
+    }
+
+    public CustomerModel(String name, Date birthDate, String address, String phone, String email, Date accountCreationDate, Date lastLoginDate, String status) {
+        this.user = new UserModel(name, birthDate, address, phone, email, accountCreationDate, lastLoginDate, status);
+
+
     }
 
     // Getters and Setters

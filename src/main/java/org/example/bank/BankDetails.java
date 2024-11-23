@@ -23,10 +23,6 @@ public class BankDetails {
         this.billingAddress = billingAddress;
     }
 
-    public static void addNewBankDetails(int bankDetailsId, String cardNumber, Date expiryDate, String bankName, String accountHolderName, String billingAddress, Session session) {
-        DBHandler.saveBankDetails(new BankDetailsModel(bankDetailsId, cardNumber, expiryDate, bankName, accountHolderName, billingAddress), session);
-    }
-
     public String getBankName() { return bankName; }
     public String getAccountHolderName() { return accountHolderName; }
     public void setBillingAddress(String billingAddress) {this.billingAddress = billingAddress;}

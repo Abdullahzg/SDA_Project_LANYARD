@@ -31,8 +31,9 @@ build/
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
+### Mac OS ###i
 .DS_Store
 
 src/main/resources/database.properties
 src/main/resources/db.properties
+src/main/resources/email.properties

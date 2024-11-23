@@ -31,8 +31,8 @@ public class Customer extends User{
         this.feedbacks = new ArrayList<>();
     }
 
-    public static void addNewCustomerDB(@NotNull User user, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails) {
-        DBHandler.saveCustomer(new CustomerModel(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), new Date(), new Date(), "active"), spotWallet, fiatWallet, bankDetails));
+    public static boolean addNewCustomerDB(@NotNull User user, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails) {
+        return DBHandler.saveCustomer(new CustomerModel(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), new Date(), new Date(), "active"), spotWallet, fiatWallet, bankDetails));
     }
 
     public SpotWallet getSpotWallet() { return spotWallet; }
@@ -188,5 +188,32 @@ public class Customer extends User{
     public void flagForReview()
     {
         System.out.println("Flagging for review");
+    }
+
+    public boolean giveFeedback() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Subject: ");
+
+        String subject = scanner.nextLine();
+        System.out.print("Enter Feedback: ");
+
+        String feedback = scanner.nextLine();
+        System.out.print("Enter Priority Level (1-3): ");
+
+        int priorityLevel = scanner.nextInt();
+        while (priorityLevel < 1 || priorityLevel > 3) {
+            System.out.println("Invalid Priority Level");
+            System.out.print("Enter Priority Level (1-3): ");
+            priorityLevel = scanner.nextInt();
+        }
+        scanner.nextLine();
+
+        Feedback feedbackObj = new Feedback(Feedback.generateFeedbackId(), subject, getUserId(), feedback, priorityLevel);
+        feedbacks.add(feedbackObj);
+        return Feedback.addFeedbackToDB(feedbackObj, this);
+    }
+
+    public String getStatus() {
+        return "Customer";
     }
 }

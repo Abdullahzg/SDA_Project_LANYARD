@@ -126,8 +126,7 @@ public class Main {
             System.out.println("10. Display Top Coins");
             System.out.println("11. View Details of Single Coin");
             System.out.println("12. Give Feedback");
-            System.out.println("13. Refer Friend");
-            System.out.println("14. Logout");
+            System.out.println("13. Logout");
             System.out.print("Choose an option: ");
 
             int choice = sc.nextInt();
@@ -205,9 +204,6 @@ public class Main {
                     }
                     break;
                 case 13:
-                    csMain.referFriend();
-                    break;
-                case 14:
                     System.out.println("Logging out...");
                     csMain.setLoggedInCustomer(null);
                     return;
@@ -218,19 +214,44 @@ public class Main {
     }
 
     private static void adminUser(@NotNull CryptoSystem csMain, Scanner sc) {
-        System.out.println("\n--- Admin Login ---");
-        csMain.takeAdminInput();
-        Admin loggedInAdmin = csMain.getLoggedInAdmin();
-
-        if (loggedInAdmin != null) {
-            System.out.println("Welcome, " + loggedInAdmin.getName());
-            handleAdminMenu(csMain, sc, loggedInAdmin);
-        } else {
-            System.out.println("Invalid Admin ID.");
-        }
+        handleAdminMenu(csMain, sc);
     }
 
-    private static void handleAdminMenu(CryptoSystem csMain, @NotNull Scanner sc, Admin loggedInAdmin) {
+    private static void handleAdminMenu(CryptoSystem csMain, @NotNull Scanner sc) {
+        Admin loggedInAdmin = null;
+
+        while (true) {
+            System.out.println("\n--- Menu ---");
+            System.out.println("1. Login");
+            System.out.println("2. Register");
+            System.out.println("3. Exit");
+            System.out.print("Choose an option: ");
+
+            int loginChoice = sc.nextInt();
+            sc.nextLine(); // Consume newline
+
+            if (loginChoice == 1) {
+                loggedInAdmin = handleAdminLogin(csMain, sc);
+                if (loggedInAdmin == null) {
+                    continue;
+                }
+                break;
+            }
+            else if (loginChoice == 2) {
+                loggedInAdmin = handleAdminRegistration(csMain, sc);
+                if (loggedInAdmin == null) {
+                    continue;
+                }
+                break;
+            } else if (loginChoice == 3) {
+                System.out.println("Exiting the system. Goodbye!");
+                sc.close();
+                return;
+            } else {
+                System.out.println("Invalid option. Please try again.");
+            }
+        }
+
         while (true) {
             System.out.println("\n--- Admin Menu ---");
             System.out.println("1. View All Customer Details");
@@ -291,6 +312,37 @@ public class Main {
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
+        }
+    }
+
+    private static @Nullable Admin handleAdminLogin(@NotNull CryptoSystem csMain, @NotNull Scanner sc) {
+        System.out.println("\n--- Admin Login ---");
+        System.out.print("Enter Admin Email: ");
+        String email = sc.nextLine();
+
+        Admin loggedInAdmin = csMain.getAdminByEmail(email);
+
+        if (loggedInAdmin != null) {
+            csMain.setLoggedInAdmin(loggedInAdmin);
+            System.out.println("Welcome, " + loggedInAdmin.getName());
+            return loggedInAdmin;
+        } else {
+            System.out.println("Invalid Admin Email.");
+            return null;
+        }
+    }
+
+    private static @Nullable Admin handleAdminRegistration(@NotNull CryptoSystem csMain, @NotNull Scanner sc) {
+        System.out.println("\n--- Admin Registration ---");
+        csMain.takeAdminInput();
+        Admin loggedInAdmin = csMain.getLoggedInAdmin();
+
+        if (loggedInAdmin != null) {
+            System.out.println("Admin registered successfully! Welcome, " + loggedInAdmin.getName());
+            return loggedInAdmin;
+        } else {
+            System.out.println("Admin registration failed.");
+            return null;
         }
     }
 }

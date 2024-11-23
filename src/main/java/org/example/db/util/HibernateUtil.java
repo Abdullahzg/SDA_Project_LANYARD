@@ -3,8 +3,10 @@ package org.example.db.util;
 import org.example.db.models.bank.BankDetailsModel;
 import org.example.db.models.currency.OwningsModel;
 import org.example.db.models.trans.TransactionsModel;
+import org.example.db.models.user.AdminModel;
 import org.example.db.models.user.CustomerModel;
 import org.example.db.models.user.UserModel;
+import org.example.db.models.useractions.FeedbackModel;
 import org.example.db.models.wallet.FiatWalletModel;
 import org.example.db.models.wallet.SpotWalletModel;
 import org.example.db.models.wallet.WalletModel;
@@ -29,6 +31,8 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(SpotWalletModel.class);
                 configuration.addAnnotatedClass(OwningsModel.class);
                 configuration.addAnnotatedClass(TransactionsModel.class);
+                configuration.addAnnotatedClass(AdminModel.class);
+                configuration.addAnnotatedClass(FeedbackModel.class);
 
                 // Build SessionFactory
                 sessionFactory = configuration.buildSessionFactory();

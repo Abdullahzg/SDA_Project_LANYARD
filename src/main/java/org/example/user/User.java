@@ -48,6 +48,7 @@ public class User {
         this.accountCreationDate = currentDate;
         this.lastLoginDate = currentDate1;
         this.accountStatus = active != null ? active : "inactive";
+        IDs++; // Increment the static ID counter
     }
 
     public static int getIDs() {

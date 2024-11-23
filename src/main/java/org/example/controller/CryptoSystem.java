@@ -40,6 +40,7 @@ public class CryptoSystem {
         api = new APIController(apiS);
         customers = new ArrayList<>();
         loggedInCustomer = null;
+        loggedInAdmin = null;
         admin = new ArrayList<>();
     }
 
@@ -193,14 +194,12 @@ public class CryptoSystem {
         // Create and add new customer
         Customer newCustomer = new Customer(userId, name, birthDate, billingAddress, phone, email, currentDate, currentDate,
                 accountStatus, spotWallet, fiatWallet, bankDetails);
-        customers.add(newCustomer);
 
         User user = new User(userId, name, birthDate, billingAddress, phone, email, currentDate, currentDate, "active");
-        Customer.addNewCustomerDB(user, spotWallet, fiatWallet, bankDetails);
-
-        setLoggedInCustomer(newCustomer);
-
-        System.out.println("Customer added successfully! User ID: " + userId);
+        if(Customer.addNewCustomerDB(user, spotWallet, fiatWallet, bankDetails)) {
+            customers.add(newCustomer);
+            setLoggedInCustomer(newCustomer);
+        }
     }
 
 
@@ -208,19 +207,17 @@ public class CryptoSystem {
         return Customer.getCustomerByEmail(email);
     }
 
-    public void addNewAdmin(String name, Date birthDate, String phone, String email, String accountStatus) {
+    public void addNewAdmin(String name, Date birthDate, String address, String phone, String email, String accountStatus) {
         // Generate a unique Admin ID
         int adminId = User.getIDs();
 
-        // Create necessary dates
-        Date currentDate = new Date(); // Current date for account creation and last login
-
         // Create and add new Admin
-        Admin newAdmin = new Admin(adminId, name, birthDate, email, phone, currentDate, currentDate, accountStatus);
-        admin.add(newAdmin);
-        setLoggedInAdmin(newAdmin);
+        Admin newAdmin = new Admin(adminId, name, birthDate, address, email, phone, new Date(), new Date(), accountStatus);
 
-        System.out.println("Admin added successfully! Admin ID: " + adminId);
+        if(Admin.addNewAdminDB(newAdmin)) {
+            admin.add(newAdmin);
+            setLoggedInAdmin(newAdmin);
+        }
     }
 
     public void takeAdminInput() {
@@ -244,6 +241,9 @@ public class CryptoSystem {
                 }
             }
 
+            System.out.print("Enter Address: ");
+            String address = scanner.nextLine();
+
             System.out.print("Enter Phone Number: ");
             String phone = scanner.nextLine();
 
@@ -254,7 +254,7 @@ public class CryptoSystem {
             String accountStatus = scanner.nextLine();
 
             // Call addNewAdmin with gathered inputs
-            addNewAdmin(name, birthDate, phone, email, accountStatus);
+            addNewAdmin(name, birthDate, address, phone, email, accountStatus);
         } catch (Exception e) {
             System.out.println("An error occurred while processing input: " + e.getMessage());
         }
@@ -603,10 +603,8 @@ public class CryptoSystem {
             System.out.println("No customer is logged in. Please log in to register a wallet.");
             return false;
         }
-        //Feedback feedback(customerid);
-        //feedback.
-        return true;
 
+        return loggedInCustomer.giveFeedback();
     }
 
     public void referFriend() {
@@ -748,6 +746,10 @@ public class CryptoSystem {
                 + " (" + loggedInCustomer.getEmail() + ").";
 
         Email email = new Email(recipient.getEmail(), emailSubject, emailBody);
-        email.sendEmail("smtp.gmail.com", "587");
+        email.sendEmail(false);
+    }
+
+    public Admin getAdminByEmail(String email) {
+        return Admin.getAdminByEmail(email);
     }
 }
