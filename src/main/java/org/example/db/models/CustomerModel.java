@@ -2,14 +2,8 @@ package org.example.db.models;
 
 import jakarta.persistence.*;
 import org.example.bank.BankDetails;
-import org.example.user.User;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
-import org.example.transaction.Transaction;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -52,24 +46,36 @@ public class CustomerModel {
     }
 
     // Getters and Setters
-    public SpotWalletModel getSpotWallet() {
+    public SpotWalletModel getSpotWalletModel() {
         return spotWallet;
+    }
+
+    public SpotWallet getSpotWallet() {
+        return new SpotWallet(spotWallet.getWalletId(), spotWallet.getBalance(), spotWallet.getCreationDate(), spotWallet.getCurrency(), spotWallet.getMaxBalanceLimit());
     }
 
     public void setSpotWallet(SpotWallet spotWallet) {
         this.spotWallet = new SpotWalletModel(spotWallet.getWalletId(), spotWallet.getBalance(), spotWallet.getCreationDate(), spotWallet.getCurrency(), spotWallet.getMaxBalanceLimit());
     }
 
-    public FiatWalletModel getFiatWallet() {
+    public FiatWalletModel getFiatWalletModel() {
         return fiatWallet;
+    }
+
+    public FiatWallet getFiatWallet() {
+        return new FiatWallet(fiatWallet.getWalletId(), fiatWallet.getBalance(), fiatWallet.getCreationDate(), fiatWallet.getOwnings());
     }
 
     public void setFiatWallet(FiatWallet fiatWallet) {
         this.fiatWallet = new FiatWalletModel(fiatWallet.getWalletId(), fiatWallet.getBalance(), fiatWallet.getCreationDate(), fiatWallet.getOwnings());
     }
 
-    public BankDetailsModel getBankDetails() {
+    public BankDetailsModel getBankDetailsModel() {
         return bankDetails;
+    }
+
+    public BankDetails getBankDetails() {
+        return new BankDetails(bankDetails.getDetailsId(), bankDetails.getCardNumber(), bankDetails.getExpiryDate(), bankDetails.getBankName(), bankDetails.getAccountHolderName(), bankDetails.getBillingAddress());
     }
 
     public void setBankDetails(BankDetails bankDetails) {

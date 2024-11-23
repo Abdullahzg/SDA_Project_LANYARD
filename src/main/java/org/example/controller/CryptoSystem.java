@@ -95,9 +95,9 @@ public class CryptoSystem {
     }
 
     public void addNewCustomer(String name, Date birthDate, String phone, String email, String accountStatus,
-            float spotWalletBalance, String currency, float maxBalanceLimit,
-            String cardNumber, Date expiryDate, String bankName, String accountHolderName,
-            String billingAddress, float fiatWalletBalance, List<Owning> fiatOwnings) {
+                               float spotWalletBalance, String currency, float maxBalanceLimit,
+                               String cardNumber, Date expiryDate, String bankName, String accountHolderName,
+                               String billingAddress, float fiatWalletBalance, List<Owning> fiatOwnings) {
         // Generate unique IDs
         int userId = User.getIDs();
         int spotWalletId = WalletIDGenerator.generateWalletId();
@@ -112,7 +112,7 @@ public class CryptoSystem {
                 billingAddress);
 
         // Create and add new customer
-        Customer newCustomer = new Customer(userId, name, birthDate, phone, email, currentDate, currentDate,
+        Customer newCustomer = new Customer(userId, name, birthDate, billingAddress, phone, email, currentDate, currentDate,
                 accountStatus, spotWallet, fiatWallet, bankDetails);
         customers.add(newCustomer);
 
@@ -122,6 +122,11 @@ public class CryptoSystem {
         setLoggedInCustomer(newCustomer);
 
         System.out.println("Customer added successfully! User ID: " + userId);
+    }
+
+
+    public Customer getCustomerByEmail(String email) {
+        return Customer.getCustomerByEmail(email);
     }
 
     public void addNewAdmin(String name, Date birthDate, String phone, String email, String accountStatus) {

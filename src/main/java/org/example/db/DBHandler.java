@@ -6,6 +6,7 @@ import org.example.db.util.HibernateUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 
@@ -96,5 +97,28 @@ public class DBHandler {
                 transaction.rollback();
             e.printStackTrace();
         }
+    }
+
+
+
+    public static CustomerModel getCustomerByEmail(String email) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        CustomerModel customer = null;
+
+        try {
+            // Join CustomerModel with its associated UserModel and check email
+            Query<CustomerModel> query = session.createQuery(
+                    "FROM CustomerModel c WHERE c.user.email = :email",
+                    CustomerModel.class
+            );
+            query.setParameter("email", email);
+            customer = query.uniqueResult();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+        return customer;
     }
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "fiatWallets")
 public class FiatWalletModel extends WalletModel {
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "wallet_id")
     private List<OwningsModel> ownings;
 
@@ -26,8 +26,14 @@ public class FiatWalletModel extends WalletModel {
     }
 
     // Getters and Setters
-    public List<OwningsModel> getOwnings() {
+    public List<OwningsModel> getOwningsModel() {
         return ownings;
+    }
+
+    public List<Owning> getOwnings() {
+        return ownings.stream()
+                .map(owning -> new Owning(owning.getOwningId(), owning.getAmount(), owning.getCoin()))
+                .collect(Collectors.toList());
     }
 
 //    public void setOwnings(List<Owning> ownings) {

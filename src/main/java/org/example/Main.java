@@ -67,8 +67,7 @@ public class Main {
         System.out.print("Enter Customer Email: ");
         String email = sc.nextLine();
 
-        Customer loggedInCustomer = null;
-//        = csMain.getCustomerByEmail(email);
+        Customer loggedInCustomer = csMain.getCustomerByEmail(email);
 
         if (loggedInCustomer != null) {
             csMain.setLoggedInCustomer(loggedInCustomer);

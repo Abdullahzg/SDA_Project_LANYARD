@@ -19,8 +19,8 @@ public class Customer extends User{
     private List<Transaction> transactions;
 
 
-    public Customer(int userId, String name, Date birthDate, String phone, String email, Date accountCreationDate, Date lastLoginDate, String accountStatus, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails){
-        super(userId,name, birthDate,phone,email, accountCreationDate,lastLoginDate,accountStatus);
+    public Customer(int userId, String name, Date birthDate, String address, String phone, String email, Date accountCreationDate, Date lastLoginDate, String accountStatus, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails){
+        super(userId,name, birthDate,address,phone,email, accountCreationDate,lastLoginDate,accountStatus);
         this.spotWallet = spotWallet;
         this.fiatWallet = fiatWallet;
         this.bankDetails = bankDetails;

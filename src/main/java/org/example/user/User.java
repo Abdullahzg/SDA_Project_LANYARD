@@ -2,7 +2,9 @@ package org.example.user;
 
 import org.example.bank.BankDetails;
 import org.example.db.DBHandler;
+import org.example.db.models.CustomerModel;
 import org.example.db.models.UserModel;
+import org.example.db.util.HibernateUtil;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
 import org.hibernate.Session;
@@ -104,8 +106,12 @@ public class User {
         this.userId = userId;
     }
 
-    public static Optional<User> getCustomerByEmail(String email) {
-        return null;
+    public static Customer getCustomerByEmail(String email) {
+        CustomerModel customerModel = DBHandler.getCustomerByEmail(email);
+        if (customerModel == null) {
+            return null;
+        }
+        return new Customer(customerModel.getUser().getUserId(), customerModel.getUser().getName(), customerModel.getUser().getBirthDate(), customerModel.getUser().getAddress(), customerModel.getUser().getPhone(), customerModel.getUser().getEmail(), customerModel.getUser().getAccountCreationDate(), customerModel.getUser().getLastLoginDate(), customerModel.getUser().getAccountStatus(), customerModel.getSpotWallet(), customerModel.getFiatWallet(), customerModel.getBankDetails());
     }
 
     public void setAccountCreationDate(Date accountCreationDate) {

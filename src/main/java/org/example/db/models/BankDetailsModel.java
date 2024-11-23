@@ -14,6 +14,8 @@ public class BankDetailsModel {
     @Column(nullable = false)
     private String cardNumber;
 
+    private Date expiryDate;
+
     @Column(nullable = false)
     private String bankName;
 
@@ -28,6 +30,7 @@ public class BankDetailsModel {
     public BankDetailsModel(int bankDetailsId, String cardNumber, Date expiryDate, String bankName, String accountHolderName, String billingAddress) {
         this.detailsId = bankDetailsId;
         this.cardNumber = cardNumber;
+        this.expiryDate = expiryDate;
         this.bankName = bankName;
         this.accountHolderName = accountHolderName;
         this.billingAddress = billingAddress;
@@ -68,6 +71,10 @@ public class BankDetailsModel {
 
     public String getBillingAddress() {
         return billingAddress;
+    }
+
+    public Date getExpiryDate() {
+        return expiryDate;
     }
 
     public void setBillingAddress(String billingAddress) {
