@@ -9,6 +9,10 @@ target/
 *.iml
 *.ipr
 
+.mvn/
+mvnw
+mvnw.cmd
+
 ### Eclipse ###
 .apt_generated
 .classpath
