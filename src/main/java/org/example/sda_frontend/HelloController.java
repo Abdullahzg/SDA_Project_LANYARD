@@ -68,8 +68,8 @@ public class HelloController {
 //                break;
 //            }
 //        }
-        Customer c= CryptoSystem.getInstance().getCustomerByEmail("i221158@nu.edu.pk");
-        CryptoSystem.getInstance().setLoggedInCustomer(c);
+//        Customer c= CryptoSystem.getInstance().getCustomerByEmail("i221158@nu.edu.pk");
+//        CryptoSystem.getInstance().setLoggedInCustomer(c);
         System.out.println(CryptoSystem.getInstance().getLoggedInCustomer().getName());
         generateBoxes();
 
