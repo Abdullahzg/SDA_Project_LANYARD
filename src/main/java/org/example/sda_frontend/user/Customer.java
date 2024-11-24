@@ -80,6 +80,7 @@ public class Customer extends User{
         Transaction.allTransactions.add(transaction);
 
         //transaction.saveTransactionToFile(transaction);
+        Transaction.saveTransactionToDB(transaction, this, amount, transactionType, coin, coinRate);
 
         System.out.println("Transaction recorded successfully.");
     }
@@ -129,8 +130,6 @@ public class Customer extends User{
 
         fiatWallet.buyCoin(coinCode, amount, exchangeRate);
         recordTransaction(amount, "Buy", coinCode, exchangeRate); // Record the transaction
-
-
     }
     public void sellCoin(APIController api, String coinCode, float usdtAmount) {
         FiatWallet fiatWallet = getFiatWallet();
@@ -190,8 +189,6 @@ public class Customer extends User{
     }
     public void sellCoinn(APIController api, String coinCode, float usdtAmount) {
         FiatWallet fiatWallet = getFiatWallet();
-
-
 
         // Fetch exchange rate for the coin
         float exchangeRate = api.getExchangeRate(coinCode, "USDT");

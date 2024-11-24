@@ -11,8 +11,6 @@ import org.example.sda_frontend.db.models.wallet.FiatWalletModel;
 import org.example.sda_frontend.db.models.wallet.SpotWalletModel;
 import org.example.sda_frontend.db.util.HibernateUtil;
 import org.example.sda_frontend.user.Admin;
-import org.example.sda_frontend.user.Customer;
-import org.example.sda_frontend.useractions.Feedback;
 import org.example.sda_frontend.wallet.FiatWallet;
 import org.example.sda_frontend.wallet.SpotWallet;
 import org.hibernate.HibernateException;
@@ -95,7 +93,7 @@ public class DBHandler {
         return customer;
     }
 
-    public static void saveOrUpdateOwning(int synthID, Owning existingOwning, String coinCode, float amount, float exchangeRate, int walletId) {
+    public static boolean saveOrUpdateOwning(int synthID, Owning existingOwning, String coinCode, float amount, float exchangeRate, int walletId, FiatWallet fiatWallet) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
@@ -120,17 +118,45 @@ public class DBHandler {
                 newOwning.setPurchaseRate(exchangeRate);
                 session.merge(newOwning);
             }
-
             transaction.commit();
+            return buySellFIATWithdrawDB(fiatWallet, amount, "bought");
         } catch (HibernateException e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
         } finally {
             session.close();
         }
+
+        return false;
     }
 
-    public static void updateOwningAfterSell( Owning selectedOwning, String coinCode, float usdtAmount, float exchangeRate, int walletId) {
+    public static boolean buySellFIATWithdrawDB(FiatWallet fiatWallet, float amount, String type) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            FiatWalletModel fiatWalletModel = session.get(FiatWalletModel.class, fiatWallet.getWalletId());
+            if (fiatWalletModel != null) {
+                // Update the balance in the FiatWalletModel
+                fiatWalletModel.setBalance(fiatWallet.getBalance());
+                fiatWalletModel.setLastActivityDate(new Date());
+                session.merge(fiatWalletModel);
+                transaction.commit();
+                System.out.printf("Successfully %s %.2f USDT from the Fiat Wallet. New Balance: %.2f USDT\n", type, amount, fiatWallet.getBalance());
+                return true;
+            } else {
+                System.out.println("Fiat Wallet not found in the database.");
+            }
+        } catch (HibernateException e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return false;
+    }
+
+    public static boolean updateOwningAfterSell(Owning selectedOwning, String coinCode, float usdtAmount, float exchangeRate, int walletId, FiatWallet fiatWallet) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
@@ -147,12 +173,14 @@ public class DBHandler {
                 query.executeUpdate();
             }
             transaction.commit();
+            return buySellFIATWithdrawDB(fiatWallet, usdtAmount, "sold");
         } catch (HibernateException e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
         } finally {
             session.close();
         }
+        return false;
     }
 
     public static void saveTransaction(TransactionsModel transaction) {

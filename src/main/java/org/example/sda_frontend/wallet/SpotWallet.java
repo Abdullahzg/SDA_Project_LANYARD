@@ -29,10 +29,7 @@ public class SpotWallet extends Wallet {
 
     @Override
     public void depositOrWithdrawDB(String type) {
-
         // Update the database
-
         DBHandler.depositOrWithdrawSpotWalletDB(this, type);
-
     }
 }

@@ -57,11 +57,17 @@ Before running the application, you need to set up the database configuration. F
     cp src/main/resources/lanyard.properties.example src/main/resources/lanyard.properties
     ```
 
-2. Open the `src/main/resources/lanyard.properties` file and fill in your database credentials:
+2. Open the `src/main/resources/lanyard.properties` file and fill in your database credentials, email credentials, and the Groq API key:
     ```properties
-      hibernate.connection.url=jdbc:your_database_url
-      hibernate.connection.username=your_username
-      hibernate.connection.password=your_password
+      hibernate.connection.driver_class=
+      hibernate.connection.url=
+      hibernate.connection.username=
+      hibernate.connection.password=
+      
+      sender_email=
+      app_password=
+      
+      groq_lanyard=
     ```
 
 ### Running the Application

@@ -49,6 +49,12 @@ public class FiatWallet extends Wallet {
 
                 System.out.printf("Successfully added %.4f %s to your existing holding at a rate of %.2f USDT per unit.\n",
                         amount / exchangeRate, coinCode, exchangeRate);
+
+                if (DBHandler.saveOrUpdateOwning(ownings.size() + 1, existingOwning, coinCode, amount, exchangeRate, this.walletId, this)) {
+                    System.out.printf("Remaining Fiat Wallet Balance: %.2f USDT\n", getBalance());
+                } else {
+                    System.out.println("Failed to save the owning to the database.");
+                }
             } else {
                 // Create a new Owning
                 Owning newOwning = new Owning(ownings.size() + 1, amount / exchangeRate, coinCode);
@@ -58,15 +64,13 @@ public class FiatWallet extends Wallet {
 
                 System.out.printf("Successfully bought %.4f %s at a rate of %.2f USDT per unit.\n",
                         amount / exchangeRate, coinCode, exchangeRate);
+
+                if (DBHandler.saveOrUpdateOwning(ownings.size() + 1, newOwning, coinCode, amount, exchangeRate, this.walletId, this)) {
+                    System.out.printf("Remaining Fiat Wallet Balance: %.2f USDT\n", getBalance());
+                } else {
+                    System.out.println("Failed to save the owning to the database.");
+                }
             }
-
-            // Save or update the owning in the database
-
-            DBHandler.saveOrUpdateOwning(ownings.size() + 1, existingOwning, coinCode, amount, exchangeRate, this.walletId);
-            System.out.printf("Successfully bought %.4f %s at a rate of %.2f USDT per unit.\n",
-
-                    amount / exchangeRate, coinCode, exchangeRate);
-            System.out.printf("Remaining Fiat Wallet Balance: %.2f USDT\n", getBalance());
         } else {
             System.out.println("Insufficient balance to buy coins.");
         }
@@ -95,6 +99,7 @@ public class FiatWallet extends Wallet {
 
         return result.toString().trim(); // Remove trailing newline
     }
+
     public void sellCoin(String coinCode, float usdtAmount, float exchangeRate) {
         Owning selectedOwning = null;
 
@@ -133,7 +138,8 @@ public class FiatWallet extends Wallet {
             ownings.remove(selectedOwning);
             System.out.println("You no longer own any " + coinCode + ".");
         }
-        DBHandler.updateOwningAfterSell(selectedOwning, coinCode, usdtAmount, exchangeRate, this.walletId);
+
+        DBHandler.updateOwningAfterSell(selectedOwning, coinCode, usdtAmount, exchangeRate, this.walletId, this);
     }
 
     public float getCoinAmount(String code, APIController api){
@@ -152,7 +158,6 @@ public class FiatWallet extends Wallet {
             return amount;
         }
     }
-
 
     public void viewOwnings(APIController api) {
         if (ownings.isEmpty()) {
@@ -177,29 +182,18 @@ public class FiatWallet extends Wallet {
 
     @Override
     public void depositOrWithdrawDB(String type) {
-
         // Update the database
-
         DBHandler.depositOrWithdrawFiatWalletDB(this, type, false, 0.0);
-
     }
 
-
-
     public void transferFiatToAnotherUser(float amountToSend, FiatWallet recipientWallet) {
-
         recipientWallet.deposit(amountToSend);
 
         withdraw(amountToSend);
 
-
-
         // Update the database
-
         DBHandler.depositOrWithdrawFiatWalletDB(this, "Withdrawal", false, 0.0);
-
-        DBHandler.depositOrWithdrawFiatWalletDB(recipientWallet, "deposit", true, amountToSend);
-
+        DBHandler.depositOrWithdrawFiatWalletDB(recipientWallet, "Deposit", true, amountToSend);
     }
 
 }

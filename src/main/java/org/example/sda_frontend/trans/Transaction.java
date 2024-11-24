@@ -37,6 +37,7 @@ public class Transaction {
         sus=false;
         comments=new ArrayList<>();
     }
+
     public Transaction() {
         sus=false;
     }
@@ -49,14 +50,19 @@ public class Transaction {
     public void addComment(Comments c){
         comments.add(c);
     }
+
     public int getTransactionId() { return transactionId; }
+
     public User getUser() { return user; }
+
     int generateTransactionId() {
         return (int) (Math.random() * 100000); // Simple random ID generator
     }
+
     String getCurrentTimestamp() {
         return java.time.LocalDateTime.now().toString(); // Current timestamp
     }
+
     public void printTransactionHistory() {
         String filePath = "transactions.txt"; // File containing transaction history
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -107,45 +113,28 @@ public class Transaction {
             System.err.println("Error reading transactions file: " + e.getMessage());
         }
     }
+
     public static void saveTransactionToDB(Transaction transaction, Customer customer, float amount, String transactionType, String coin, float coinRate) {
-
         // Fetch the existing CustomerModel from the database
-
         CustomerModel customerModel = DBHandler.getCustomerByEmail(customer.getEmail());
-
         if (customerModel == null) {
-
             throw new IllegalStateException("Customer not found in the database.");
-
         }
 
-
-
         // Create a new TransactionsModel instance
-
         TransactionsModel transactionsModel = new TransactionsModel();
-
         transactionsModel.setCustomer(customerModel);
-
         transactionsModel.setAmount(amount);
-
         transactionsModel.setTimestamp(new Date());
-
         transactionsModel.setTransactionType(transactionType);
-
         transactionsModel.setCoin(coin);
-
         transactionsModel.setCoinRate(coinRate);
-
         transactionsModel.setSus(transaction.applyFilters_t(transaction));
 
-
-
         // Save the transaction to the database
-
         DBHandler.saveTransaction(transactionsModel);
-
     }
+
     private static String formatTransactionForFile(Transaction transaction) {
         return String.join(",",
                 String.valueOf(transaction.transactionId),
@@ -158,6 +147,7 @@ public class Transaction {
                 String.valueOf(transaction.timestamp.getTime())
         );
     }
+
     public static void saveTransactionToFile(Transaction transaction) {
         String filePath = "transactions.txt";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
@@ -167,6 +157,7 @@ public class Transaction {
             System.err.println("Error saving transaction to file: " + e.getMessage());
         }
     }
+
     private static Transaction parseTransactionFromFile(String line) {
         try {
             String[] parts = line.split(",");
@@ -186,6 +177,7 @@ public class Transaction {
             return null;
         }
     }
+
     public static List<Transaction> fetchTransactionsFromFile() {
         String filePath = "transactions.txt";
         List<Transaction> transactions = new ArrayList<>();
@@ -204,8 +196,8 @@ public class Transaction {
 
         return transactions;
     }
-    public boolean applyFilters_t(Transaction transaction)
-    {
+
+    public boolean applyFilters_t(Transaction transaction) {
         System.out.println("Applying filters to all transactions");
         //yahan par awen ek amount le li hai
         if (transaction.getAmount() > 100000) {
@@ -216,26 +208,29 @@ public class Transaction {
         }
         return false;
     }
-    public void flagForReview_t(Transaction transaction)
-    {
+
+    public void flagForReview_t(Transaction transaction) {
         changeStatus(transaction,true);
         System.out.println("Transaction Reviewed");
         //notifyReview team
         System.out.println("Review Team Notified");
     }
+
     public float getAmount() {
         return amount;
     }
+
     public float getCoinRate() {
         return coinRate;
     }
-    public void notifyTeam(Transaction transaction)
-    {
+
+    public void notifyTeam(Transaction transaction) {
         System.out.println("Notifying team");
         changeStatus(transaction,true);
         //update the db and notify the compliance team;
         System.out.println("Compliance Team Notified");
     }
+
     void changeStatus(Transaction transaction,boolean state)
     {
         transaction.sus=state;

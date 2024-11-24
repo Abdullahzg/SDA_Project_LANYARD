@@ -93,8 +93,6 @@ public class CryptoSystem {
         SpotWallet spotWallet = loggedInCustomer.getSpotWallet();
         FiatWallet fiatWallet = loggedInCustomer.getFiatWallet();
 
-
-
         // Fetch the exchange rate for USDT to USD
         float exchangeRate = api.getExchangeRate("USDT", "USD");
         if (exchangeRate <= 0) {
@@ -102,20 +100,8 @@ public class CryptoSystem {
             return;
         }
 
-        // If transferring from Spot (USD) to Fiat (USDT), invert the exchange rate
-        if (choice == 1) {
-            exchangeRate = 1 / exchangeRate;
-            spotWallet.depositOrWithdrawDB("Withdrawal");
-            fiatWallet.depositOrWithdrawDB("Deposit");
-        }
-        else{
-            fiatWallet.depositOrWithdrawDB("Withdrawal");
-            spotWallet.depositOrWithdrawDB("Deposit");
-        }
-
         Wallet sourceWallet = (choice == 1) ? spotWallet : fiatWallet;
         Wallet targetWallet = (choice == 1) ? fiatWallet : spotWallet;
-
 
         // Check for insufficient funds in the source wallet
         if (sourceWallet.getBalance() < transferAmount) {
@@ -128,6 +114,16 @@ public class CryptoSystem {
         sourceWallet.withdraw(transferAmount);
         targetWallet.deposit(convertedAmount);
 
+        // If transferring from Spot (USD) to Fiat (USDT), invert the exchange rate
+        if (choice == 1) {
+            exchangeRate = 1 / exchangeRate;
+            spotWallet.depositOrWithdrawDB("Withdrawal");
+            fiatWallet.depositOrWithdrawDB("Deposit");
+        }
+        else{
+            fiatWallet.depositOrWithdrawDB("Withdrawal");
+            spotWallet.depositOrWithdrawDB("Deposit");
+        }
     }
     public String viewCustomerOwningsn() {
         if (loggedInCustomer == null) {
@@ -210,107 +206,58 @@ public class CryptoSystem {
         System.out.println("Team has been Notified.");
     }
     public void addNewCustomer(String name, Date birthDate, String phone, String email, String accountStatus,
-
                                float spotWalletBalance, String currency, float maxBalanceLimit,
-
                                String cardNumber, Date expiryDate, String bankName, String accountHolderName,
-
                                String billingAddress, float fiatWalletBalance, List<Owning> fiatOwnings) {
 
         // Generate unique IDs
-
         int userId = User.getIDs();
-
         int spotWalletId = WalletIDGenerator.generateWalletId();
-
         int fiatWalletId = WalletIDGenerator.generateWalletId();
-
         int bankDetailsId = BankDetailsIDGenerator.generateDetailsId();
 
-
-
         // Create necessary objects
-
         Date currentDate = new Date(); // Current date for creation
-
         SpotWallet spotWallet = new SpotWallet(spotWalletId, spotWalletBalance, currentDate, currency, maxBalanceLimit);
-
         FiatWallet fiatWallet = new FiatWallet(fiatWalletId, fiatWalletBalance, currentDate, fiatOwnings);
-
         BankDetails bankDetails = new BankDetails(bankDetailsId, cardNumber, expiryDate, bankName, accountHolderName,
-
                 billingAddress);
 
-
-
         // Create and add new customer
-
         Customer newCustomer = new Customer(userId, name, birthDate, billingAddress, phone, email, currentDate, currentDate,
-
                 accountStatus, spotWallet, fiatWallet, bankDetails);
 
-
-
         User user = new User(userId, name, birthDate, billingAddress, phone, email, currentDate, currentDate, "active");
-
         if(Customer.addNewCustomerDB(user, spotWallet, fiatWallet, bankDetails)) {
-
             customers.add(newCustomer);
-
             setLoggedInCustomer(newCustomer);
-
         }
-
     }
 
-
-
-
-
     public Customer getCustomerByEmail(String email) {
-
         return Customer.getCustomerByEmail(email);
-
     }
 
     public void addNewAdmin(String name, Date birthDate, String address, String phone, String email, String accountStatus) {
-
         // Generate a unique Admin ID
-
         int adminId = User.getIDs();
 
-
-
         // Create and add new Admin
-
         Admin newAdmin = new Admin(adminId, name, birthDate, address, email, phone, new Date(), new Date(), accountStatus);
-
-
-
         if(Admin.addNewAdminDB(newAdmin)) {
-
             admin.add(newAdmin);
-
             setLoggedInAdmin(newAdmin);
-
         }
-
     }
 
     public void takeAdminInput() {
-
         Scanner scanner = new Scanner(System.in);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
         dateFormat.setLenient(false); // Ensure strict date parsing
 
-
-
         try {
-
             // Input personal details
-
             System.out.print("Enter Admin Name: ");
 
             String name = scanner.nextLine();
