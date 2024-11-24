@@ -16,7 +16,7 @@
             fitToWidth="true" style="-fx-background-color: white;">
     <content>
 
-        <VBox spacing="30.0" alignment="CENTER" style="-fx-background-color: white;">
+        <VBox spacing="30.0" alignment="CENTER" style="-fx-background-color: white; ">
             <VBox fx:id="topLeftIcons" alignment="CENTER_LEFT" spacing="10.0" viewOrder="0"
                   style="-fx-padding: 20 0 0 20;">
                 <Button fx:id="topIcon1"
@@ -102,7 +102,7 @@
 
                 <!-- Enlarged Center Image -->
                 <ImageView fx:id="centerImage" fitWidth="450.0" fitHeight="450.0" preserveRatio="true"/>
-
+                <Label fx:id="welcomeMessage" text=" " style="-fx-text-fill: grey; -fx-font-size: 14;"/>
                 <!-- Search Bar with Box -->
                 <VBox fx:id="searchBarContainer" alignment="CENTER" spacing="5.0" maxWidth="520.0"
                       style="-fx-background-color: #ededed; -fx-background-radius: 20; -fx-padding: 5px 10 10px 10px;">
@@ -256,7 +256,21 @@
             <!-- Featured Options Section -->
             <GridPane fx:id="gridPane" alignment="CENTER" hgap="20" vgap="20" style="-fx-padding: 20;" maxWidth="Infinity"/>
 
-
+            <Button fx:id="registerButton"
+                    text="Log Out"
+                    prefWidth="400"
+                    style="-fx-background-color: black;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14;
+                           -fx-padding: 10 30;
+                           -fx-background-radius: 10;
+                           -fx-cursor: hand;
+                           -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);"
+                    onAction="#onLogout">
+                <VBox.margin>
+                    <Insets bottom="30" />
+                </VBox.margin>
+            </Button>
         </VBox>
     </content>
 </ScrollPane>

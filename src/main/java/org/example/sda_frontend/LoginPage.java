@@ -39,6 +39,7 @@ public class LoginPage {
         // Set initial state
         Image image = new Image(getClass().getResource("logo.jpg").toExternalForm());
         centerImage.setImage(image);
+        CryptoSystem.getInstance().setLoggedInAdmin(null);
     }
 
     @FXML
@@ -120,6 +121,16 @@ public class LoginPage {
 
     @FXML
     private void onSignupClick() {
-        System.out.println("Signup button clicked");
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("register-page.fxml"));
+            Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
+
+            Stage currentStage = (Stage) signupButton.getScene().getWindow();
+            currentStage.setScene(newScene);
+            currentStage.setTitle("Login");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Error returning to login page.");
+        }
     }
 }

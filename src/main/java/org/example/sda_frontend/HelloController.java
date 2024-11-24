@@ -43,6 +43,9 @@ public class HelloController {
     private Button transferButton;
 
     @FXML
+    private Label welcomeMessage;
+
+    @FXML
     protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to JavaFX Application!");
     }
@@ -52,6 +55,7 @@ public class HelloController {
         // Load the image from resources or file system
         Image image = new Image(getClass().getResource("logo.jpg").toExternalForm());
         centerImage.setImage(image);
+        welcomeMessage.setText("Welcome to Lanyard "+CryptoSystem.getInstance().getLoggedInCustomer().getName());
 
 //        List<Owning> fiatOwnings = new ArrayList<>();
 //        fiatOwnings.add(new Owning(1, (float)1.23, "BTC"));
@@ -286,6 +290,19 @@ public class HelloController {
         } catch (IOException e) {
             e.printStackTrace();
             // Optionally show an error dialog or log the error
+        }
+    }
+    @FXML
+    private void onLogout() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("login-page.fxml"));
+            Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
+
+            Stage currentStage = (Stage) transferButton.getScene().getWindow();
+            currentStage.setScene(newScene);
+            currentStage.setTitle("Login");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     @FXML
