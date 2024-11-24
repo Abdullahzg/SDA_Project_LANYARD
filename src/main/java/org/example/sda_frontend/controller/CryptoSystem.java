@@ -225,12 +225,14 @@ public class CryptoSystem {
                 billingAddress);
 
         // Create and add new customer
-        Customer newCustomer = new Customer(userId, name, birthDate, billingAddress, phone, email, currentDate, currentDate,
-                accountStatus, spotWallet, fiatWallet, bankDetails);
+        Customer newCustomer = new Customer(userId, name, birthDate, billingAddress, phone, email, currentDate, currentDate, accountStatus,
+                spotWallet, fiatWallet, bankDetails);
 
         User user = new User(userId, name, birthDate, billingAddress, phone, email, currentDate, currentDate, "active");
-        if(Customer.addNewCustomerDB(user, spotWallet, fiatWallet, bankDetails)) {
+        boolean success = Customer.addNewCustomerDB(user, spotWallet, fiatWallet, bankDetails);
+        if(success) {
             customers.add(newCustomer);
+            newCustomer = Customer.getCustomerByEmail(email);
             setLoggedInCustomer(newCustomer);
         }
     }
@@ -722,8 +724,7 @@ public class CryptoSystem {
         }
         return true;
     }
-    public boolean respondDirectly(int feedbackID)
-    {
+    public boolean respondDirectly(int feedbackID) {
         if (loggedInAdmin == null) {
             System.out.print("No loggedInAdmin is logged in. Exiting...");
             return false;
@@ -737,156 +738,83 @@ public class CryptoSystem {
     }
 
     public void transferFiatToAnotherUser(Scanner scanner) {
-
         if (loggedInCustomer == null) {
-
             System.out.println("No customer is logged in. Please log in to perform a transfer.");
-
             return;
-
         }
 
-
-
         // Take email input for the recipient
-
         System.out.print("Enter the recipient's email: ");
-
         String recipientEmail = scanner.nextLine();
 
         if (recipientEmail.equalsIgnoreCase(loggedInCustomer.getEmail())) {
-
             System.out.println("You cannot transfer to yourself. Transfer canceled.");
-
             return;
-
         }
 
         Customer recipient = getCustomerByEmail(recipientEmail);
-
         if (recipient == null) {
-
             System.out.println("Recipient not found. Transfer canceled.");
-
             return;
-
         }
-
-
 
         // Display the user's current balance
-
         float currentBalance = loggedInCustomer.getFiatWallet().getBalance();
-
         if (currentBalance <= 0) {
-
             System.out.println("You have no balance to transfer.");
-
             return;
-
         }
-
-
 
         System.out.printf("Your current balance: %.2f\n", currentBalance);
 
-
-
         // Take input for the amount to send
-
         System.out.print("Enter the amount to send: ");
-
         float amountToSend = scanner.nextFloat();
 
         scanner.nextLine(); // Consume leftover newline
 
-
-
         // Validate the amount
-
         if (amountToSend <= 0 || amountToSend > currentBalance) {
-
             System.out.println("Invalid amount. Transfer canceled.");
-
             return;
-
         }
-
-
 
         // Display how much the user will have left if they send
-
         float remainingBalance = currentBalance - amountToSend;
-
         System.out.printf("You will have %.2f left after the transfer.\n", remainingBalance);
 
-
-
         // Confirm the transfer
-
         System.out.print("Confirm transfer? (yes/no): ");
-
         String confirmation = scanner.nextLine().trim().toLowerCase();
-
         if (!confirmation.equals("yes")) {
-
             System.out.println("Transfer canceled.");
-
             return;
-
         }
 
-
-
         // Perform the transfer
-
         FiatWallet senderWallet = loggedInCustomer.getFiatWallet();
-
         FiatWallet recipientWallet = recipient.getFiatWallet();
-
         senderWallet.transferFiatToAnotherUser(amountToSend, recipientWallet);
-
-
 
         System.out.println("Transfer successful!");
 
-
-
         // Send notification email to recipient
-
         String emailSubject = "Lanyard | FIAT Transfer Notification";
-
         String emailBody = "You have received a FIAT transfer of $" + amountToSend + " from " + loggedInCustomer.getName()
-
                 + " (" + loggedInCustomer.getEmail() + ").";
 
-
-
         Email email = new Email(recipient.getEmail(), emailSubject, emailBody);
-
         email.sendEmail(false);
-
     }
-
-
 
     public Admin getAdminByEmail(String email) {
-
         return Admin.getAdminByEmail(email);
-
     }
 
-
-
     public void askAISuggestions() {
-
         if (loggedInCustomer == null) {
-
             System.out.println("No customer is logged in. Please log in to get AI suggestions.");
-
             return;
-
         }
-
     }
 }

@@ -38,7 +38,8 @@ public class Customer extends User{
     }
 
     public static boolean addNewCustomerDB(User user, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails) {
-        return DBHandler.saveCustomer(new CustomerModel(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), new Date(), new Date(), "active"), spotWallet, fiatWallet, bankDetails));
+        return DBHandler.saveCustomer(new CustomerModel(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), new Date(), new Date(), "active"),
+                spotWallet, fiatWallet, bankDetails));
     }
 
     public SpotWallet getSpotWallet() { return spotWallet; }

@@ -90,7 +90,7 @@ public class RegisterPage {
                             500.0f,               // spot wallet balance
                             "USD",                // currency
                             10000.0f,             // max balance limit
-                            "4111111111111111",   // dummy card number
+                            "xxxx-xxxxxxx-x",   // dummy card number
                             new Date(),           // current date as expiry
                             "Default Bank",       // bank name
                             nameInput.getText(),  // account holder name

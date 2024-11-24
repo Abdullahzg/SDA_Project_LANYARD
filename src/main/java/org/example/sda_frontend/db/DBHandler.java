@@ -40,7 +40,7 @@ public class DBHandler {
         }
     }
 
-    public static boolean saveCustomer( CustomerModel customer) {
+    public static boolean saveCustomer(CustomerModel customer) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
@@ -198,7 +198,7 @@ public class DBHandler {
         }
     }
 
-    public static void depositOrWithdrawSpotWalletDB( SpotWallet spotWallet, String type) {
+    public static void depositOrWithdrawSpotWalletDB(SpotWallet spotWallet, String type) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
