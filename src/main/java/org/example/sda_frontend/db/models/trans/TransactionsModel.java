@@ -2,6 +2,7 @@ package org.example.sda_frontend.db.models.trans;
 
 import jakarta.persistence.*;
 import org.example.sda_frontend.db.models.user.CustomerModel;
+import org.example.sda_frontend.db.models.user.UserModel;
 
 import java.util.Date;
 
@@ -47,6 +48,10 @@ public class TransactionsModel {
 
     public CustomerModel getCustomer() {
         return customer;
+    }
+
+    public UserModel getUser() {
+        return customer.getUser();
     }
 
     public void setCustomer(CustomerModel customer) {

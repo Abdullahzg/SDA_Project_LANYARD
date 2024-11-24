@@ -28,6 +28,7 @@ public class CryptoSystem {
     private static CryptoSystem instance;
     private List<Customer> customers;
     private List<Admin> admin;
+    private List<Transaction> globalTransactions;
     private Customer loggedInCustomer; // Add logged-in customer
     private Admin loggedInAdmin;
     private APIController api;
@@ -44,6 +45,7 @@ public class CryptoSystem {
         customers = new ArrayList<>();
         loggedInCustomer = null;
         admin = new ArrayList<>();
+        globalTransactions = null;
     }
 
     public static CryptoSystem getInstance() {
@@ -157,16 +159,58 @@ public class CryptoSystem {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return null;
         }
-        return loggedInCustomer.getGlobalTransactionsAsString();
+        globalTransactions = Transaction.getGlobalTransactionsAsString();
+
+        if (globalTransactions.isEmpty()) {
+            return null; // Return an empty string if there are no transactions
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (int i = globalTransactions.size() - 1; i >= 0; i--) {
+                Transaction transaction = globalTransactions.get(i);
+                sb.append(transaction.transactionType).append(",")
+                        .append(transaction.coin != null ? transaction.coin : "N/A").append(",")
+                        .append(String.format("%.2f", transaction.getAmount())).append(",")
+                        .append(String.format("%.2f", transaction.getCoinRate())).append(",")
+                        .append(transaction.timestamp.toString()).append(",")
+                        .append(transaction.getTransactionId()).append("\n");
+            }
+            // Remove the last newline character if necessary
+            if (sb.length() > 0) {
+                sb.setLength(sb.length() - 1);
+            }
+            return sb.toString();
+        }
+
         //???? what is this below
         //loggedInCustomer.applyFilters();
     }
-    public String getSingleTransactionsAsString(int i) {
+    public String getSingleTransactionsAsString(int transactionID) {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return null;
         }
-        return loggedInCustomer.getSingleTransactionsAsString(i, api);
+
+        if (globalTransactions.isEmpty()) {
+            return ""; // Return an empty string if there are no transactions
+        } else {
+            for (Transaction transaction: globalTransactions) {
+                if(transaction.getTransactionId() == transactionID) {
+                    StringBuilder sb = new StringBuilder();
+                    JSONObject jj=api.giveSingleCoin(transaction.coin);
+                    String image= jj.getString("png32");
+                    sb.append(transaction.getUser().getName()).append(",")
+                            .append(jj.getString("name")).append(",")
+                            .append(image).append(",")
+                            .append(transaction.transactionType).append(",")
+                            .append(transaction.coin != null ? transaction.coin : "N/A").append(",")
+                            .append(String.format("%.2f", transaction.getAmount())).append(",")
+                            .append(String.format("%.2f", transaction.getCoinRate())).append(",")
+                            .append(transaction.timestamp.toString()).append("\n");
+                    return sb.toString();
+                }
+            }
+            return null;
+        }
         //???? what is this below
         //loggedInCustomer.applyFilters();
     }
@@ -640,7 +684,7 @@ public class CryptoSystem {
         loggedInCustomer.sellCoin(api, coinCode, usdtAmount);
     }
     public int totalTransactions(){
-        return Transaction.allTransactions.size();
+        return globalTransactions.size();
     }
     public void sellCoinForLoggedInCustomern(String coinCode, float usdtAmount) {
         if (loggedInCustomer == null) {

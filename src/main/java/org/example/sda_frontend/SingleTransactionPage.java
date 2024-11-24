@@ -24,11 +24,11 @@ import java.util.Locale;
 
 public class SingleTransactionPage {
 
-    private int code;
+    private int transactionID;
 
-    public void setCode(int code) {
-        this.code = code;
-        showTab1Content(); // Now that 'code' is set, we can update the UI
+    public void setCode(int transactionID) {
+        this.transactionID = transactionID;
+        showTab1Content(); // Now that 'transactionID' is set, we can update the UI
     }
 
     @FXML private ImageView bitcoinIcon;
@@ -151,8 +151,8 @@ public class SingleTransactionPage {
 
     @FXML
     public void showTab1Content() {
-        System.out.println(code);
-        String obj1 = CryptoSystem.getInstance().getSingleTransactionsAsString(code);
+        System.out.println(transactionID);
+        String obj1 = CryptoSystem.getInstance().getSingleTransactionsAsString(transactionID);
         String[] obj = obj1.split(",");
         try {
             coinName.setText(obj[1]);
@@ -169,7 +169,7 @@ public class SingleTransactionPage {
             commentsBox.getChildren().clear();
 
             // Get and process comments
-            String obj2 = CryptoSystem.getInstance().getTransactionComments(code);
+            String obj2 = CryptoSystem.getInstance().getTransactionComments(transactionID);
             List<String> obj3 = Arrays.asList(obj2.split("\n"));
 
             for (String s : obj3) {
@@ -217,7 +217,7 @@ public class SingleTransactionPage {
             System.out.println("Please enter an amount.");
             return;
         }
-        CryptoSystem.getInstance().addCommentToTransaction(code,comment);
+        CryptoSystem.getInstance().addCommentToTransaction(transactionID,comment);
         showTab1Content();
     }
 

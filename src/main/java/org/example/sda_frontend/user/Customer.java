@@ -237,6 +237,7 @@ public class Customer extends User{
         }
     }
     public String getTransactionsAsString(APIController api) {
+        // get all transactions from db
         if (transactions.isEmpty()) {
             return ""; // Return an empty string if there are no transactions
         } else {
@@ -255,54 +256,6 @@ public class Customer extends User{
                 sb.setLength(sb.length() - 1);
             }
             return sb.toString();
-        }
-    }
-
-    public String getGlobalTransactionsAsString() {
-        if (transactions.isEmpty()) {
-            return ""; // Return an empty string if there are no transactions
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (int i = Transaction.allTransactions.size() - 1; i >= 0; i--) {
-                Transaction transaction = transactions.get(i);
-
-                sb.append(transaction.transactionType).append(",")
-                        .append(transaction.coin != null ? transaction.coin : "N/A").append(",")
-                        .append(String.format("%.2f", transaction.getAmount())).append(",")
-                        .append(String.format("%.2f", transaction.getCoinRate())).append(",")
-                        .append(transaction.timestamp.toString()).append(",")
-                        .append(transaction.getTransactionId()).append("\n");
-            }
-            // Remove the last newline character if necessary
-            if (sb.length() > 0) {
-                sb.setLength(sb.length() - 1);
-            }
-            return sb.toString();
-        }
-    }
-    public String getSingleTransactionsAsString(int id, APIController api) {
-        if (transactions.isEmpty()) {
-            return ""; // Return an empty string if there are no transactions
-        } else {
-            for (Transaction transaction: Transaction.allTransactions) {
-                if(transaction.getTransactionId()==id){
-                    StringBuilder sb = new StringBuilder();
-                    JSONObject jj=api.giveSingleCoin(transaction.coin);
-                    String image= jj.getString("png32");
-                    sb.append(transaction.getUser().getName()).append(",")
-                            .append(jj.getString("name")).append(",")
-                            .append(image).append(",")
-                            .append(transaction.transactionType).append(",")
-                            .append(transaction.coin != null ? transaction.coin : "N/A").append(",")
-                            .append(String.format("%.2f", transaction.getAmount())).append(",")
-                            .append(String.format("%.2f", transaction.getCoinRate())).append(",")
-                            .append(transaction.timestamp.toString()).append("\n");
-                    return sb.toString();
-                }
-
-            }
-
-            return null;
         }
     }
     public String getTransactionComments(int id, APIController api) {

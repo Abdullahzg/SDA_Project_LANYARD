@@ -41,6 +41,11 @@ public class Transaction {
     public Transaction() {
         sus=false;
     }
+
+    public static List<Transaction> getTransactionsFromDB() {
+        // Fetch the transactions from the database
+        return DBHandler.getTransactions();
+    }
     // Getters and setters
 
     public List<Comments> getCoomments(){
@@ -235,5 +240,15 @@ public class Transaction {
     {
         transaction.sus=state;
     }
+
+
+    public static List<Transaction> getGlobalTransactionsAsString() {
+        List<Transaction> transactions = Transaction.getTransactionsFromDB();
+        if (transactions.isEmpty()) {
+            return null; // Return an empty string if there are no transactions
+        }
+        return transactions;
+    }
+
 
 }
