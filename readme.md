@@ -59,11 +59,20 @@ Before running the application, you need to set up the database configuration. F
 
 2. Open the `src/main/resources/database.properties` file and fill in your database credentials:
     ```properties
-      hibernate.connection.driver_class=org.postgresql.Driver
       hibernate.connection.url=jdbc:your_database_url
       hibernate.connection.username=your_username
       hibernate.connection.password=your_password
-      hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+    ```
+
+3. Copy the example `email.properties` file to create your own configuration file:
+    ```sh
+    cp src/main/resources/email.properties.example src/main/resources/email.properties
+    ```
+
+4. Open the `src/main/resources/email.properties` file and fill in your email credentials:
+    ```properties
+    sender_email=your_email@gmail.com
+    app_password=your_app_password
     ```
 
 ### Running the Application
@@ -95,6 +104,8 @@ mvn clean javafx:run
 - org.hibernate.orm:hibernate-c3p0:6.3.1.Final
 - jakarta.persistence:jakarta.persistence-api:3.1.0
 - com.mchange:c3p0:0.9.5.5
+- javax.mail:javax.mail-api:1.6.2
+- com.sun.mail:javax.mail:1.6.2
 
 ## License
 

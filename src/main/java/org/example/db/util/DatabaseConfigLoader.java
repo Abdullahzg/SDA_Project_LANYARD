@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class DatabaseConfigLoader {
-    private static final String PROPERTIES_FILE = "database.properties";
+    private static final String PROPERTIES_FILE = "lanyard.properties";
 
     public static Configuration configureHibernate() {
         Configuration configuration = new Configuration();

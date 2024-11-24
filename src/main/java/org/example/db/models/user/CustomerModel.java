@@ -3,10 +3,16 @@ package org.example.db.models.user;
 import jakarta.persistence.*;
 import org.example.bank.BankDetails;
 import org.example.db.models.bank.BankDetailsModel;
+import org.example.db.models.useractions.FeedbackModel;
 import org.example.db.models.wallet.FiatWalletModel;
 import org.example.db.models.wallet.SpotWalletModel;
+import org.example.useractions.Feedback;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -46,6 +52,12 @@ public class CustomerModel {
         this.bankDetails = new BankDetailsModel(bankDetails.getDetailsId(), bankDetails.getCardNumber(),
                 bankDetails.getExpiryDate(), bankDetails.getBankName(),
                 bankDetails.getAccountHolderName(), bankDetails.getBillingAddress());
+    }
+
+    public CustomerModel(String name, Date birthDate, String address, String phone, String email, Date accountCreationDate, Date lastLoginDate, String status) {
+        this.user = new UserModel(name, birthDate, address, phone, email, accountCreationDate, lastLoginDate, status);
+
+
     }
 
     // Getters and Setters
@@ -88,12 +100,4 @@ public class CustomerModel {
     public UserModel getUser() {
         return user;
     }
-
-//    public List<TransactionsModel> getTransactions() {
-//        return transactions;
-//    }
-
-//    public void setTransactions(List<Transaction> transactions) {
-//        this.transactions = transactions;
-//    }
 }

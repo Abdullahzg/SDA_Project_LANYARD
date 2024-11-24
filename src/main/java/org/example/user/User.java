@@ -3,6 +3,8 @@ package org.example.user;
 import org.example.db.DBHandler;
 import org.example.db.models.user.CustomerModel;
 import org.example.db.models.user.UserModel;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 
@@ -13,10 +15,6 @@ public class User {
     private String address;
     private String phone;
     private String email;
-    // private SpotWallet spotWallet;
-    // private FiatWallet fiatWallet;
-    // private BankDetails bankDetails;
-    // private List<Transaction> transactions;
     private static int IDs = 1;
 
     Date accountCreationDate;
@@ -50,13 +48,14 @@ public class User {
         this.accountCreationDate = currentDate;
         this.lastLoginDate = currentDate1;
         this.accountStatus = active != null ? active : "inactive";
+        IDs++; // Increment the static ID counter
     }
 
     public static int getIDs() {
         return IDs;
     }
 
-    public static void addNewUserDB(User user) {
+    public static void addNewUserDB(@NotNull User user) {
         DBHandler.saveUser(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), user.getAccountCreationDate(), user.getLastLoginDate(), user.getAccountStatus()));
     }
 
@@ -100,7 +99,7 @@ public class User {
         this.userId = userId;
     }
 
-    public static Customer getCustomerByEmail(String email) {
+    public static @Nullable Customer getCustomerByEmail(String email) {
         CustomerModel customerModel = DBHandler.getCustomerByEmail(email);
         if (customerModel == null) {
             return null;

@@ -1,6 +1,7 @@
 package org.example.trans;
 import org.example.controller.CryptoSystem;
 import org.example.user.Customer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Scanner;
 import java.util.Date;
@@ -18,6 +19,7 @@ public class TransferService {
 
         submitForm(cryptoSystem, receiverId, amount);
     }
+
     public void submitForm(CryptoSystem cryptoSystem, int receiverId, float amount) {
         System.out.println("\nTransfer Form");
         boolean isValid = validateForm(cryptoSystem, receiverId, amount);
@@ -25,15 +27,13 @@ public class TransferService {
             System.out.println("Validation failed. Transfer cannot proceed.");
             return;
         }
+
         float senderBalance = fetchBalance(cryptoSystem);
         if (senderBalance < amount) {
             System.out.println("Insufficient balance for the transfer.");
-            return;
         }
-        //float updatedReceiverBalance = receiver.getFiatWallet().getBalance();
-        //System.out.printf("Transfer of %.2f completed successfully from User ID %d to User ID %d.\n",amount, sender.getUserId(), receiverId);
-        //System.out.printf("Updated balance for Receiver (User ID %d): %.2f.\n", receiverId, updatedReceiverBalance);
     }
+
     private boolean validateForm(CryptoSystem cryptoSystem, int receiverId, float amount) {
         if (amount <= 0) {
             System.out.println("Invalid amount. Amount must be greater than zero.");
@@ -64,11 +64,13 @@ public class TransferService {
         System.out.println("Validation successful.");
         return true;
     }
+
     public void updateBalance(int customerId, float newBalance) {
         // write sql query for updating balance of customers in database
         System.out.printf("Updating balance for User ID %d to %.2f...\n", customerId, newBalance);
 
     }
+
     public void recordTransaction(Customer sender, Customer receiver, float amount) {
         Transaction transaction = new Transaction(
                 TransactionIDGenerator.generate(),
@@ -83,7 +85,8 @@ public class TransferService {
 
         System.out.println("Transaction recorded successfully.");
     }
-        private float fetchBalance(CryptoSystem cryptoSystem) {
+
+    private float fetchBalance(@NotNull CryptoSystem cryptoSystem) {
         Customer sender = cryptoSystem.getLoggedInCustomer();
         if (sender == null) {
             System.out.println("No sender is logged in.");

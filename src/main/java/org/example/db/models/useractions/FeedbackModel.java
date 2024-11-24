@@ -2,6 +2,7 @@ package org.example.db.models.useractions;
 
 import jakarta.persistence.*;
 import org.example.db.models.user.CustomerModel;
+import org.example.user.Customer;
 
 @Entity
 @Table(name = "feedbacks")

@@ -52,6 +52,18 @@ public class UserModel {
         this.accountStatus = active != null ? active : "inactive";
     }
 
+    public UserModel(String name, Date birthDate, String address, String phone, String email, Date date, Date date1, String active, String admin) {
+        this.name = name;
+        this.birthDate = birthDate;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
+        this.accountCreationDate = date;
+        this.lastLoginDate = date1;
+        this.accountStatus = active != null ? active : "active";
+        this.userType = admin != null ? admin : "customer";
+    }
+
     // Getters and Setters
     public int getUserId() {
         return userId;
@@ -123,5 +135,9 @@ public class UserModel {
 
     public void setAccountStatus(String accountStatus) {
         this.accountStatus = accountStatus;
+    }
+
+    public String getStatus() {
+        return accountStatus;
     }
 }

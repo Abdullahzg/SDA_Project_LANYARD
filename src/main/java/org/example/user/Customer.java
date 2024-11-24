@@ -4,12 +4,13 @@ import org.example.ai.APIController;
 import org.example.bank.BankDetails;
 import org.example.currency.Owning;
 import org.example.db.DBHandler;
-import org.example.db.models.trans.TransactionsModel;
 import org.example.db.models.user.CustomerModel;
 import org.example.db.models.user.UserModel;
 import org.example.trans.Transaction;
+import org.example.useractions.Feedback;
 import org.example.wallet.FiatWallet;
 import org.example.wallet.SpotWallet;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -18,7 +19,7 @@ public class Customer extends User{
     private FiatWallet fiatWallet;
     private BankDetails bankDetails;
     private List<Transaction> transactions;
-
+    private List<Feedback> feedbacks;
 
     public Customer(int userId, String name, Date birthDate, String address, String phone, String email, Date accountCreationDate, Date lastLoginDate, String accountStatus, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails){
         super(userId,name, birthDate,address,phone,email, accountCreationDate,lastLoginDate,accountStatus);
@@ -26,14 +27,17 @@ public class Customer extends User{
         this.fiatWallet = fiatWallet;
         this.bankDetails = bankDetails;
         this.transactions = new ArrayList<>();
+        this.feedbacks = new ArrayList<>();
     }
 
-    public static void addNewCustomerDB(User user, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails) {
-        DBHandler.saveCustomer(new CustomerModel(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), new Date(), new Date(), "active"), spotWallet, fiatWallet, bankDetails));
+    public static boolean addNewCustomerDB(@NotNull User user, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails) {
+        return DBHandler.saveCustomer(new CustomerModel(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), new Date(), new Date(), "active"), spotWallet, fiatWallet, bankDetails));
     }
 
     public SpotWallet getSpotWallet() { return spotWallet; }
+
     public FiatWallet getFiatWallet() { return fiatWallet; }
+
     public List<Transaction> getTransactions() { return transactions; }
 
     public void setSpotWallet(SpotWallet spotWallet) {this.spotWallet = spotWallet;}
@@ -41,6 +45,7 @@ public class Customer extends User{
     public BankDetails getBankDetails() {
         return bankDetails;
     }
+
     public void setBankDetails(BankDetails bankDetails) {
         this.bankDetails = bankDetails;
 
@@ -65,7 +70,7 @@ public class Customer extends User{
         System.out.println("Transaction recorded successfully.");
     }
 
-    public void buyCoin(APIController api, String coinCode, float amount) {
+    public void buyCoin(@NotNull APIController api, String coinCode, float amount) {
         FiatWallet fiatWallet = getFiatWallet();
 
         // Fetch exchange rate for the coin
@@ -95,6 +100,7 @@ public class Customer extends User{
         }
 
     }
+
     public void sellCoin(APIController api, String coinCode, float usdtAmount) {
         FiatWallet fiatWallet = getFiatWallet();
 
@@ -181,5 +187,32 @@ public class Customer extends User{
     public void flagForReview()
     {
         System.out.println("Flagging for review");
+    }
+
+    public boolean giveFeedback() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Subject: ");
+
+        String subject = scanner.nextLine();
+        System.out.print("Enter Feedback: ");
+
+        String feedback = scanner.nextLine();
+        System.out.print("Enter Priority Level (1-3): ");
+
+        int priorityLevel = scanner.nextInt();
+        while (priorityLevel < 1 || priorityLevel > 3) {
+            System.out.println("Invalid Priority Level");
+            System.out.print("Enter Priority Level (1-3): ");
+            priorityLevel = scanner.nextInt();
+        }
+        scanner.nextLine();
+
+        Feedback feedbackObj = new Feedback(Feedback.generateFeedbackId(), subject, getUserId(), feedback, priorityLevel);
+        feedbacks.add(feedbackObj);
+        return Feedback.addFeedbackToDB(feedbackObj, this);
+    }
+
+    public String getStatus() {
+        return "Customer";
     }
 }
