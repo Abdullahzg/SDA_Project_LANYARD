@@ -1,9 +1,0 @@
-hibernate.connection.driver_class=
-hibernate.connection.url=
-hibernate.connection.username=
-hibernate.connection.password=
-
-sender_email=
-app_password=
-
-groq_lanyard=
