@@ -4,7 +4,6 @@ import org.example.ai.APIController;
 import org.example.bank.BankDetails;
 import org.example.currency.Owning;
 import org.example.db.DBHandler;
-import org.example.db.models.trans.TransactionsModel;
 import org.example.db.models.user.CustomerModel;
 import org.example.db.models.user.UserModel;
 import org.example.trans.Transaction;

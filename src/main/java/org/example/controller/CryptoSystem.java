@@ -1,9 +1,9 @@
 package org.example.controller;
 
+import org.example.ai.AI;
 import org.example.bank.BankDetails;
 import org.example.bank.BankDetailsIDGenerator;
 import org.example.trans.Transaction;
-import org.example.trans.TransferService;
 import org.example.useractions.*;
 import org.example.user.Admin;
 import org.example.user.Customer;
@@ -29,38 +29,34 @@ public class CryptoSystem {
     private List<Admin> admin;
     private Customer loggedInCustomer; // Add logged-in customer
     private Admin loggedInAdmin;
-    private APIController api;
-    float systemBalance;
-    float transactionFees;
-    Date lastBackupDate;
-    int activeUsers;
-    String systemStatus; // "operational" or "maintenance"
+    private final APIController API;
+    private final AI ai = new AI();
 
-    private CryptoSystem(String apiS) {
-        api = new APIController(apiS);
+    private CryptoSystem(String APIS) {
+        API = new APIController(APIS);
         customers = new ArrayList<>();
         loggedInCustomer = null;
         loggedInAdmin = null;
         admin = new ArrayList<>();
     }
 
-    public static CryptoSystem getInstance(String apiS) {
+    public static CryptoSystem getInstance(String APIS) {
         if (instance == null) {
-            instance = new CryptoSystem(apiS);
+            instance = new CryptoSystem(APIS);
         }
         return instance;
     }
 
     public void printTopNumber(int i) {
-        api.printTopCoins(i);
+        API.printTopCoins(i);
     }
 
     public void printSingleCoin(String i) {
-        api.printSingleCoin(i);
+        API.printSingleCoin(i);
     }
 
     JSONArray giveTopCoins(int i){
-        return api.giveTopCoins(i);
+        return API.giveTopCoins(i);
     }
 
     void depositToSpotWalletn(float depositAmount) {
@@ -97,7 +93,7 @@ public class CryptoSystem {
 
 
         // Fetch the exchange rate for USDT to USD
-        float exchangeRate = api.getExchangeRate("USDT", "USD");
+        float exchangeRate = API.getExchangeRate("USDT", "USD");
         if (exchangeRate <= 0) {
             System.out.println("Failed to retrieve the exchange rate. Transfer canceled.");
             return;
@@ -132,7 +128,7 @@ public class CryptoSystem {
         }
 
 
-        return  loggedInCustomer.getFiatWallet().viewOwningsn(api);
+        return  loggedInCustomer.getFiatWallet().viewOwningsn(API);
     }
 
     public void viewCustomerTransactions() {
@@ -492,7 +488,7 @@ public class CryptoSystem {
         }
 
         // Fetch the exchange rate for USDT to USD
-        float exchangeRate = api.getExchangeRate("USDT", "USD");
+        float exchangeRate = API.getExchangeRate("USDT", "USD");
         if (exchangeRate <= 0) {
             System.out.println("Failed to retrieve the exchange rate. Transfer canceled.");
             return;
@@ -564,7 +560,7 @@ public class CryptoSystem {
         System.out.print("Enter the amount in USDT you want to spend: ");
         float amount = scanner.nextFloat();
 
-        loggedInCustomer.buyCoin(api, coinCode, amount);
+        loggedInCustomer.buyCoin(API, coinCode, amount);
     }
 
     public void sellCoinForLoggedInCustomer() {
@@ -572,7 +568,7 @@ public class CryptoSystem {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return;
         }
-        loggedInCustomer.getFiatWallet().viewOwnings(api);
+        loggedInCustomer.getFiatWallet().viewOwnings(API);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -582,7 +578,7 @@ public class CryptoSystem {
         System.out.print("Enter the amount in USDT you want to receive: ");
         float usdtAmount = scanner.nextFloat();
 
-        loggedInCustomer.sellCoin(api, coinCode, usdtAmount);
+        loggedInCustomer.sellCoin(API, coinCode, usdtAmount);
     }
 
     public void viewCustomerOwnings() {
@@ -590,7 +586,7 @@ public class CryptoSystem {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return;
         }
-        loggedInCustomer.getFiatWallet().viewOwnings(api);
+        loggedInCustomer.getFiatWallet().viewOwnings(API);
     }
 
     public void sendNotification(String message) {
@@ -624,33 +620,16 @@ public class CryptoSystem {
         viewPortfolio(userId);
     }
 
-    public void transferFIAT() {
-        if (loggedInCustomer == null) {
-            System.out.println("No customer is logged in. Please log in to perform a transfer.");
-
-        }
-
-        TransferService transferService = new TransferService();
-        System.out.println("\n--- FIAT Transfer Form ---");
-        transferService.transferFIAT(this);
-    }
-
     public boolean addComment(int transactionID, String comment) {
         if (loggedInCustomer == null) {
             System.out.print("No customer is logged in. Please log in to perform a transfer.");
             return false;
         }
-        Scanner sc = new Scanner(System.in);
+
         Comments comments=new Comments();
         int userid=loggedInCustomer.getUserId();
-        if (comments.addComment(userid,comment,transactionID))
-        {
-            return true;
-        }
-        else
-            return false;
 
-
+        return comments.addComment(userid,comment,transactionID);
     }
 
     public void selectFeedback() {
@@ -751,5 +730,12 @@ public class CryptoSystem {
 
     public Admin getAdminByEmail(String email) {
         return Admin.getAdminByEmail(email);
+    }
+
+    public void askAISuggestions() {
+        if (loggedInCustomer == null) {
+            System.out.println("No customer is logged in. Please log in to get AI suggestions.");
+            return;
+        }
     }
 }

@@ -46,7 +46,7 @@ public class Main {
         handleCustomerMenu(csMain, sc);
     }
 
-    private static @Nullable Customer handleCustomerRegistration(@NotNull CryptoSystem csMain, Scanner sc) {
+    private static @Nullable Customer handleCustomerRegistration(@NotNull CryptoSystem csMain) {
         System.out.println("\n--- Customer Registration ---");
         csMain.takeCustomerInput();
         Customer loggedInCustomer = csMain.getLoggedInCustomer();
@@ -98,35 +98,37 @@ public class Main {
                 break;
             }
             else if (loginChoice == 2) {
-                loggedInCustomer = handleCustomerRegistration(csMain, sc);
+                loggedInCustomer = handleCustomerRegistration(csMain);
                 if (loggedInCustomer == null) {
                     continue;
                 }
                 break;
             } else if (loginChoice == 3) {
-                    System.out.println("Exiting the system. Goodbye!");
-                    sc.close();
-                    return;
+                System.out.println("Exiting the system. Goodbye!");
+                sc.close();
+                return;
             } else {
-                    System.out.println("Invalid option. Please try again.");
+                System.out.println("Invalid option. Please try again.");
             }
         }
 
-        while (loggedInCustomer != null) {
+        while (true) {
             System.out.println("\n--- Customer Menu ---");
             System.out.println("1. View Your Details");
             System.out.println("2. Buy FIAT");
             System.out.println("3. Sell FIAT");
             System.out.println("4. View Owned Coins");
             System.out.println("5. View Your Transactions");
-            System.out.println("6. Deposit Funds into Spot Wallet");
-            System.out.println("7. Withdraw Funds from Spot Wallet");
-            System.out.println("8. Transfer Funds Between Wallets");
-            System.out.println("9. Transfer FIAT to Another User");
-            System.out.println("10. Display Top Coins");
-            System.out.println("11. View Details of Single Coin");
-            System.out.println("12. Give Feedback");
-            System.out.println("13. Logout");
+            System.out.println("6. Comment on a Transaction");
+            System.out.println("7. Deposit Funds into Spot Wallet");
+            System.out.println("8. Withdraw Funds from Spot Wallet");
+            System.out.println("9. Transfer Funds Between Wallets");
+            System.out.println("10. Transfer FIAT to Another User");
+            System.out.println("11. Display Top Coins");
+            System.out.println("12. View Details of Single Coin");
+            System.out.println("13. Give Feedback");
+            System.out.println("14. Ask AI for Coin Suggestions");
+            System.out.println("15. Logout");
             System.out.print("Choose an option: ");
 
             int choice = sc.nextInt();
@@ -151,59 +153,54 @@ public class Main {
                     break;
                 case 5:
                     csMain.viewCustomerTransactions();
-                    System.out.print("Would you like to add a comment? (Y/n)");
-                    char ans=sc.next().charAt(0);
-                    if (ans == 'Y') {
-                        System.out.print("Enter transaction ID");
-                        int id=sc.nextInt();
-                        System.out.print("Comment: ");
-                        String comment=sc.nextLine();
-                        if (csMain.addComment(id, comment)) {
-                            System.out.println("Comment added.");
-                        } else {
-                            System.out.println("Comment not added. Something unexpected happened.");
-                        }
-                        break;
-                    } else if (ans == 'n') {
-                        break;
-                    } else {
-                        System.out.print("Wrong input. Exiting the code...");
-                    }
                     break;
                 case 6:
-                    csMain.depositToSpotWallet();
+                    System.out.print("Enter transaction ID: ");
+                    int id = sc.nextInt();
+                    sc.nextLine(); // Consume newline
+                    System.out.print("Comment: ");
+                    String comment = sc.nextLine();
+                    if (csMain.addComment(id, comment)) {
+                        System.out.println("Comment added.");
+                    } else {
+                        System.out.println("Comment not added. Something unexpected happened.");
+                    }
                     break;
                 case 7:
-                    csMain.withdrawFromSpotWallet();
+                    csMain.depositToSpotWallet();
                     break;
                 case 8:
-                    csMain.transferBetweenWallets();
+                    csMain.withdrawFromSpotWallet();
                     break;
                 case 9:
-                    csMain.transferFiatToAnotherUser(sc);
+                    csMain.transferBetweenWallets();
                     break;
                 case 10:
+                    csMain.transferFiatToAnotherUser(sc);
+                    break;
+                case 11:
                     System.out.print("Enter the number of top coins to display: ");
                     int numCoins = sc.nextInt();
                     sc.nextLine();
                     csMain.printTopNumber(numCoins);
                     break;
-                case 11:
+                case 12:
                     System.out.print("Enter the code of the coin: ");
                     String coinCode = sc.nextLine();
                     csMain.printSingleCoin(coinCode);
                     break;
-                case 12:
+                case 13:
                     System.out.print("Feedback: ");
-
                     if (csMain.giveFeedback(loggedInCustomer.getUserId())) {
                         System.out.println("Feedback submitted successfully!");
-                    }
-                    else {
+                    } else {
                         System.out.println("Feedback could not be submitted!");
                     }
                     break;
-                case 13:
+                case 14:
+                    csMain.askAISuggestions();
+                    break;
+                case 15:
                     System.out.println("Logging out...");
                     csMain.setLoggedInCustomer(null);
                     return;
@@ -236,9 +233,8 @@ public class Main {
                     continue;
                 }
                 break;
-            }
-            else if (loginChoice == 2) {
-                loggedInAdmin = handleAdminRegistration(csMain, sc);
+            } else if (loginChoice == 2) {
+                loggedInAdmin = handleAdminRegistration(csMain);
                 if (loggedInAdmin == null) {
                     continue;
                 }
@@ -332,7 +328,7 @@ public class Main {
         }
     }
 
-    private static @Nullable Admin handleAdminRegistration(@NotNull CryptoSystem csMain, @NotNull Scanner sc) {
+    private static @Nullable Admin handleAdminRegistration(@NotNull CryptoSystem csMain) {
         System.out.println("\n--- Admin Registration ---");
         csMain.takeAdminInput();
         Admin loggedInAdmin = csMain.getLoggedInAdmin();

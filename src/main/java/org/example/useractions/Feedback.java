@@ -29,6 +29,16 @@ public class Feedback {
         this.priority_level = priorityLevel;
     }
 
+    public Feedback(int feedbackId, String subject, int userId, String feedback, int priorityLevel, String status, String response) {
+        this.feedbackId = feedbackId;
+        this.subject = subject;
+        this.userID = userId;
+        this.feedback = feedback;
+        this.priority_level = priorityLevel;
+        this.status = status;
+        this.response = response;
+    }
+
     public static int generateFeedbackId() {
         return feedbackCounter++;
     }
@@ -72,7 +82,6 @@ public class Feedback {
             throw new IllegalStateException("Customer not found in the database.");
         }
 
-        // Create a new TransactionsModel instance
         FeedbackModel feedback = new FeedbackModel(feedbackObj.getSubject(), feedbackObj.getFeedback(), feedbackObj.getPriorityLevel(), feedbackObj.getStatus(), feedbackObj.getResponse(), customerModel);
         if(DBHandler.insertFeedback(feedback)) {
             Email.notifyAdminsOfNewFeedback(feedbackObj, customer.getName());

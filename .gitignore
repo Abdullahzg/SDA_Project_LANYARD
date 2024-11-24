@@ -37,3 +37,4 @@ build/
 src/main/resources/database.properties
 src/main/resources/db.properties
 src/main/resources/email.properties
+src/main/resources/lanyard.properties

@@ -37,9 +37,9 @@ public class Email {
 
     public void sendEmail(boolean sentToAdmin) {
         Properties props = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("email.properties")) {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("lanyard.properties")) {
             if (input == null) {
-                System.out.println("Sorry, unable to find email.properties");
+                System.out.println("Sorry, unable to find lanyard.properties");
                 return;
             }
             props.load(input);
