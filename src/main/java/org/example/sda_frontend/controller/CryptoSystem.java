@@ -1,5 +1,6 @@
 package org.example.sda_frontend.controller;
-import org.example.sda_frontend.ai.AI;
+
+import org.example.sda_frontend.ai.AIAdviser;
 import org.example.sda_frontend.bank.BankDetails;
 import org.example.sda_frontend.bank.BankDetailsIDGenerator;
 import org.example.sda_frontend.trans.Transaction;
@@ -35,7 +36,7 @@ public class CryptoSystem {
     Date lastBackupDate;
     int activeUsers;
     String systemStatus; // "operational" or "maintenance"
-    private final AI ai = new AI();
+    private final AIAdviser ai = new AIAdviser();
 
 
     private CryptoSystem(String apiS) {

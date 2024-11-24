@@ -14,6 +14,11 @@ module org.example.sda_frontend {
     requires org.postgresql.jdbc;
     requires c3p0;
 
+    requires java.net.http;
+    requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.core;
+    requires com.fasterxml.jackson.annotation;
+
     // Open packages to modules that use reflection
     opens org.example.sda_frontend to javafx.fxml;
     opens org.example.sda_frontend.controller to javafx.fxml;

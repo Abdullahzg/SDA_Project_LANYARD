@@ -3,8 +3,13 @@ package org.example.sda_frontend.ai;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.example.sda_frontend.currency.Owning;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.math.BigInteger;
+import java.util.List;
 
 public class APIController {
     private String apiKey;
@@ -58,6 +63,7 @@ public class APIController {
             e.printStackTrace();
         }
     }
+
     public JSONArray giveTopCoins(int top){
         try {
             HttpResponse<String> response = Unirest.post("https://api.livecoinwatch.com/coins/list")
@@ -118,6 +124,7 @@ public class APIController {
             e.printStackTrace();
         }
     }
+
     public JSONObject giveSingleCoin(String code) {
         try {
             HttpResponse<String> response = Unirest.post("https://api.livecoinwatch.com/coins/single")
@@ -136,6 +143,7 @@ public class APIController {
         }
         return null;
     }
+
     public float getExchangeRate(String fromCurrency, String toCurrency) {
         try {
             HttpResponse<String> response = Unirest.post("https://api.livecoinwatch.com/coins/single")
@@ -158,5 +166,109 @@ public class APIController {
             System.err.println("Unexpected error: " + e.getMessage());
             return -1; // Return an invalid value for error handling
         }
+    }
+
+    public String getSingleCoinOverview(String code) {
+        try {
+            HttpResponse<String> response = Unirest.post("https://api.livecoinwatch.com/overview")
+                    .header("content-type", "application/json")
+                    .header("x-api-key", apiKey)
+                    .body("{\n\t\"currency\": "+code+"\n}")
+                    .asString();
+
+            JSONObject coin = new JSONObject(response.getBody());
+
+            if (coin.has("error")) {
+                JSONObject error = coin.getJSONObject("error");
+                int errorCode = error.getInt("code");
+                String status = error.getString("status");
+                String description = error.getString("description");
+
+                return "";
+            }
+
+            // Extract the data as required
+            String name = coin.getString("cap");
+            double rate = coin.getDouble("volume");
+            long volume = coin.getLong("liquidity");
+            long cap = coin.getLong("btcDominance");
+
+            // Return extracted values
+            return "Name: " + name + "\nCode: " + code + "\nRate: " + rate + "\nVolume: " + volume + "\nMarket Cap: " + cap;
+        } catch (UnirestException e) {
+            System.err.println("An error occurred while making the API request: " + e.getMessage());
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public String getSpecificCoinDetails(JSONObject coin, int i, boolean single, String coinCode) {
+        StringBuilder overviewBuilder = new StringBuilder();
+
+        if (single) {
+            overviewBuilder.append("coin" + i + coinCode).append(coinCode);
+        } else {
+            overviewBuilder.append("coin" + i + " code:").append(coin.getString("code"));
+        }
+
+        overviewBuilder.append(", rank:").append(coin.getInt("rank"))
+                .append(", exchanges: ").append(coin.getInt("exchanges"))
+                .append(", markets: ").append(coin.getInt("markets"))
+                .append(", volume: ").append(coin.getLong("volume"))
+                .append(", cap: ").append(coin.get("cap").toString())
+                .append(", rate: ").append(coin.getDouble("rate"))
+                .append(", allTimeHighUSD: ").append(coin.getDouble("allTimeHighUSD"));
+
+        JSONObject delta = coin.getJSONObject("delta");
+        overviewBuilder.append(", hour: ").append(delta.getDouble("hour"))
+                .append(", day: ").append(delta.getDouble("day"))
+                .append(", week: ").append(delta.getDouble("week"))
+                .append(", month: ").append(delta.getDouble("month"))
+                .append(", quarter: ").append(delta.getDouble("quarter"))
+                .append(", year: ").append(delta.getDouble("year"))
+                .append(", circulatingSupply: ").append(coin.get("circulatingSupply").toString())
+                .append(", totalSupply: ").append(coin.get("totalSupply").toString())
+                .append(", maxSupply: ").append(coin.get("maxSupply").toString())
+                .append(", age: ").append(coin.getInt("age"));
+
+        JSONArray categories = coin.getJSONArray("categories");
+        overviewBuilder.append(", categories: ").append(categories.toString());
+
+        JSONObject links = coin.getJSONObject("links");
+        overviewBuilder.append(", links: ").append(links.toString());
+
+        overviewBuilder.append(". ");
+
+        return overviewBuilder.toString();
+    }
+
+    public String getCoinsForAI(int size, List<Owning> ownings) {
+        // Get top coins from giveTopCoins method
+        JSONArray topCoins = giveTopCoins(size);
+        String overview = "";
+
+        // Add top coins to the overview
+        for (int i = 0; i < topCoins.length(); i++) {
+            overview += getSpecificCoinDetails(topCoins.getJSONObject(i), i, false, "");
+        }
+
+        int length = topCoins.length();
+
+        // Check if owned coins are in the top coins list, if not, add them
+        for (Owning owning : ownings) {
+            boolean isCoinInTop = false;
+            for (int i = 0; i < topCoins.length(); i++) {
+                if (topCoins.getJSONObject(i).getString("code").equals(owning.getCoin())) {
+                    isCoinInTop = true;
+                    break;
+                }
+            }
+            if (!isCoinInTop) {
+                overview += getSpecificCoinDetails(giveSingleCoin(owning.getCoin()), length, true, owning.getCoin());
+                ++length;
+            }
+        }
+
+        return overview;
     }
 }

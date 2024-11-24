@@ -29,30 +29,22 @@ public class Customer extends User{
 
 
     public Customer(int userId, String name, Date birthDate, String address, String phone, String email, Date accountCreationDate, Date lastLoginDate, String accountStatus, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails){
-
         super(userId,name, birthDate,address,phone,email, accountCreationDate,lastLoginDate,accountStatus);
-
         this.spotWallet = spotWallet;
-
         this.fiatWallet = fiatWallet;
-
         this.bankDetails = bankDetails;
-
         this.transactions = new ArrayList<>();
-
         this.feedbacks = new ArrayList<>();
-
     }
-
-
 
     public static boolean addNewCustomerDB(User user, SpotWallet spotWallet, FiatWallet fiatWallet, BankDetails bankDetails) {
-
         return DBHandler.saveCustomer(new CustomerModel(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), new Date(), new Date(), "active"), spotWallet, fiatWallet, bankDetails));
-
     }
+
     public SpotWallet getSpotWallet() { return spotWallet; }
+
     public FiatWallet getFiatWallet() { return fiatWallet; }
+
     public List<Transaction> getTransactions() { return transactions; }
 
     public void setSpotWallet(SpotWallet spotWallet) {this.spotWallet = spotWallet;}
@@ -60,6 +52,7 @@ public class Customer extends User{
     public BankDetails getBankDetails() {
         return bankDetails;
     }
+
     public void setBankDetails(BankDetails bankDetails) {
         this.bankDetails = bankDetails;
 
@@ -355,54 +348,43 @@ public class Customer extends User{
     }
 
     public boolean giveFeedback() {
-
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter Subject: ");
-
-
-
         String subject = scanner.nextLine();
 
         System.out.print("Enter Feedback: ");
-
-
-
         String feedback = scanner.nextLine();
 
         System.out.print("Enter Priority Level (1-3): ");
-
-
-
         int priorityLevel = scanner.nextInt();
 
         while (priorityLevel < 1 || priorityLevel > 3) {
-
             System.out.println("Invalid Priority Level");
-
             System.out.print("Enter Priority Level (1-3): ");
-
             priorityLevel = scanner.nextInt();
-
         }
-
         scanner.nextLine();
 
-
-
         Feedback feedbackObj = new Feedback(Feedback.generateFeedbackId(), subject, getUserId(), feedback, priorityLevel);
-
         feedbacks.add(feedbackObj);
-
         return Feedback.addFeedbackToDB(feedbackObj, this);
-
     }
 
-
-
     public String getStatus() {
-
         return "Customer";
+    }
 
+    // In Customer.java
+    public String getFinancialSummary(APIController api) {
+        StringBuilder summary = new StringBuilder();
+        summary.append("Fiat Wallet Balance: ").append(fiatWallet.getBalance()).append(" USDT\n");
+        summary.append("Spot Wallet Balance: ").append(spotWallet.getBalance()).append(" USD\n");
+        summary.append("Fiat Ownings:\n");
+        for (Owning owning : fiatWallet.getOwnings()) {
+            summary.append(owning.getCoin()).append(": ").append(owning.getAmount()).append(" (Rate: ")
+                    .append(api.getExchangeRate(owning.getCoin(), "USDT")).append(" USDT)\n");
+        }
+        return summary.toString();
     }
 }

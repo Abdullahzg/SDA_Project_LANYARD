@@ -72,16 +72,6 @@ Before running the application, you need to set up the database configuration. F
 
 ### Running the Application
 
-#### Command-Line Interface (CLI)
-
-To run the command-line interface, use the following command:
-
-```sh
-./run.sh
-```
-
-#### Graphical User Interface (GUI)
-
 To run the JavaFX graphical user interface, use the following command:
 
 ```sh
