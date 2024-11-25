@@ -1,16 +1,20 @@
 package org.example.sda_frontend.useractions;
 
-import org.example.sda_frontend.user.User;
+import org.example.sda_frontend.db.DBHandler;
+import org.example.sda_frontend.trans.Transaction;
+import org.example.sda_frontend.user.Customer;
+
+import java.util.List;
 
 public class Comments {
     int commentID;
-    User user;
+    Customer customer;
     String comment;
     int transactionID;
 
-    public Comments(User userID, String comment, int tID) {
+    public Comments(Customer customer, String comment, int tID) {
         this.commentID = 1;
-        this.user = userID;
+        this.customer = customer;
         this.comment = comment;
         this.transactionID=tID;
     }
@@ -19,36 +23,37 @@ public class Comments {
         
     }
 
-    public boolean addComment(int userID,String comment,int transID)
-    {
-        //save comment in the db with the user id and transaction id
+    public static List<Comments> getAllCommentsOnTransaction(Transaction transaction) {
+        return DBHandler.getCommentsOnSpecificTransaction(transaction.getTransactionId());
+    }
+
+    public boolean addComment(int customerID,String comment,int transID) {
+        //save comment in the db with the customer id and transaction id
         System.out.println("Adding Comment...");
-        if (findUserID(userID))
+        if (findCustomerID(customerID))
         {
             if (findTransaction(transID)) {
-                //write the sql query to add the comment with the given user id and transID
+                //write the sql query to add the comment with the given customer id and transID
                 return true;
             }
             else {System.out.println("Transaction not found");
             return false;}
         }
         else {
-            System.out.println("User not found");
+            System.out.println("Customer not found");
             return false;
         }
 
     }
 
-    public boolean findUserID(int userID)
-    {
+    public boolean findCustomerID(int customerID) {
         //write the sql query to find the USER BASED ON THE ID
         //if found return true
         //else return false
         return true;
     }
 
-    public boolean addAnonymousComment(int transID, String comment)
-    {
+    public boolean addAnonymousComment(int transID, String comment) {
         System.out.println("Anonymous comment adding");
         if (findTransaction(transID)) {
             //write the sql query to add the anonymous comment with the given transID
@@ -63,8 +68,8 @@ public class Comments {
     public void setCommentID(int commentID) {
         this.commentID = commentID;
     }
-    public void setUserID(User userID) {
-        this.user = userID;
+    public void setCustomer(Customer customerID) {
+        this.customer = customerID;
     }
     public void setComment(String comment) {
         this.comment = comment;
@@ -72,18 +77,21 @@ public class Comments {
     public int getCommentID() {
         return commentID;
     }
-    public User getUserID() {
-        return user;
+    public Customer getCustomer() {
+        return customer;
     }
     public String getComment() {
         return comment;
     }
 
-    public boolean findTransaction(int transactionID)
-    {
+    public boolean findTransaction(int transactionID) {
         //write the sql query to find the transaction BASED ON THE ID
         //if found return true
         //else return false
         return true;
+    }
+
+    public void saveCommentToDB(Customer customer, Transaction transaction) {
+        DBHandler.saveCommentToDB(customer, transaction, getComment());
     }
 }

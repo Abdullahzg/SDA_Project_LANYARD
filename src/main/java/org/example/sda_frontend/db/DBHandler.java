@@ -6,6 +6,7 @@ import org.example.sda_frontend.db.models.trans.TransactionsModel;
 import org.example.sda_frontend.db.models.user.AdminModel;
 import org.example.sda_frontend.db.models.user.CustomerModel;
 import org.example.sda_frontend.db.models.user.UserModel;
+import org.example.sda_frontend.db.models.useractions.CommentModel;
 import org.example.sda_frontend.db.models.useractions.FeedbackModel;
 import org.example.sda_frontend.db.models.wallet.FiatWalletModel;
 import org.example.sda_frontend.db.models.wallet.SpotWalletModel;
@@ -13,6 +14,7 @@ import org.example.sda_frontend.db.util.HibernateUtil;
 import org.example.sda_frontend.user.Admin;
 import org.example.sda_frontend.user.Customer;
 import org.example.sda_frontend.user.User;
+import org.example.sda_frontend.useractions.Comments;
 import org.example.sda_frontend.wallet.FiatWallet;
 import org.example.sda_frontend.wallet.SpotWallet;
 import org.hibernate.HibernateException;
@@ -374,5 +376,65 @@ public class DBHandler {
             session.close();
         }
         return transactions;
+    }
+
+    public static void saveCommentToDB(Customer customer, org.example.sda_frontend.trans.Transaction transaction, String comment) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction dbTransaction = null;
+        CustomerModel customerModel = getCustomerByEmail(customer.getEmail());
+        TransactionsModel transactionModel = getTransactionByID(transaction.getTransactionId());
+
+        try {
+            dbTransaction = session.beginTransaction();
+            session.merge(new CommentModel(customerModel, transactionModel, comment));
+            dbTransaction.commit();
+        } catch (HibernateException e) {
+            if (dbTransaction != null) dbTransaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public static TransactionsModel getTransactionByID(int transactionId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        TransactionsModel transactionModel = null;
+
+        try {
+            Query<TransactionsModel> query = session.createQuery("FROM TransactionsModel WHERE id = :transactionId", TransactionsModel.class);
+            query.setParameter("transactionId", transactionId);
+            transactionModel = query.uniqueResult();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+        return transactionModel;
+    }
+
+    public static List<Comments> getCommentsOnSpecificTransaction(int transactionID) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Comments> comments = null;
+
+        try {
+            Query<CommentModel> query = session.createQuery("FROM CommentModel WHERE transaction.id = :transactionID", CommentModel.class);
+            query.setParameter("transactionID", transactionID);
+            List<CommentModel> commentModels = query.list();
+            comments = new ArrayList<>();
+            for (CommentModel commentModel : commentModels) {
+                comments.add(new Comments(
+                        new Customer(commentModel.getCustomer().getUser().getUserId(), commentModel.getCustomer().getUser().getName(), commentModel.getCustomer().getUser().getBirthDate(), commentModel.getCustomer().getUser().getAddress(), commentModel.getCustomer().getUser().getPhone(), commentModel.getCustomer().getUser().getEmail(), commentModel.getCustomer().getUser().getAccountCreationDate(), commentModel.getCustomer().getUser().getLastLoginDate(), commentModel.getCustomer().getUser().getStatus(),
+                                commentModel.getCustomer().getSpotWallet(), commentModel.getCustomer().getFiatWallet(), commentModel.getCustomer().getBankDetails()),
+                        commentModel.getComment(),
+                        commentModel.getTransaction().getId().intValue()));
+            }
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+        return comments;
     }
 }

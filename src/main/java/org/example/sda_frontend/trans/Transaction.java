@@ -1,6 +1,6 @@
 package org.example.sda_frontend.trans;
 
-import org.example.sda_frontend.db.models.user.UserModel;
+import org.example.sda_frontend.controller.CryptoSystem;
 import org.example.sda_frontend.user.Customer;
 import org.example.sda_frontend.user.User;
 import org.example.sda_frontend.useractions.Comments;
@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import org.example.sda_frontend.db.DBHandler;
 
@@ -52,14 +53,19 @@ public class Transaction {
         // Fetch the transactions from the database
         return DBHandler.getTransactionsByCustomer(customerEmail);
     }
+
+    public List<Comments> getTransactionComments() {
+        return Comments.getAllCommentsOnTransaction(this);
+    }
     // Getters and setters
 
     public List<Comments> getCoomments(){
         return comments;
     }
 
-    public void addComment(Comments c){
+    public void addComment(Customer customer, Comments c){
         comments.add(c);
+        c.saveCommentToDB(customer, this);
     }
 
     public int getTransactionId() { return transactionId; }
@@ -253,29 +259,5 @@ public class Transaction {
             return null; // Return an empty string if there are no transactions
         }
         return transactions;
-    }
-
-    public static void main(String[] args) {
-        // Create a sample Customer object
-        Customer customer = Customer.getCustomerByEmail("ayeshaejaz003@gmail.com");
-
-        // Fetch user-specific transactions from the database
-        List<Transaction> transactions = getUserSpecificTransactionsFromDB(customer.getEmail());
-
-        // Print the transactions
-        if (transactions != null && !transactions.isEmpty()) {
-            for (Transaction transaction : transactions) {
-                System.out.println("Transaction ID: " + transaction.getTransactionId());
-                System.out.println("User: " + transaction.getUser().getName());
-                System.out.println("Amount: " + transaction.getAmount());
-                System.out.println("Timestamp: " + transaction.timestamp);
-                System.out.println("Transaction Type: " + transaction.transactionType);
-                System.out.println("Coin: " + transaction.coin);
-                System.out.println("Coin Rate: " + transaction.getCoinRate());
-                System.out.println("-----------------------------");
-            }
-        } else {
-            System.out.println("No transactions found for the customer.");
-        }
     }
 }

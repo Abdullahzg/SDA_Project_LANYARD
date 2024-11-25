@@ -174,6 +174,9 @@ public class SingleTransactionPage {
 
             for (String s : obj3) {
                 String[] obj4 = s.split(",");
+                if (obj4.length < 2) {
+                    continue;
+                }
                 String name = obj4[0];
                 String comment = obj4[1];  // Fixed index from 0 to 1 for comment
 
@@ -217,7 +220,7 @@ public class SingleTransactionPage {
             System.out.println("Please enter an amount.");
             return;
         }
-        CryptoSystem.getInstance().addCommentToTransaction(transactionID,comment);
+        CryptoSystem.getInstance().addCommentToTransaction(CryptoSystem.getInstance().getLoggedInCustomer(), transactionID, comment);
         showTab1Content();
     }
 

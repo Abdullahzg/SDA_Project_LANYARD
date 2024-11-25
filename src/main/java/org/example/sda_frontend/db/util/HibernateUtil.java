@@ -6,6 +6,7 @@ import org.example.sda_frontend.db.models.trans.TransactionsModel;
 import org.example.sda_frontend.db.models.user.AdminModel;
 import org.example.sda_frontend.db.models.user.CustomerModel;
 import org.example.sda_frontend.db.models.user.UserModel;
+import org.example.sda_frontend.db.models.useractions.CommentModel;
 import org.example.sda_frontend.db.models.useractions.FeedbackModel;
 import org.example.sda_frontend.db.models.wallet.FiatWalletModel;
 import org.example.sda_frontend.db.models.wallet.SpotWalletModel;
@@ -33,6 +34,7 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(TransactionsModel.class);
                 configuration.addAnnotatedClass(AdminModel.class);
                 configuration.addAnnotatedClass(FeedbackModel.class);
+                configuration.addAnnotatedClass(CommentModel.class);
 
                 // Build SessionFactory
                 sessionFactory = configuration.buildSessionFactory();

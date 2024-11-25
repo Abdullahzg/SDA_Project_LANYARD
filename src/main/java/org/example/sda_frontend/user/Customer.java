@@ -267,9 +267,6 @@ public class Customer extends User{
                 sb.setLength(sb.length() - 1);
             }
 
-            // print out the string
-            System.out.println(sb.toString());
-
             return sb.toString();
         }
     }
@@ -283,7 +280,7 @@ public class Customer extends User{
                     List<Comments> commentsList = new ArrayList<>(transaction.getCoomments());
                     Collections.reverse(commentsList);
                     for(Comments comment: commentsList) {
-                        sb.append(comment.getUserID().getName()).append(",")
+                        sb.append(comment.getCustomer().getName()).append(",")
                                 .append(comment.getComment()).append(",")
                                 .append(transaction.timestamp.toString()).append("\n");
                     }

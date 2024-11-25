@@ -19,10 +19,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CryptoSystem {
     private static CryptoSystem instance;
@@ -220,7 +217,19 @@ public class CryptoSystem {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return null;
         }
-        return loggedInCustomer.getTransactionComments(i, api);
+
+        // loggedInCustomer.getTransactionComments(i, api);
+        Transaction transaction = getTransactionById(i);
+        List<Comments> comments = transaction.getTransactionComments();
+        Collections.reverse(comments);
+        StringBuilder sb = new StringBuilder();
+        for(Comments comment: comments) {
+            sb.append(comment.getCustomer().getName()).append(",")
+                    .append(comment.getComment()).append(",")
+                    .append(transaction.timestamp.toString()).append("\n");
+        }
+        return sb.toString();
+
         //???? what is this below
         //loggedInCustomer.applyFilters();
     }
@@ -736,15 +745,15 @@ public class CryptoSystem {
         viewPortfolio(userId);
     }
 
-    public void addCommentToTransaction(int transactionID, String commentText){
-        if (loggedInCustomer == null) {
+    public void addCommentToTransaction(Customer loggedInCustomer, int transactionID, String commentText){
+        if (this.loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");
             return;
         }
 
         // Assuming Transaction.allTransactions is accessible
         Transaction targetTransaction = null;
-        for (Transaction t : Transaction.allTransactions){
+        for (Transaction t : globalTransactions){
             if (t.getTransactionId() == transactionID){
                 targetTransaction = t;
                 break;
@@ -752,8 +761,8 @@ public class CryptoSystem {
         }
 
         if (targetTransaction != null){
-            Comments newComment = new Comments(loggedInCustomer, commentText, transactionID);
-            targetTransaction.addComment(newComment);
+            Comments newComment = new Comments(this.loggedInCustomer, commentText, transactionID);
+            targetTransaction.addComment(loggedInCustomer, newComment);
             System.out.println("Comment added to transaction ID " + transactionID);
         } else {
             System.out.println("Transaction with ID " + transactionID + " not found.");
@@ -865,5 +874,14 @@ public class CryptoSystem {
             System.out.println("No customer is logged in. Please log in to get AI suggestions.");
             return;
         }
+    }
+
+    public Transaction getTransactionById(int transactionId) {
+        for (Transaction transaction : globalTransactions) {
+            if (transaction.getTransactionId() == transactionId) {
+                return transaction;
+            }
+        }
+        return null;
     }
 }
