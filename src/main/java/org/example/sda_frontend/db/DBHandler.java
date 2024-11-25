@@ -11,6 +11,7 @@ import org.example.sda_frontend.db.models.wallet.FiatWalletModel;
 import org.example.sda_frontend.db.models.wallet.SpotWalletModel;
 import org.example.sda_frontend.db.util.HibernateUtil;
 import org.example.sda_frontend.user.Admin;
+import org.example.sda_frontend.user.Customer;
 import org.example.sda_frontend.user.User;
 import org.example.sda_frontend.wallet.FiatWallet;
 import org.example.sda_frontend.wallet.SpotWallet;
@@ -348,6 +349,30 @@ public class DBHandler {
             session.close();
         }
 
+        return transactions;
+    }
+
+    public static List<org.example.sda_frontend.trans.Transaction> getTransactionsByCustomer(String customerEmail) {
+        // get customer's transactions from database
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<org.example.sda_frontend.trans.Transaction> transactions = null;
+        CustomerModel customerModel = getCustomerByEmail(customerEmail);
+
+        try {
+            Query<TransactionsModel> query = session.createQuery("FROM TransactionsModel WHERE customer = :customer", TransactionsModel.class);
+            query.setParameter("customer", customerModel);
+            List<TransactionsModel> transactionModels = query.list();
+            transactions = new ArrayList<>();
+            for (TransactionsModel transactionModel : transactionModels) {
+                transactions.add(new org.example.sda_frontend.trans.Transaction(transactionModel.getId().intValue(),
+                        new User(transactionModel.getCustomer().getUser().getUserId(), transactionModel.getCustomer().getUser().getName(), transactionModel.getCustomer().getUser().getBirthDate(), transactionModel.getCustomer().getUser().getAddress(), transactionModel.getCustomer().getUser().getEmail(), transactionModel.getCustomer().getUser().getPhone(), transactionModel.getCustomer().getUser().getAccountCreationDate(), transactionModel.getCustomer().getUser().getLastLoginDate(), transactionModel.getCustomer().getUser().getStatus()),
+                        transactionModel.getAmount(), transactionModel.getTimestamp(), transactionModel.getTransactionType(), transactionModel.getCoin(), transactionModel.getCoinRate()));
+            }
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
         return transactions;
     }
 }

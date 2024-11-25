@@ -238,6 +238,17 @@ public class Customer extends User{
     }
     public String getTransactionsAsString(APIController api) {
         // get all transactions from db
+        transactions = Transaction.getUserSpecificTransactionsFromDB(getEmail());
+
+        // print all transactions
+        System.out.println("Transactions for Customer: " + getName() + " (ID: " + getUserId() + ")");
+        for (Transaction transaction : transactions) {
+            System.out.printf("Transaction ID: %d | Type: %s | Coin: %s | Amount: %.2f | Rate: %.2f | Date: %s\n",
+                    transaction.getTransactionId(), transaction.transactionType,
+                    transaction.coin != null ? transaction.coin : "N/A",
+                    transaction.getAmount(), transaction.getCoinRate(), transaction.timestamp);
+        }
+
         if (transactions.isEmpty()) {
             return ""; // Return an empty string if there are no transactions
         } else {
@@ -255,6 +266,10 @@ public class Customer extends User{
             if (sb.length() > 0) {
                 sb.setLength(sb.length() - 1);
             }
+
+            // print out the string
+            System.out.println(sb.toString());
+
             return sb.toString();
         }
     }

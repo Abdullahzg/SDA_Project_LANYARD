@@ -56,8 +56,6 @@ public class CustomerModel {
 
     public CustomerModel(String name, Date birthDate, String address, String phone, String email, Date accountCreationDate, Date lastLoginDate, String status) {
         this.user = new UserModel(name, birthDate, address, phone, email, accountCreationDate, lastLoginDate, status);
-
-
     }
 
     // Getters and Setters

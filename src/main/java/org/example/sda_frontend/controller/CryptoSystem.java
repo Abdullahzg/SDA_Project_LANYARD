@@ -161,6 +161,7 @@ public class CryptoSystem {
         }
         globalTransactions = Transaction.getGlobalTransactionsAsString();
 
+        assert globalTransactions != null;
         if (globalTransactions.isEmpty()) {
             return null; // Return an empty string if there are no transactions
         } else {
