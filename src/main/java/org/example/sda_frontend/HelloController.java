@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.sda_frontend.controller.CryptoSystem;
@@ -49,14 +50,48 @@ public class HelloController {
     protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to JavaFX Application!");
     }
+    @FXML
+    private TextField searchBox;
 
+    @FXML
+    private Label responseLabel;
+
+    @FXML
+    private HBox loaderContainer;
+
+    @FXML
+    private void handleSearchAction() {
+        String searchQuery = searchBox.getText();
+
+        // Show loader, hide response
+        loaderContainer.setVisible(true);
+        responseLabel.setVisible(false);
+
+        // Create a new thread to handle the API call
+        new Thread(() -> {
+            String response = CryptoSystem.getInstance().getAIAdvice(searchQuery);
+            System.out.println(response);
+            // Update UI on JavaFX Application Thread
+            Platform.runLater(() -> {
+                responseLabel.setText(response);
+                responseLabel.setVisible(true);
+                loaderContainer.setVisible(false);
+            });
+        }).start();
+    }
+
+    private String processSearch(String query) {
+        // Replace this with your actual search processing logic
+        return "Search results for: " + query;
+    }
     @FXML
     public void initialize() {
         // Load the image from resources or file system
         Image image = new Image(getClass().getResource("logo.jpg").toExternalForm());
         centerImage.setImage(image);
         welcomeMessage.setText("Welcome to Lanyard "+CryptoSystem.getInstance().getLoggedInCustomer().getName());
-
+        responseLabel.setText("");
+        loaderContainer.setVisible(false);
 //        List<Owning> fiatOwnings = new ArrayList<>();
 //        fiatOwnings.add(new Owning(1, (float)1.23, "BTC"));
 //        fiatOwnings.add(new Owning(2, (float)1.23, "ETH"));

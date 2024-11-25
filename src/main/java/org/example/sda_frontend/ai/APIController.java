@@ -202,6 +202,15 @@ public class APIController {
         }
     }
 
+    private String getValueOrNA(JSONObject json, String key) {
+        try {
+            Object value = json.get(key);
+            return value == null || value == JSONObject.NULL ? "N/A" : value.toString();
+        } catch (JSONException e) {
+            return "N/A";
+        }
+    }
+
     public String getSpecificCoinDetails(JSONObject coin, int i, boolean single, String coinCode) {
         StringBuilder overviewBuilder = new StringBuilder();
 
@@ -211,25 +220,25 @@ public class APIController {
             overviewBuilder.append("coin" + i + " code:").append(coin.getString("code"));
         }
 
-        overviewBuilder.append(", rank:").append(coin.getInt("rank"))
-                .append(", exchanges: ").append(coin.getInt("exchanges"))
-                .append(", markets: ").append(coin.getInt("markets"))
-                .append(", volume: ").append(coin.getLong("volume"))
-                .append(", cap: ").append(coin.get("cap").toString())
-                .append(", rate: ").append(coin.getDouble("rate"))
-                .append(", allTimeHighUSD: ").append(coin.getDouble("allTimeHighUSD"));
+        overviewBuilder.append(", rank:").append(getValueOrNA(coin, "rank"))
+                .append(", exchanges: ").append(getValueOrNA(coin, "exchanges"))
+                .append(", markets: ").append(getValueOrNA(coin, "markets"))
+                .append(", volume: ").append(getValueOrNA(coin, "volume"))
+                .append(", cap: ").append(getValueOrNA(coin, "cap"))
+                .append(", rate: ").append(getValueOrNA(coin, "rate"))
+                .append(", allTimeHighUSD: ").append(getValueOrNA(coin, "allTimeHighUSD"));
 
-        JSONObject delta = coin.getJSONObject("delta");
-        overviewBuilder.append(", hour: ").append(delta.getDouble("hour"))
-                .append(", day: ").append(delta.getDouble("day"))
-                .append(", week: ").append(delta.getDouble("week"))
-                .append(", month: ").append(delta.getDouble("month"))
-                .append(", quarter: ").append(delta.getDouble("quarter"))
-                .append(", year: ").append(delta.getDouble("year"))
-                .append(", circulatingSupply: ").append(coin.get("circulatingSupply").toString())
-                .append(", totalSupply: ").append(coin.get("totalSupply").toString())
-                .append(", maxSupply: ").append(coin.get("maxSupply").toString())
-                .append(", age: ").append(coin.getInt("age"));
+        JSONObject delta = coin.optJSONObject("delta");
+        overviewBuilder.append(", hour: ").append(delta != null ? getValueOrNA(delta, "hour") : "N/A")
+                .append(", day: ").append(delta != null ? getValueOrNA(delta, "day") : "N/A")
+                .append(", week: ").append(delta != null ? getValueOrNA(delta, "week") : "N/A")
+                .append(", month: ").append(delta != null ? getValueOrNA(delta, "month") : "N/A")
+                .append(", quarter: ").append(delta != null ? getValueOrNA(delta, "quarter") : "N/A")
+                .append(", year: ").append(delta != null ? getValueOrNA(delta, "year") : "N/A")
+                .append(", circulatingSupply: ").append(getValueOrNA(coin, "circulatingSupply"))
+                .append(", totalSupply: ").append(getValueOrNA(coin, "totalSupply"))
+                .append(", maxSupply: ").append(getValueOrNA(coin, "maxSupply"))
+                .append(", age: ").append(getValueOrNA(coin, "age"));
 
         JSONArray categories = coin.getJSONArray("categories");
         overviewBuilder.append(", categories: ").append(categories.toString());

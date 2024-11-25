@@ -45,16 +45,16 @@ public class AIAdviser {
         }
     }
 
-    public String getAdvice(Customer customer, APIController api) {
+    public String getAdvice(Customer customer, APIController api, String inPrompt) {
         String financialSummary = customer.getFinancialSummary(api);
-        String topCoins = api.getCoinsForAI(10, customer.getFiatWallet().getOwnings());
+        String topCoins = api.getCoinsForAI(20, customer.getFiatWallet().getOwnings());
 
 
         // Build the analysis prompt
         String prompt = String.format(
                 "Here is my financial summary:\n%s\n" +
                         "Here is some market overview:\n%s\n" +
-                        "Advise coin to buy or sell (not both) and why. I can only sell coins I own, and can only buy based on the funds I have. Do not suggest USDT. Keep the response to 50 words. Start with \"I advise\".",
+                        inPrompt+"\nDo not suggest USDT. Keep the response to 50 words. Start with \"I advise\".",
                 financialSummary, topCoins
         );
 

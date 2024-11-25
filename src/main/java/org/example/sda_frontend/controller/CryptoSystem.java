@@ -462,6 +462,10 @@ public class CryptoSystem {
             System.out.println("An error occurred while processing input: " + e.getMessage());
         }
     }
+
+    public String getAIAdvice(String prompt){
+        return ai.getAdvice(getLoggedInCustomer(), api, prompt);
+    }
     public void viewAllCustomers() {
         if (customers.isEmpty()) {
             System.out.println("No customers available.");
