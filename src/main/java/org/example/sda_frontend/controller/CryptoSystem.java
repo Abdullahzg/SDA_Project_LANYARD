@@ -196,7 +196,7 @@ public class CryptoSystem {
                     StringBuilder sb = new StringBuilder();
                     JSONObject jj=api.giveSingleCoin(transaction.coin);
                     String image= jj.getString("png32");
-                    sb.append(transaction.getUser().getName()).append(",")
+                    sb.append(transaction.getCustomer().getName()).append(",")
                             .append(jj.getString("name")).append(",")
                             .append(image).append(",")
                             .append(transaction.transactionType).append(",")
@@ -232,20 +232,6 @@ public class CryptoSystem {
 
         //???? what is this below
         //loggedInCustomer.applyFilters();
-    }
-    public void viewTransactionHistory() {
-        if (loggedInAdmin == null) {
-            System.out.println("No Admin is logged in. Please login first.");
-            return;
-        }
-        Scanner myObj = new Scanner(System.in);
-        loggedInAdmin.viewTransaction();
-
-        System.out.println("Do you want to flag transaction for review? (Y/N)");
-        String ans = myObj.nextLine();
-        if (ans.equalsIgnoreCase("Y")) {
-            flagForReview();
-        }
     }
     void flagForReview() {
         Scanner myObj = new Scanner(System.in);
@@ -763,6 +749,11 @@ public class CryptoSystem {
         if (targetTransaction != null){
             Comments newComment = new Comments(this.loggedInCustomer, commentText, transactionID);
             targetTransaction.addComment(loggedInCustomer, newComment);
+
+            Email email = new Email(targetTransaction.getCustomer().getEmail(), "New Comment on Transaction",
+                    "A new comment has been added to your transaction of $" + targetTransaction.getAmount() + " on " + targetTransaction.coin + ".");
+            email.sendEmail(false);
+
             System.out.println("Comment added to transaction ID " + transactionID);
         } else {
             System.out.println("Transaction with ID " + transactionID + " not found.");

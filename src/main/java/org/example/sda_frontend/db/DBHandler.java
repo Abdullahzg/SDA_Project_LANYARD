@@ -342,7 +342,8 @@ public class DBHandler {
             transactions = new ArrayList<>();
             for (TransactionsModel transactionModel : transactionModels) {
                 transactions.add(new org.example.sda_frontend.trans.Transaction(transactionModel.getId().intValue(),
-                        new User(transactionModel.getCustomer().getUser().getUserId(), transactionModel.getCustomer().getUser().getName(), transactionModel.getCustomer().getUser().getBirthDate(), transactionModel.getCustomer().getUser().getAddress(), transactionModel.getCustomer().getUser().getEmail(), transactionModel.getCustomer().getUser().getPhone(), transactionModel.getCustomer().getUser().getAccountCreationDate(), transactionModel.getCustomer().getUser().getLastLoginDate(), transactionModel.getCustomer().getUser().getStatus()),
+                        new Customer(transactionModel.getCustomer().getUser().getUserId(), transactionModel.getCustomer().getUser().getName(), transactionModel.getCustomer().getUser().getBirthDate(), transactionModel.getCustomer().getUser().getAddress(), transactionModel.getCustomer().getUser().getPhone(), transactionModel.getCustomer().getUser().getEmail(), transactionModel.getCustomer().getUser().getAccountCreationDate(), transactionModel.getCustomer().getUser().getLastLoginDate(), transactionModel.getCustomer().getUser().getStatus(),
+                                transactionModel.getCustomer().getSpotWallet(), transactionModel.getCustomer().getFiatWallet(), transactionModel.getCustomer().getBankDetails()),
                         transactionModel.getAmount(), transactionModel.getTimestamp(), transactionModel.getTransactionType(), transactionModel.getCoin(), transactionModel.getCoinRate()));
             }
         } catch (HibernateException e) {
@@ -367,7 +368,8 @@ public class DBHandler {
             transactions = new ArrayList<>();
             for (TransactionsModel transactionModel : transactionModels) {
                 transactions.add(new org.example.sda_frontend.trans.Transaction(transactionModel.getId().intValue(),
-                        new User(transactionModel.getCustomer().getUser().getUserId(), transactionModel.getCustomer().getUser().getName(), transactionModel.getCustomer().getUser().getBirthDate(), transactionModel.getCustomer().getUser().getAddress(), transactionModel.getCustomer().getUser().getEmail(), transactionModel.getCustomer().getUser().getPhone(), transactionModel.getCustomer().getUser().getAccountCreationDate(), transactionModel.getCustomer().getUser().getLastLoginDate(), transactionModel.getCustomer().getUser().getStatus()),
+                        new Customer(transactionModel.getCustomer().getUser().getUserId(), transactionModel.getCustomer().getUser().getName(), transactionModel.getCustomer().getUser().getBirthDate(), transactionModel.getCustomer().getUser().getAddress(), transactionModel.getCustomer().getUser().getPhone(), transactionModel.getCustomer().getUser().getEmail(), transactionModel.getCustomer().getUser().getAccountCreationDate(), transactionModel.getCustomer().getUser().getLastLoginDate(), transactionModel.getCustomer().getUser().getStatus(),
+                                transactionModel.getCustomer().getSpotWallet(), transactionModel.getCustomer().getFiatWallet(), transactionModel.getCustomer().getBankDetails()),
                         transactionModel.getAmount(), transactionModel.getTimestamp(), transactionModel.getTransactionType(), transactionModel.getCoin(), transactionModel.getCoinRate()));
             }
         } catch (HibernateException e) {

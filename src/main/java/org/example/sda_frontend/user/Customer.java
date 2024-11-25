@@ -238,7 +238,7 @@ public class Customer extends User{
     }
     public String getTransactionsAsString(APIController api) {
         // get all transactions from db
-        transactions = Transaction.getUserSpecificTransactionsFromDB(getEmail());
+        transactions = Transaction.getCustomerSpecificTransactionsFromDB(getEmail());
 
         // print all transactions
         System.out.println("Transactions for Customer: " + getName() + " (ID: " + getUserId() + ")");
