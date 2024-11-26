@@ -16,14 +16,14 @@ public abstract class Wallet {
         this.status = "active";
     }
 
-    public void deposit(float amount) {
+    public void deposit(double amount) {
         if (status.equals("active")) {
             this.balance += amount;
             this.lastActivityDate = new Date();
         }
     }
 
-    public void withdraw(float amount) {
+    public void withdraw(double amount) {
         if (status.equals("active") && balance >= amount) {
             this.balance -= amount;
             this.lastActivityDate = new Date();

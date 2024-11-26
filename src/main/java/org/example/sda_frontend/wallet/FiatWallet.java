@@ -186,7 +186,7 @@ public class FiatWallet extends Wallet {
         DBHandler.depositOrWithdrawFiatWalletDB(this, type, false, 0.0);
     }
 
-    public void transferFiatToAnotherUser(float amountToSend, FiatWallet recipientWallet) {
+    public void transferFiatToAnotherUser(double amountToSend, FiatWallet recipientWallet) {
         recipientWallet.deposit(amountToSend);
 
         withdraw(amountToSend);

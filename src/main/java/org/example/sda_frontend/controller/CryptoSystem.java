@@ -484,13 +484,30 @@ public class CryptoSystem {
         if(loggedInCustomer.getFiatWallet().getBalance()<amount){
             return "Insufficient Funds";
         }
+
+        // load all customers into the system from database
+        customers = Customer.getAllCustomersDB();
+
         for (Customer c: customers){
             if(c.getEmail().equals(email)){
-                loggedInCustomer.getFiatWallet().withdraw((float)amount);
-                c.getFiatWallet().deposit((float)amount);
+                // loggedInCustomer.getFiatWallet().withdraw((float)amount);
+                // c.getFiatWallet().deposit((float)amount);
+
+                FiatWallet senderWallet = loggedInCustomer.getFiatWallet();
+                FiatWallet recipientWallet = c.getFiatWallet();
+                senderWallet.transferFiatToAnotherUser(amount, recipientWallet);
+
+                String emailSubject = "Lanyard | FIAT Transfer Notification";
+                String emailBody = "You have received a FIAT transfer of $" + amount + " from " + loggedInCustomer.getName()
+                        + " (" + loggedInCustomer.getEmail() + ").";
+
+                Email email1 = new Email(c.getEmail(), emailSubject, emailBody);
+                email1.sendEmail(false);
+
                 return " ";
             }
         }
+
         return "User not found";
     }
     public void setLoggedInCustomer(Customer customer) {

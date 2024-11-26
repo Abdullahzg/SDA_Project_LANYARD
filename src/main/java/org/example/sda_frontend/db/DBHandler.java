@@ -439,4 +439,20 @@ public class DBHandler {
 
         return comments;
     }
+
+    public static List<CustomerModel> getAllCustomersFromDB() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<CustomerModel> customers = null;
+
+        try {
+            Query<CustomerModel> query = session.createQuery("FROM CustomerModel", CustomerModel.class);
+            customers = query.list();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+        return customers;
+    }
 }

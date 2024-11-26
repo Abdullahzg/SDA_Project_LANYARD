@@ -42,6 +42,20 @@ public class Customer extends User{
                 spotWallet, fiatWallet, bankDetails));
     }
 
+    public static List<Customer> getAllCustomersDB() {
+        List<CustomerModel> customerModels = DBHandler.getAllCustomersFromDB();
+        List<Customer> customers = new ArrayList<>();
+        for (CustomerModel customerModel : customerModels) {
+            customers.add(new Customer(customerModel.getUser().getUserId(), customerModel.getUser().getName(), customerModel.getUser().getBirthDate(),
+                    customerModel.getUser().getAddress(), customerModel.getUser().getPhone(), customerModel.getUser().getEmail(),
+                    customerModel.getUser().getAccountCreationDate(), customerModel.getUser().getLastLoginDate(), customerModel.getUser().getAccountStatus(),
+                    customerModel.getSpotWallet(),
+                    customerModel.getFiatWallet(),
+                    customerModel.getBankDetails()));
+        }
+        return customers;
+    }
+
     public SpotWallet getSpotWallet() { return spotWallet; }
 
     public FiatWallet getFiatWallet() { return fiatWallet; }
@@ -294,7 +308,6 @@ public class Customer extends User{
         }
     }
 
-
     public List<Transaction> applyFilters() {
         List<Transaction> suspiciousTransactions = new ArrayList<>();
         System.out.println("Applying filters to transaction history...");
@@ -341,7 +354,6 @@ public class Customer extends User{
         return "Customer";
     }
 
-    // In Customer.java
     public String getFinancialSummary(APIController api) {
         StringBuilder summary = new StringBuilder();
         summary.append("Fiat Wallet Balance: ").append(fiatWallet.getBalance()).append(" USDT\n");
