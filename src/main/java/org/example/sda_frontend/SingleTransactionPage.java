@@ -169,6 +169,7 @@ public class SingleTransactionPage {
             athValue.setText(obj[7]);
             dominanceValue.setText(obj[0]);
 
+            commentsBox.setMinHeight(commentsBox.getHeight());
             // Clear existing comments
             commentsBox.getChildren().clear();
 
@@ -253,21 +254,18 @@ public class SingleTransactionPage {
                         transactionID,
                         comment
                 );
+                // Refresh content
+
 
                 // Update UI on JavaFX Application Thread
                 Platform.runLater(() -> {
                     // Remove loading box
                     commentsBox.getChildren().remove(loadingBox);
-
+                    showTab1Content();
                     // Clear input
                     inputBoxt1.clear();
                     transferButton1.setDisable(false);
 
-                    // Refresh content
-                    showTab1Content();
-
-                    // Restore scroll position
-                    scrollPane.setVvalue(scrollPosition);
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
@@ -279,11 +277,51 @@ public class SingleTransactionPage {
                     e.printStackTrace();
                     transferButton1.setDisable(false);
 
-                    // Restore scroll position
-                    scrollPane.setVvalue(scrollPosition);
                 });
             }
         }).start();
+    }
+
+    @FXML
+    private void onGlobalTRansactionsPage() {
+        try {
+            // Load the new FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("global_transaction_view.fxml"));
+            Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
+
+            // Get the current stage
+            Stage currentStage = (Stage) walletButton.getScene().getWindow();
+
+            // Set the new scene on the current stage
+            currentStage.setScene(newScene);
+
+            // Optional: Set a title for the new page
+            currentStage.setTitle("Your Transactions");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Optionally show an error dialog or log the error
+        }
+    }
+
+    @FXML
+    private void onTransactionPage() {
+        try {
+            // Load the new FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("transaction_view.fxml"));
+            Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
+
+            // Get the current stage
+            Stage currentStage = (Stage) walletButton.getScene().getWindow();
+
+            // Set the new scene on the current stage
+            currentStage.setScene(newScene);
+
+            // Optional: Set a title for the new page
+            currentStage.setTitle("Your Transactions");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Optionally show an error dialog or log the error
+        }
     }
     private void setTabActive(Button activeTab) {
         // Reset all tabs to default style

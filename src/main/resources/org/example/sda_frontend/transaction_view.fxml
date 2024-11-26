@@ -107,7 +107,7 @@
                  -fx-min-width: 700;
                  -fx-max-width: 700; " viewOrder="0">
                 <padding>
-                    <Insets bottom="40.0" left="20.0" right="20.0" top="-180.0"/>
+                    <Insets bottom="40.0" left="20.0" right="20.0" top="-240.0"/>
                 </padding>
 
                 <!-- Enlarged Center Image -->
