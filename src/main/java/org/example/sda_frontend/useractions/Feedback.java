@@ -68,12 +68,6 @@ public class Feedback {
         this.response = "\0";
     }
 
-    public static boolean notifyAdmin(Feedback feedback, int userID) {
-        System.out.println("\nAdmin being Notified...");
-        //write an sql query to add the notification and the user id with it
-        return true;
-    }
-
     public static boolean addFeedbackToDB(Feedback feedbackObj, Customer customer) {
         // Fetch the existing CustomerModel from the database
         CustomerModel customerModel = DBHandler.getCustomerByEmail(customer.getEmail());
@@ -87,45 +81,6 @@ public class Feedback {
             return true;
         }
         return false;
-    }
-
-    public void selectFeedback(){
-        //write an sql query to show all feedbacks
-
-    }
-
-    public boolean reviewFeedback(int feedbackID,int priority) {
-        //write an sql query to find the feedback in the feedback table
-        //if not found exit while returning false
-        //if found
-        //phir write a query to change the status of that feedback to "viewed by Admin"
-        // if having an error return false
-
-        return true;
-    }
-
-    public boolean respondDirectly(int feedbackID,String response) {
-        if (insertResponse(feedbackID,response))
-        {
-            System.out.println("Successfully added response to the feedback");
-            return true;
-        }
-        return false;
-    }
-
-    public boolean insertResponse(int FeedbackID,String response) {
-        //write an sql query to add the response in the feedback table with the feedback of the id given
-        return true;
-    }
-
-    public boolean updateFeedbackStatus(int FeedbackID,String response) {
-        this.status = "Admin has responded";
-
-        //write a sql query to update the feedback table
-//        Notification notification = new Notification();
-//        notification.addNotification(this.userID,response,"feedback response from admin");
-        return true;
-
     }
 
     public int getFeedbackId() {

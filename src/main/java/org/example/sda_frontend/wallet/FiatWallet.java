@@ -159,27 +159,6 @@ public class FiatWallet extends Wallet {
         }
     }
 
-    public void viewOwnings(APIController api) {
-        if (ownings.isEmpty()) {
-            System.out.println("No coins owned in the Fiat Wallet.");
-        } else {
-            System.out.println("Owned Coins:");
-            for (Owning owning : ownings) {
-                // Fetch the current exchange rate for the coin
-                float currentRate = api.getExchangeRate(owning.getCoin(), "USDT");
-                if (currentRate <= 0) {
-                    System.out.printf("Coin: %s | Amount: %.4f | Purchase Rate: %.2f USDT | Purchase Date: %s | Current Value: Unable to fetch rate\n",
-                            owning.getCoin(), owning.getAmount(), owning.getPurchaseRate(), owning.getPurchaseDate());
-                } else {
-                    // Calculate the current USDT value
-                    float currentValue = owning.getAmount() * currentRate;
-                    System.out.printf("Coin: %s | Amount: %.4f | Purchase Rate: %.2f USDT | Purchase Date: %s | Current Value: %.2f USDT (Rate: %.2f USDT)\n",
-                            owning.getCoin(), owning.getAmount(), owning.getPurchaseRate(), owning.getPurchaseDate(), currentValue, currentRate);
-                }
-            }
-        }
-    }
-
     @Override
     public void depositOrWithdrawDB(String type) {
         // Update the database

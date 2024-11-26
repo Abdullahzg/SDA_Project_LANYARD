@@ -21,9 +21,6 @@ public class SpotWallet extends Wallet {
     public void setCurrency(String currency) { this.currency = currency; }
     public float getMaxBalanceLimit() { return maxBalanceLimit; }
     public void setMaxBalanceLimit(float maxBalanceLimit) { this.maxBalanceLimit = maxBalanceLimit; }
-    public static void addNewSpotWalletDB(int spotWalletId, float spotWalletBalance, Date currentDate, String currency, float maxBalanceLimit, Session session) {
-        DBHandler.saveSpotWallet(new SpotWalletModel(spotWalletId, spotWalletBalance, currentDate, currency, maxBalanceLimit), session);
-    }
 
     @Override
     public void depositOrWithdrawDB(String type) {

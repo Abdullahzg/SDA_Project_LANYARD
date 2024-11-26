@@ -23,45 +23,8 @@ public class APIController {
         this.apiKey = apiKey;
     }
 
-
     public String getApiKey() {
         return apiKey;
-    }
-
-    public void printTopCoins(int top){
-        try {
-            HttpResponse<String> response = Unirest.post("https://api.livecoinwatch.com/coins/list")
-                    .header("content-type", "application/json")
-                    .header("x-api-key", apiKey)
-                    .body("{\n\t\"currency\": \"USDT\",\n\t\"sort\": \"rank\",\n\t\"order\": \"ascending\",\n\t\"offset\": 0,\n\t\"limit\": "+top+",\n\t\"meta\": false\n}")
-                    .asString();
-            JSONArray coinsArray = new JSONArray(response.getBody());
-
-            // Iterate through each coin object in the array
-            for (int i = 0; i < coinsArray.length(); i++) {
-                JSONObject coin = coinsArray.getJSONObject(i);
-
-                // Extract the data as required
-                String code = coin.getString("code");
-                double rate = coin.getDouble("rate");
-                long volume = coin.getLong("volume");
-                long cap = coin.getLong("cap");
-
-
-
-                // Print extracted values
-                System.out.println("Code: " + code);
-                System.out.println("Rate: " + rate);
-                System.out.println("Volume: " + volume);
-                System.out.println("Market Cap: " + cap);
-                System.out.println("----------------------------");
-            }
-            // Print the response
-            System.out.println("Response: " + response.getBody());
-        } catch (UnirestException e) {
-            System.err.println("An error occurred while making the API request: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     public JSONArray giveTopCoins(int top){
@@ -79,50 +42,6 @@ public class APIController {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public void printSingleCoin(String code) {
-        try {
-            HttpResponse<String> response = Unirest.post("https://api.livecoinwatch.com/coins/single")
-                    .header("content-type", "application/json")
-                    .header("x-api-key", apiKey)
-                    .body("{\n\t\"currency\": \"USD\",\n\t\"code\": \"" + code + "\",\n\t\"meta\": true\n}")
-                    .asString();
-
-            JSONObject coin = new JSONObject(response.getBody());
-
-            if (coin.has("error")) {
-                JSONObject error = coin.getJSONObject("error");
-                int errorCode = error.getInt("code");
-                String status = error.getString("status");
-                String description = error.getString("description");
-
-                System.out.println("Error Code: " + errorCode + " || Status: " + status);
-                System.out.println("Description: " + description);
-                System.out.println("The coin with code \"" + code + "\" does not exist.");
-                return;
-            }
-
-            // Extract the data as required
-            String name = coin.getString("name");
-            double rate = coin.getDouble("rate");
-            long volume = coin.getLong("volume");
-            long cap = coin.getLong("cap");
-
-            // Print extracted values
-            System.out.println("Name: " + name);
-            System.out.println("Code: " + code);
-            System.out.println("Rate: " + rate);
-            System.out.println("Volume: " + volume);
-            System.out.println("Market Cap: " + cap);
-            System.out.println("----------------------------");
-
-            // Print the response
-            System.out.println("Response: " + response.getBody());
-        } catch (UnirestException e) {
-            System.err.println("An error occurred while making the API request: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     public JSONObject giveSingleCoin(String code) {
@@ -165,40 +84,6 @@ public class APIController {
         } catch (Exception e) {
             System.err.println("Unexpected error: " + e.getMessage());
             return -1; // Return an invalid value for error handling
-        }
-    }
-
-    public String getSingleCoinOverview(String code) {
-        try {
-            HttpResponse<String> response = Unirest.post("https://api.livecoinwatch.com/overview")
-                    .header("content-type", "application/json")
-                    .header("x-api-key", apiKey)
-                    .body("{\n\t\"currency\": "+code+"\n}")
-                    .asString();
-
-            JSONObject coin = new JSONObject(response.getBody());
-
-            if (coin.has("error")) {
-                JSONObject error = coin.getJSONObject("error");
-                int errorCode = error.getInt("code");
-                String status = error.getString("status");
-                String description = error.getString("description");
-
-                return "";
-            }
-
-            // Extract the data as required
-            String name = coin.getString("cap");
-            double rate = coin.getDouble("volume");
-            long volume = coin.getLong("liquidity");
-            long cap = coin.getLong("btcDominance");
-
-            // Return extracted values
-            return "Name: " + name + "\nCode: " + code + "\nRate: " + rate + "\nVolume: " + volume + "\nMarket Cap: " + cap;
-        } catch (UnirestException e) {
-            System.err.println("An error occurred while making the API request: " + e.getMessage());
-            e.printStackTrace();
-            return "";
         }
     }
 

@@ -26,7 +26,6 @@ public class Transaction {
     float coinRate;
     boolean sus;
     private List<Comments> comments;
-    public static List<Transaction> allTransactions= new ArrayList<>();
 
     public Transaction(int transactionId, Customer customer, float amount, Date timestamp, String transactionType, String coin, float coinRate) {
         this.transactionId = transactionId;
@@ -101,29 +100,6 @@ public class Transaction {
         DBHandler.saveTransaction(transactionsModel);
     }
 
-    private static String formatTransactionForFile(Transaction transaction) {
-        return String.join(",",
-                String.valueOf(transaction.transactionId),
-                String.valueOf(transaction.customer.getUserId()),
-                transaction.customer.getName(),
-                transaction.transactionType,
-                transaction.coin != null ? transaction.coin : "N/A",
-                String.valueOf(transaction.amount),
-                String.valueOf(transaction.coinRate),
-                String.valueOf(transaction.timestamp.getTime())
-        );
-    }
-
-    public static void saveTransactionToFile(Transaction transaction) {
-        String filePath = "transactions.txt";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(formatTransactionForFile(transaction));
-            writer.newLine();
-        } catch (IOException e) {
-            System.err.println("Error saving transaction to file: " + e.getMessage());
-        }
-    }
-
     public boolean applyFilters_t(Transaction transaction) {
         System.out.println("Applying filters to all transactions");
         //yahan par awen ek amount le li hai
@@ -136,26 +112,12 @@ public class Transaction {
         return false;
     }
 
-    public void flagForReview_t(Transaction transaction) {
-        changeStatus(transaction,true);
-        System.out.println("Transaction Reviewed");
-        //notifyReview team
-        System.out.println("Review Team Notified");
-    }
-
     public float getAmount() {
         return amount;
     }
 
     public float getCoinRate() {
         return coinRate;
-    }
-
-    public void notifyTeam(Transaction transaction) {
-        System.out.println("Notifying team");
-        changeStatus(transaction,true);
-        //update the db and notify the compliance team;
-        System.out.println("Compliance Team Notified");
     }
 
     void changeStatus(Transaction transaction,boolean state)

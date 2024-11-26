@@ -63,19 +63,6 @@ public class DBHandler {
         return false;
     }
 
-    public static void saveSpotWallet(SpotWalletModel spotWallet,  Session session) {
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            session.merge(spotWallet);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null)
-                transaction.rollback();
-            e.printStackTrace();
-        }
-    }
-
     public static CustomerModel getCustomerByEmail(String email) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         CustomerModel customer = null;
