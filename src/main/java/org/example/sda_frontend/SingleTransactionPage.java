@@ -1,16 +1,16 @@
 package org.example.sda_frontend;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.sda_frontend.controller.CryptoSystem;
@@ -42,6 +42,10 @@ public class SingleTransactionPage {
     @FXML private Label coinName;
     @FXML private VBox commentsBox;
     @FXML private TextField inputBoxt1;
+
+    @FXML private ScrollPane scrollPane;
+
+    @FXML private StackPane progressLoaderStack;
 
 
     private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
@@ -213,17 +217,74 @@ public class SingleTransactionPage {
     }
 
     @FXML
-    private void onAddComment(){
+    private void onAddComment() {
         String comment = inputBoxt1.getText();
         if (comment == null || comment.isEmpty()) {
-            transferButton.setText("Please enter an amount.");
+            transferButton1.setText("Please enter a message.");
             System.out.println("Please enter an amount.");
             return;
         }
-        CryptoSystem.getInstance().addCommentToTransaction(CryptoSystem.getInstance().getLoggedInCustomer(), transactionID, comment);
-        showTab1Content();
-    }
 
+        // Store the current scroll position
+        double scrollPosition = scrollPane.getVvalue();
+
+        // Create a temporary VBox to show loading
+        VBox loadingBox = new VBox();
+        loadingBox.setAlignment(Pos.CENTER);
+        loadingBox.setSpacing(10);
+        loadingBox.setStyle("-fx-background-color: white; -fx-padding: 0 20 30 20;");
+
+        // Create progress loader
+        ProgressIndicator progressLoader = new ProgressIndicator();
+        progressLoader.setStyle("-fx-progress-color: grey;");
+        progressLoader.setPrefWidth(40);
+        progressLoader.setPrefHeight(40);
+
+        loadingBox.getChildren().addAll(progressLoader);
+        transferButton1.setDisable(true);
+
+        // Add loading box at the beginning of comments
+        commentsBox.getChildren().add(0, loadingBox);
+
+        new Thread(() -> {
+            try {
+                CryptoSystem.getInstance().addCommentToTransaction(
+                        CryptoSystem.getInstance().getLoggedInCustomer(),
+                        transactionID,
+                        comment
+                );
+
+                // Update UI on JavaFX Application Thread
+                Platform.runLater(() -> {
+                    // Remove loading box
+                    commentsBox.getChildren().remove(loadingBox);
+
+                    // Clear input
+                    inputBoxt1.clear();
+                    transferButton1.setDisable(false);
+
+                    // Refresh content
+                    showTab1Content();
+
+                    // Restore scroll position
+                    scrollPane.setVvalue(scrollPosition);
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    // Remove loading box
+                    commentsBox.getChildren().remove(loadingBox);
+
+                    // Handle error
+                    transferButton1.setText("Error adding comment");
+                    e.printStackTrace();
+                    transferButton1.setDisable(false);
+
+                    // Restore scroll position
+                    scrollPane.setVvalue(scrollPosition);
+                });
+            }
+        }).start();
+    }
     private void setTabActive(Button activeTab) {
         // Reset all tabs to default style
         tab1.setStyle(UNSELECTED_STYLE);

@@ -336,6 +336,7 @@ public class HelloController {
             Stage currentStage = (Stage) transferButton.getScene().getWindow();
             currentStage.setScene(newScene);
             currentStage.setTitle("Login");
+            CryptoSystem.makeNewInstance();
         } catch (IOException e) {
             e.printStackTrace();
         }

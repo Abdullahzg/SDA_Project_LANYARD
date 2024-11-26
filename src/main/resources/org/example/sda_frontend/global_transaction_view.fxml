@@ -46,6 +46,7 @@
                 </Button>
 
                 <Button fx:id="topIcon2"
+                        onAction="#onWalletPage"
                         style="-fx-background-color: transparent;
                -fx-border-color: #ededed;
                -fx-border-radius: 10;
@@ -63,7 +64,24 @@
                         <Label text="📊" style="-fx-text-fill: grey; -fx-font-size: 20;"/>
                     </graphic>
                 </Button>
-
+                <Button fx:id="topIcon4"
+                        onAction="#onTransactionPage"
+                        style="-fx-background-color: transparent;
+               -fx-border-color: #ededed;
+               -fx-border-radius: 10;
+               -fx-background-radius: 10;
+               -fx-min-width: 50;
+               -fx-min-height: 50;
+               -fx-pref-width: 50;
+               -fx-pref-height: 50;
+               -fx-max-width: 50;
+               -fx-max-height: 50;
+               -fx-padding: 0;
+               -fx-border-width: 1;">
+                    <graphic>
+                        <Label text="🔔" style="-fx-text-fill: grey; -fx-font-size: 20;"/>
+                    </graphic>
+                </Button>
                 <Button fx:id="topIcon3"
                         style="-fx-background-color: #ededed;
                -fx-border-color: transparent;
@@ -78,7 +96,7 @@
                -fx-padding: 0;
                -fx-border-width: 1;">
                     <graphic>
-                        <Label text="🔔" style="-fx-text-fill: grey; -fx-font-size: 20;"/>
+                        <Label text="💱" style="-fx-text-fill: grey; -fx-font-size: 20;"/>
                     </graphic>
                 </Button>
             </VBox>

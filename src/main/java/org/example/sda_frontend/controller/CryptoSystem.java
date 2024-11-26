@@ -51,6 +51,9 @@ public class CryptoSystem {
         }
         return instance;
     }
+    public static void makeNewInstance(){
+        instance=new CryptoSystem("81c671a9-bdd6-4752-b892-76cb9691060c");
+    }
     public void printTopNumber(int i) {
         api.printTopCoins(i);
     }
