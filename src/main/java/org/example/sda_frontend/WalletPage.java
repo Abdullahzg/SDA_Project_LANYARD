@@ -242,7 +242,7 @@ public class WalletPage {
     private void addTransferSection() {
         // Create transfer section VBox
         VBox transferSection = new VBox(10);
-        transferSection.setStyle("-fx-padding: 15 15 15 15; -fx-background-color: #f7f7f7; -fx-background-radius: 10;");
+        transferSection.setStyle("-fx-padding: 15 20 15 20; -fx-background-color: #f7f7f7; -fx-background-radius: 10;");
         transferSection.setAlignment(Pos.CENTER);
 
         // Input HBox (Email and Amount)
@@ -293,6 +293,48 @@ public class WalletPage {
     private void displayError(String errorMessage) {
         errorText.setText(errorMessage);
         errorText.setStyle("-fx-text-fill:red;");
+    }
+
+    @FXML
+    private void onTransactionPage() {
+        try {
+            // Load the new FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("transaction_view.fxml"));
+            Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
+
+            // Get the current stage
+            Stage currentStage = (Stage) transferButton.getScene().getWindow();
+
+            // Set the new scene on the current stage
+            currentStage.setScene(newScene);
+
+            // Optional: Set a title for the new page
+            currentStage.setTitle("Your Transactions");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Optionally show an error dialog or log the error
+        }
+    }
+
+    @FXML
+    private void onGlobalTRansactionsPage() {
+        try {
+            // Load the new FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("global_transaction_view.fxml"));
+            Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
+
+            // Get the current stage
+            Stage currentStage = (Stage) transferButton.getScene().getWindow();
+
+            // Set the new scene on the current stage
+            currentStage.setScene(newScene);
+
+            // Optional: Set a title for the new page
+            currentStage.setTitle("Your Transactions");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Optionally show an error dialog or log the error
+        }
     }
 
     @FXML

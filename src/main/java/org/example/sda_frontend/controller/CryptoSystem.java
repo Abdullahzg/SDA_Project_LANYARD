@@ -41,6 +41,10 @@ public class CryptoSystem {
         return instance;
     }
 
+    public static void makeNewInstance(){
+        instance=new CryptoSystem("81c671a9-bdd6-4752-b892-76cb9691060c");
+    }
+
     public static List<Transaction> getGlobalTransactions(){
         return globalTransactions;
     }
@@ -142,7 +146,6 @@ public class CryptoSystem {
     public JSONArray giveTopCoins(int i){
         return api.giveTopCoins(i);
     }
-
     public void depositToSpotWalletn(float depositAmount) {
         if (loggedInCustomer == null) {
             System.out.println("No customer is logged in. Please log in to perform this action.");

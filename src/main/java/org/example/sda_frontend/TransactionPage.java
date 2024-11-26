@@ -92,7 +92,46 @@ public class TransactionPage {
         showTab3Content();
     }
 
+@FXML
+    private void onGlobalTRansactionsPage() {
+        try {
+            // Load the new FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("global_transaction_view.fxml"));
+            Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
 
+            // Get the current stage
+            Stage currentStage = (Stage) homeButton.getScene().getWindow();
+
+            // Set the new scene on the current stage
+            currentStage.setScene(newScene);
+
+            // Optional: Set a title for the new page
+            currentStage.setTitle("Your Transactions");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Optionally show an error dialog or log the error
+        }
+    }
+
+    public void onWalletPage() {
+        try {
+            // Load the new FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("wallet-view.fxml"));
+            Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
+
+            // Get the current stage
+            Stage currentStage = (Stage) homeButton.getScene().getWindow();
+
+            // Set the new scene on the current stage
+            currentStage.setScene(newScene);
+
+            // Optional: Set a title for the new page
+            currentStage.setTitle("Your Wallets");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Optionally show an error dialog or log the error
+        }
+    }
 
     @FXML
     public void showTab3Content() {

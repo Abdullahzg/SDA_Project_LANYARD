@@ -165,6 +165,48 @@ public class CoinPage {
         showTab3Content();
     }
 
+    @FXML
+    private void onGlobalTRansactionsPage() {
+        try {
+            // Load the new FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("global_transaction_view.fxml"));
+            Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
+
+            // Get the current stage
+            Stage currentStage = (Stage) walletButton.getScene().getWindow();
+
+            // Set the new scene on the current stage
+            currentStage.setScene(newScene);
+
+            // Optional: Set a title for the new page
+            currentStage.setTitle("Your Transactions");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Optionally show an error dialog or log the error
+        }
+    }
+
+    @FXML
+    private void onTransactionPage() {
+        try {
+            // Load the new FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("transaction_view.fxml"));
+            Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
+
+            // Get the current stage
+            Stage currentStage = (Stage) walletButton.getScene().getWindow();
+
+            // Set the new scene on the current stage
+            currentStage.setScene(newScene);
+
+            // Optional: Set a title for the new page
+            currentStage.setTitle("Your Transactions");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Optionally show an error dialog or log the error
+        }
+    }
+
     public void onWalletPage() {
         try {
             // Load the new FXML file
