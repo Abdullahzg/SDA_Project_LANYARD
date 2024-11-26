@@ -1,7 +1,9 @@
 package org.example.sda_frontend;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -10,12 +12,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.fxml.FXML;
+import javafx.util.Duration;
 import org.example.sda_frontend.controller.CryptoSystem;
 
 import java.io.IOException;
@@ -32,6 +36,17 @@ public class WalletPage {
 
     @FXML
     private Button tab1, tab2, tab3;
+
+    @FXML
+    private Text errorText;
+    @FXML
+    private Text titaltext;
+    @FXML
+    private TextField emailToTransferField;
+    @FXML
+    private TextField amountToTransferField;
+    @FXML
+    private Button transferButton;
 
     @FXML
     private VBox tab1Content, tab2Content, tab3Content;
@@ -73,9 +88,6 @@ public class WalletPage {
 
     @FXML
     private Label trsf;
-
-    @FXML
-    private Button transferButton;
 
     @FXML
     private Label fiatbLabel;
@@ -182,6 +194,108 @@ public class WalletPage {
     }
 
     @FXML
+    private void onTransferFunds(ActionEvent a) {
+        // Clear previous error
+        errorText.setText("");
+
+        // Validate inputs
+        String recipientEmail = emailToTransferField.getText().trim();
+        String amountStr = amountToTransferField.getText().trim();
+
+        if (recipientEmail.isEmpty() || amountStr.isEmpty()) {
+            displayError("Please fill out all fields.");
+            return;
+        }
+
+        try {
+            double amount = Double.parseDouble(amountStr);
+
+            // Validate amount
+            if (amount <= 0) {
+                displayError("Transfer amount must be greater than zero.");
+                return;
+            }
+
+            // Perform transfer logic
+            String transferSuccess = CryptoSystem.getInstance().performTransfer(recipientEmail, amount);
+
+            if (transferSuccess.equals(" ")) {
+                // Clear fields after successful transfer
+                emailToTransferField.clear();
+                amountToTransferField.clear();
+
+                // Refresh portfolio display
+                showTab3Content();
+            }
+            else{
+                displayError(transferSuccess);
+            }
+
+        } catch (NumberFormatException e) {
+            displayError("Invalid amount. Please enter a valid number.");
+        } catch (Exception e) {
+            displayError("Transfer failed: " + e.getMessage());
+        }
+    }
+
+
+    private void addTransferSection() {
+        // Create transfer section VBox
+        VBox transferSection = new VBox(10);
+        transferSection.setStyle("-fx-padding: 15 15 15 15; -fx-background-color: #f7f7f7; -fx-background-radius: 10;");
+        transferSection.setAlignment(Pos.CENTER);
+
+        // Input HBox (Email and Amount)
+        HBox inputBox = new HBox(10);
+        inputBox.setAlignment(Pos.CENTER_LEFT);
+        inputBox.setStyle("-fx-padding: 10 0 0 0;");
+
+        // Email Transfer Field (70% width)
+        emailToTransferField = new TextField();
+        emailToTransferField.setPromptText("Recipient Email");
+        emailToTransferField.setPrefWidth(420); // Approximately 70%
+        emailToTransferField.setStyle("-fx-background-color: white; -fx-border-color: #ededed; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 8;");
+
+        // Amount Transfer Field (30% width)
+        amountToTransferField = new TextField();
+        amountToTransferField.setPromptText("Amount");
+        amountToTransferField.setPrefWidth(180); // Approximately 30%
+        amountToTransferField.setStyle("-fx-background-color: white; -fx-border-color: #ededed; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 8;");
+
+        // Add input fields to HBox
+        inputBox.getChildren().addAll(emailToTransferField, amountToTransferField);
+
+        // Transfer Button (Full Width)
+        transferButton = new Button("Transfer Funds");
+        transferButton.setMaxWidth(Double.MAX_VALUE);
+        transferButton.setStyle("-fx-background-color: black; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 30; -fx-background-radius: 8;");
+        transferButton.setOnAction(this::onTransferFunds);
+
+        // Error Text
+        errorText = new Text("Transfer Funds to other Users!");
+        errorText.setStyle("-fx-fill: grey; -fx-font-size: 14;");
+
+
+
+        // Add all components to transfer section
+        transferSection.getChildren().addAll(
+                inputBox,
+                transferButton,
+                errorText
+        );
+
+        // Add transfer section to tab3Content (after portfolio summary)
+        tab3Content.getChildren().add(1, transferSection);
+    }
+
+
+
+    private void displayError(String errorMessage) {
+        errorText.setText(errorMessage);
+        errorText.setStyle("-fx-text-fill:red;");
+    }
+
+    @FXML
     public void showTab3Content() {
         setTabActive(tab3);
         showContent(tab3Content);
@@ -232,6 +346,8 @@ public class WalletPage {
                         Label usdtBalanceDescLabel = new Label("Total USDT Balance");
                         usdtBalanceDescLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #b2bec3;");
                         usdtBalanceBox.getChildren().addAll(usdtBalanceLabel, usdtBalanceDescLabel);
+
+                        portfolioSummary.setStyle("-fx-padding:0 0 20 0;");
 
                         portfolioSummary.getChildren().addAll(totalValueBox, usdtBalanceBox);
                         tab3Content.getChildren().add(portfolioSummary);
@@ -305,6 +421,7 @@ public class WalletPage {
                             }
                         }
                         totalValueLabel.setText("$" + String.format("%.2f", totalPortfolioValue));
+                        addTransferSection();
                     } catch (Exception e) {
                         e.printStackTrace();
                         tab3Content.getChildren().clear();

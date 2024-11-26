@@ -479,6 +479,20 @@ public class CryptoSystem {
             }
         }
     }
+
+    public String performTransfer(String email, double amount){
+        if(loggedInCustomer.getFiatWallet().getBalance()<amount){
+            return "Insufficient Funds";
+        }
+        for (Customer c: customers){
+            if(c.getEmail().equals(email)){
+                loggedInCustomer.getFiatWallet().withdraw((float)amount);
+                c.getFiatWallet().deposit((float)amount);
+                return " ";
+            }
+        }
+        return "User not found";
+    }
     public void setLoggedInCustomer(Customer customer) {
         loggedInCustomer = customer;
         if (customer != null) {

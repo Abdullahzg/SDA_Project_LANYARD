@@ -40,6 +40,7 @@ public class LoginPage {
         Image image = new Image(getClass().getResource("logo.jpg").toExternalForm());
         centerImage.setImage(image);
         CryptoSystem.getInstance().setLoggedInAdmin(null);
+        CryptoSystem.getInstance().getCustomerByEmail(" ");
     }
 
     @FXML
