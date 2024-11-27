@@ -363,8 +363,8 @@ public class WalletPage {
             protected void succeeded() {
                 Platform.runLater(() -> {
                     try {
-                        double usdtBalance = CryptoSystem.getInstance().getLoggedInCustomer().getFiatWallet().getBalance();
-                        double totalPortfolioValue = 0.0;
+                        double usdtBalance = CryptoSystem.getInstance().getFiatBalance();
+                        double totalPortfolioValue = CryptoSystem.getInstance().getTotalCoinValuation(getValue());
 
                         tab3Content.getChildren().clear();
 
@@ -442,7 +442,7 @@ public class WalletPage {
                                 amountLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #2d3436;");
 
                                 Label valueLabel = new Label("$" + details[3]);
-                                totalPortfolioValue += Float.parseFloat(details[3]);
+                                //totalPortfolioValue += Float.parseFloat(details[3]);
                                 valueLabel.setPrefWidth(120);
                                 valueLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #2d3436;");
 

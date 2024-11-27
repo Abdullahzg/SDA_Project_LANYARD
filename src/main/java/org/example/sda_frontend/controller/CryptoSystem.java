@@ -167,6 +167,15 @@ public class CryptoSystem {
         return  loggedInCustomer.getFiatWallet().viewOwnings(api);
     }
 
+    public double getTotalCoinValuation(List<String> s){
+        double a=0.0;
+        for(String transaction: s){
+            String[] details = transaction.split(",");
+            a+= Float.parseFloat(details[3]);
+        }
+        return a;
+    }
+
     public void addNewCustomer(String name, Date birthDate, String phone, String email, String accountStatus,
                                float spotWalletBalance, String currency, float maxBalanceLimit,
                                String cardNumber, Date expiryDate, String bankName, String accountHolderName,
