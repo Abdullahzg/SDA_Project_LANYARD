@@ -1,4 +1,4 @@
-package org.example.sda_frontend;
+package org.example.sda_frontend.UI;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -1,4 +1,4 @@
-package org.example.sda_frontend;
+package org.example.sda_frontend.UI;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,8 +9,6 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.concurrent.Task;
 import org.example.sda_frontend.controller.CryptoSystem;
-import org.example.sda_frontend.user.Customer;
-import org.example.sda_frontend.currency.Owning;
 
 import java.io.IOException;
 import java.util.ArrayList;

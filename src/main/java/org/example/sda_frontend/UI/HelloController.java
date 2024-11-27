@@ -1,4 +1,4 @@
-package org.example.sda_frontend;
+package org.example.sda_frontend.UI;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -8,7 +8,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -16,16 +15,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.sda_frontend.controller.CryptoSystem;
-import org.example.sda_frontend.currency.Owning;
-import org.example.sda_frontend.user.Customer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 
 
 public class HelloController {

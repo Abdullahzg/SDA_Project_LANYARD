@@ -19,8 +19,7 @@ module org.example.sda_frontend {
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.annotation;
 
-    // Open packages to modules that use reflection
-    opens org.example.sda_frontend to javafx.fxml;
+
     opens org.example.sda_frontend.controller to javafx.fxml;
     opens org.example.sda_frontend.db.models.trans to org.hibernate.orm.core;
     opens org.example.sda_frontend.db.models.user to org.hibernate.orm.core;
@@ -30,7 +29,9 @@ module org.example.sda_frontend {
     opens org.example.sda_frontend.db.models.currency to org.hibernate.orm.core;
     // Add other packages containing entity classes as needed
 
-    exports org.example.sda_frontend;
+    //exports org.example.sda_frontend;
     exports org.example.sda_frontend.controller;
+    exports org.example.sda_frontend.UI;
+    opens org.example.sda_frontend.UI to javafx.fxml;
     // Export other packages as necessary
 }

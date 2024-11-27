@@ -1,4 +1,4 @@
-package org.example.sda_frontend;
+package org.example.sda_frontend.UI;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -9,12 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.sda_frontend.controller.CryptoSystem;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.NumberFormat;

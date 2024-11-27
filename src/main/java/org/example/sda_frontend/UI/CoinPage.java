@@ -1,15 +1,11 @@
-package org.example.sda_frontend;
+package org.example.sda_frontend.UI;
 
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.sda_frontend.controller.CryptoSystem;
@@ -17,8 +13,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 public class CoinPage {

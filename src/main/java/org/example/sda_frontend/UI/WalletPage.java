@@ -1,6 +1,5 @@
-package org.example.sda_frontend;
+package org.example.sda_frontend.UI;
 
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -17,9 +16,6 @@ import javafx.stage.Stage;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.fxml.FXML;
-import javafx.util.Duration;
 import org.example.sda_frontend.controller.CryptoSystem;
 
 import java.io.IOException;

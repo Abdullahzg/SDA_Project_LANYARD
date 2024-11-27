@@ -1,4 +1,4 @@
-package org.example.sda_frontend;
+package org.example.sda_frontend.UI;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class TransactionPage {
+public class GlobalTransactionPage {
 
     @FXML
     private Button homeButton;
@@ -39,9 +39,9 @@ public class TransactionPage {
             "-fx-text-fill: #666666; " +
             "-fx-font-size: 14; " +
             "-fx-padding: 8 16; " +
-            "-fx-min-width: 120; " +
-            "-fx-max-width: 120; " +
-            "-fx-pref-width: 120;";
+            "-fx-min-width: 300; " +
+            "-fx-max-width: 300; " +
+            "-fx-pref-width: 300;";
 
     private final String SELECTED_STYLE = "-fx-background-color: white; " +
             "-fx-border-color: transparent; " +
@@ -92,11 +92,11 @@ public class TransactionPage {
         showTab3Content();
     }
 
-@FXML
-    private void onGlobalTRansactionsPage() {
+    @FXML
+    private void onTransactionPage() {
         try {
             // Load the new FXML file
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("global_transaction_view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("transaction_view.fxml"));
             Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
 
             // Get the current stage
@@ -152,7 +152,7 @@ public class TransactionPage {
         Task<List<String>> task = new Task<>() {
             @Override
             protected List<String> call() throws Exception {
-                String transactionData = CryptoSystem.getInstance().getTransactionsAsString();
+                String transactionData = CryptoSystem.getInstance().getGlobalTransactionsAsString();
                 System.out.println(transactionData);
                 return Arrays.asList(transactionData.split("\n"));
             }
@@ -161,7 +161,7 @@ public class TransactionPage {
             protected void succeeded() {
                 Platform.runLater(() -> {
                     try {
-                        double usdtBalance = CryptoSystem.getInstance().getLoggedInCustomer().getFiatWallet().getBalance();
+                        int usdtBalance = CryptoSystem.getInstance().totalTransactions();
 
                         tab3Content.getChildren().clear();
 
@@ -170,10 +170,10 @@ public class TransactionPage {
 
                         VBox totalValueBox = new VBox(5);
                         totalValueBox.setAlignment(Pos.CENTER_LEFT);
-                        Label totalValueLabel = new Label("$" + String.format("%.2f", usdtBalance));
+                        Label totalValueLabel = new Label(Integer.toString(usdtBalance));
                         totalValueLabel.setId("totalPortfolio");
                         totalValueLabel.setStyle("-fx-font-size: 40; -fx-font-weight: bold; -fx-text-fill: #2d3436;");
-                        Label totalValueDescLabel = new Label("Total Fiat USDT Value");
+                        Label totalValueDescLabel = new Label("Total Global Transactions");
                         totalValueDescLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #b2bec3;");
                         totalValueBox.getChildren().addAll(totalValueLabel, totalValueDescLabel);
 
@@ -186,15 +186,16 @@ public class TransactionPage {
                         columnHeaders.setStyle("-fx-padding: 20 15;");
 
                         Label[] headers = {
-                                new Label(" "),
+
                                 new Label("Type"),
                                 new Label("Coin"),
                                 new Label("$ Amount"),
                                 new Label("$ Rate"),
-                                new Label("Date")
+                                new Label("Date"),
+                                new Label(" ")
                         };
 
-                        double[] widths = {40, 40, 50, 80,90,190};
+                        double[] widths = {40, 50, 80, 90,190,40};
                         for (int i = 0; i < headers.length; i++) {
                             headers[i].setPrefWidth(widths[i]);
                             headers[i].setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #636e72;");
@@ -212,44 +213,38 @@ public class TransactionPage {
                                 transactionRow.setStyle("-fx-background-color: #ededed; -fx-background-radius: 8; -fx-padding: 8 10;");
 
                                 HBox imageContainer = new HBox();
-                                imageContainer.setAlignment(Pos.CENTER);
-                                imageContainer.setStyle("-fx-background-color: transparent; -fx-background-radius: 20;");
-                                imageContainer.setMinSize(45, 40);
 
-                                ImageView coinImage = new ImageView(new Image(details[0]));
-                                coinImage.setFitHeight(30);
-                                coinImage.setFitWidth(30);
-                                coinImage.setPreserveRatio(true);
-                                imageContainer.getChildren().add(coinImage);
-
-                                Label nameLabel = new Label(details[1]);
+                                Label nameLabel = new Label(details[0]);
                                 nameLabel.setPrefWidth(40);
                                 nameLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #2d3436;");
 
-                                Label amountLabel = new Label(details[2] );
+                                Label amountLabel = new Label(details[1] );
                                 amountLabel.setPrefWidth(50);
                                 amountLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #2d3436;");
 
-                                Label valueLabel = new Label("$" + details[3]);
+                                Label valueLabel = new Label("$" + details[2]);
                                 valueLabel.setPrefWidth(80);
                                 valueLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #2d3436; ");
 
-                                Label valueLabel2 = new Label("$" + details[4]);
+                                Label valueLabel2 = new Label("$" + details[3]);
                                 valueLabel2.setPrefWidth(90);
                                 valueLabel2.setStyle("-fx-font-size: 14; -fx-text-fill: #2d3436;");
 
-                                Label valueLabel3 = new Label( details[5]);
+                                Label valueLabel3 = new Label( details[4]);
                                 valueLabel3.setPrefWidth(190);
                                 valueLabel3.setStyle("-fx-font-size: 14; -fx-text-fill: #2d3436;");
 
+                                Button sellButton = new Button("Details");
+                                sellButton.setOnAction(event -> onCoinPage(details[5]));
+                                sellButton.setStyle("-fx-background-color: black; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 5;");
 
                                 transactionRow.getChildren().addAll(
-                                        imageContainer,
                                         nameLabel,
                                         amountLabel,
                                         valueLabel,
                                         valueLabel2,
-                                        valueLabel3
+                                        valueLabel3,
+                                        sellButton
                                 );
 
                                 tab3Content.getChildren().add(transactionRow);
@@ -283,14 +278,14 @@ public class TransactionPage {
     private void onCoinPage(String c) {
         try {
             // Load the new FXML file
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("coin-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("single-transaction-view.fxml"));
             Parent root = fxmlLoader.load(); // Load and get the root node
 
             // Get the controller instance from the loader
-            CoinPage controller = fxmlLoader.getController();
+            SingleTransactionPage controller = fxmlLoader.getController();
 
             // Set the code on the controller
-            controller.setCode(c); // Replace "YourCodeHere" with the actual code you want to pass
+            controller.setCode(Integer.parseInt(c)); // Replace "YourCodeHere" with the actual code you want to pass
 
             // Create a new scene with the loaded root node
             Scene newScene = new Scene(root, 1000, 600);
