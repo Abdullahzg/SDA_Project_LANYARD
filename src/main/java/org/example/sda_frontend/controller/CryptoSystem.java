@@ -25,6 +25,13 @@ public class CryptoSystem {
         globalTransactions = new ArrayList<>();
     }
 
+    public float getFiatBalance(){
+        return getLoggedInCustomer().getFiatWallet().getBalance();
+    }
+    public float getSpotBalance(){
+        return getLoggedInCustomer().getSpotWallet().getBalance();
+    }
+
     public static CryptoSystem getInstance() {
         if (instance == null) {
             instance = new CryptoSystem("81c671a9-bdd6-4752-b892-76cb9691060c");

@@ -275,14 +275,16 @@ public class CoinPage {
 
     @FXML
     public void showTab2Content() {
-        trsf.setText("$"+Float.toString(CryptoSystem.getInstance().getLoggedInCustomer().getFiatWallet().getBalance()));
+        float fiatBalance = CryptoSystem.getInstance().getFiatBalance();
+        trsf.setText("$"+Float.toString(fiatBalance));
         setTabActive(tab2);
         showContent(tab2Content);
     }
 
     @FXML
     public void showTab3Content() {
-        trsf1.setText("$"+Float.toString(CryptoSystem.getInstance().getCoinAmount(code)));
+        float coinAmount = CryptoSystem.getInstance().getCoinAmount(code);
+        trsf1.setText("$"+Float.toString(coinAmount));
         setTabActive(tab3);
         showContent(tab3Content);
     }

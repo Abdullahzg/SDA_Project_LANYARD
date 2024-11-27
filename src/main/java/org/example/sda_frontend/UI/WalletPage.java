@@ -177,14 +177,17 @@ public class WalletPage {
 
     @FXML
     public void showTab1Content() {
-        spotLabel.setText("$"+ CryptoSystem.getInstance().getLoggedInCustomer().getSpotWallet().getBalance());
+        float spot=CryptoSystem.getInstance().getSpotBalance();
+        spotLabel.setText("$"+ spot);
         setTabActive(tab1);
         showContent(tab1Content);
     }
 
     @FXML
     public void showTab2Content() {
-        trsf.setText("$"+Float.toString(CryptoSystem.getInstance().getLoggedInCustomer().getSpotWallet().getBalance())+"  •  $"+Float.toString(CryptoSystem.getInstance().getLoggedInCustomer().getFiatWallet().getBalance()));
+        float spot=CryptoSystem.getInstance().getSpotBalance();
+        float fiat=CryptoSystem.getInstance().getFiatBalance();
+        trsf.setText("$"+Float.toString(spot)+"  •  $"+Float.toString(fiat));
         setTabActive(tab2);
         showContent(tab2Content);
     }
