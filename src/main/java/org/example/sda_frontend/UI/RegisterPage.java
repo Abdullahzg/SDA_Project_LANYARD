@@ -93,8 +93,7 @@ public class RegisterPage {
                             "Default Bank",       // bank name
                             nameInput.getText(),  // account holder name
                             "Default Address",    // billing address
-                            0.0f,                 // fiat wallet balance
-                            new ArrayList<>()     // empty fiat ownings
+                            0.0f                  // fiat wallet balance
                     );
 
                     return true;

@@ -18,6 +18,7 @@ module org.example.sda_frontend {
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.annotation;
+    requires commons.logging;
 
 
     opens org.example.sda_frontend.controller to javafx.fxml;

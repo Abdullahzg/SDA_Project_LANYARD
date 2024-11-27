@@ -94,10 +94,11 @@ public class DBHandler {
             Query<OwningsModel> query = session.createQuery("FROM OwningsModel WHERE walletId = :walletId AND coin = :coinCode", OwningsModel.class);
             query.setParameter("walletId", walletId);
             query.setParameter("coinCode", coinCode);
-            OwningsModel existingOwningModel = query.uniqueResult();
+            List<OwningsModel> existingOwningModels = query.list();
 
-            if (existingOwningModel != null) {
+            if (!existingOwningModels.isEmpty()) {
                 // Update the existing owning
+                OwningsModel existingOwningModel = existingOwningModels.get(0);
                 existingOwningModel.setAmount(existingOwningModel.getAmount() + (amount / exchangeRate));
                 existingOwningModel.setPurchaseDate(new Date());
                 existingOwningModel.setPurchaseRate(exchangeRate);
@@ -117,7 +118,6 @@ public class DBHandler {
         } finally {
             session.close();
         }
-
         return false;
     }
 

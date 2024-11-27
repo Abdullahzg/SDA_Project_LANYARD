@@ -113,9 +113,9 @@ public class WalletPage {
 
             // Call appropriate method based on selected action
             if (selectedAction.equals("Withdraw Cash")) {
-                CryptoSystem.getInstance().withdrawFromSpotWalletn(amount);
+                CryptoSystem.getInstance().withdrawFromSpotWallet(amount);
             } else if (selectedAction.equals("Deposit Cash")) {
-                CryptoSystem.getInstance().depositToSpotWalletn(amount);
+                CryptoSystem.getInstance().depositToSpotWallet(amount);
             } else {
                 System.out.println("Invalid action selected.");
             }
@@ -151,9 +151,9 @@ public class WalletPage {
 
             // Call appropriate method based on selected action
             if (selectedAction.equals("Spot -> Fiat")) {
-                CryptoSystem.getInstance().transferBetweenWalletsn(1,amount);
+                CryptoSystem.getInstance().transferBetweenWallets(1,amount);
             } else if (selectedAction.equals("Fiat -> Spot")) {
-                CryptoSystem.getInstance().transferBetweenWalletsn(2,amount);
+                CryptoSystem.getInstance().transferBetweenWallets(2,amount);
             } else {
                 System.out.println("Invalid action selected.");
             }
@@ -352,7 +352,7 @@ public class WalletPage {
         Task<List<String>> task = new Task<>() {
             @Override
             protected List<String> call() throws Exception {
-                String transactionData = CryptoSystem.getInstance().viewCustomerOwningsn();
+                String transactionData = CryptoSystem.getInstance().viewCustomerOwnings();
                 return Arrays.asList(transactionData.split("\n"));
             }
 

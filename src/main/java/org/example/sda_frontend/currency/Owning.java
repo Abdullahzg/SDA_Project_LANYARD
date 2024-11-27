@@ -2,10 +2,6 @@ package org.example.sda_frontend.currency;
 
 import java.util.Date;
 
-import org.example.sda_frontend.db.DBHandler;
-
-import org.hibernate.Session;
-
 public class Owning {
     private int owningId;
     private float amount;
@@ -20,10 +16,7 @@ public class Owning {
         this.amount = amount;
         this.coin = coin;
     }
-    public Owning()
-    {
 
-    }
     public int getOwningId() { return owningId; }
     public float getAmount() { return amount; }
     public void setAmount(float amount) { this.amount = amount; }

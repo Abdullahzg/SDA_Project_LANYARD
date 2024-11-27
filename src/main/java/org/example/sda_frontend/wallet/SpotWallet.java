@@ -1,10 +1,6 @@
 package org.example.sda_frontend.wallet;
 
 import org.example.sda_frontend.db.DBHandler;
-
-import org.example.sda_frontend.db.models.wallet.SpotWalletModel;
-import org.hibernate.Session;
-
 import java.util.Date;
 
 public class SpotWallet extends Wallet {

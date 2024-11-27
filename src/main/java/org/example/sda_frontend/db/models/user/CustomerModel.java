@@ -3,10 +3,8 @@ package org.example.sda_frontend.db.models.user;
 import jakarta.persistence.*;
 import org.example.sda_frontend.bank.BankDetails;
 import org.example.sda_frontend.db.models.bank.BankDetailsModel;
-import org.example.sda_frontend.db.models.useractions.FeedbackModel;
 import org.example.sda_frontend.db.models.wallet.FiatWalletModel;
 import org.example.sda_frontend.db.models.wallet.SpotWalletModel;
-import org.example.sda_frontend.useractions.Feedback;
 import org.example.sda_frontend.wallet.FiatWallet;
 import org.example.sda_frontend.wallet.SpotWallet;
 

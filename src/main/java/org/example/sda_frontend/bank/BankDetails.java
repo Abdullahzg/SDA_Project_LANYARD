@@ -1,9 +1,5 @@
 package org.example.sda_frontend.bank;
-import org.example.sda_frontend.db.DBHandler;
 
-import org.example.sda_frontend.db.models.bank.BankDetailsModel;
-
-import org.hibernate.Session;
 import java.util.Date;
 
 public class BankDetails {

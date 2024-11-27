@@ -85,23 +85,6 @@ public class HelloController {
         welcomeMessage.setText("Welcome to Lanyard "+CryptoSystem.getInstance().getLoggedInCustomer().getName());
         responseLabel.setText("");
         loaderContainer.setVisible(false);
-//        List<Owning> fiatOwnings = new ArrayList<>();
-//        fiatOwnings.add(new Owning(1, (float)1.23, "BTC"));
-//        fiatOwnings.add(new Owning(2, (float)1.23, "ETH"));
-//        fiatOwnings.add(new Owning(3, (float)1.23, "SOL"));
-//        fiatOwnings.add(new Owning(3, (float)1.23, "DOGE"));
-//        CryptoSystem.getInstance().addNewCustomer("John Doe", new Date(), "1234567890", "johndoe@example.com", "Active",
-//                1000.0f, "USD", 5000.0f, "1234-5678-9012-3456", new Date(), "Bank of Java",
-//                "John Doe", "123 Main St", 2000.0f, fiatOwnings);
-//        Customer customerToLogIn = null;
-//        for (Customer customer : CryptoSystem.getInstance().getCustomers()) {
-//            if (customer.getUserId() == 1) {
-//                customerToLogIn = customer;
-//                break;
-//            }
-//        }
-//        Customer c= CryptoSystem.getInstance().getCustomerByEmail("i221158@nu.edu.pk");
-//        CryptoSystem.getInstance().setLoggedInCustomer(c);
         System.out.println(CryptoSystem.getInstance().getLoggedInCustomer().getName());
         generateBoxes();
 
@@ -329,7 +312,7 @@ public class HelloController {
             Stage currentStage = (Stage) transferButton.getScene().getWindow();
             currentStage.setScene(newScene);
             currentStage.setTitle("Login");
-            CryptoSystem.makeNewInstance();
+            CryptoSystem.getInstance();
         } catch (IOException e) {
             e.printStackTrace();
         }

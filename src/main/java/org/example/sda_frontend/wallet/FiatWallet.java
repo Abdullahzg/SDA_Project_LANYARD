@@ -76,7 +76,7 @@ public class FiatWallet extends Wallet {
         }
     }
 
-    public String viewOwningsn(APIController api) {
+    public String viewOwnings(APIController api) {
         if (ownings.isEmpty()) {
             return "No coins owned in the Fiat Wallet.";
         }

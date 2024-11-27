@@ -5,10 +5,7 @@ import org.example.sda_frontend.user.Customer;
 import org.example.sda_frontend.user.User;
 import org.example.sda_frontend.useractions.Comments;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import org.example.sda_frontend.db.DBHandler;
 
@@ -53,8 +50,17 @@ public class Transaction {
         return DBHandler.getTransactionsByCustomer(customerEmail);
     }
 
-    public List<Comments> getTransactionComments() {
-        return Comments.getAllCommentsOnTransaction(this);
+    public String getTransactionComments() {
+        List<Comments> comments = Comments.getAllCommentsOnTransaction(this);
+        Collections.reverse(comments);
+        StringBuilder sb = new StringBuilder();
+        for(Comments comment: comments) {
+            sb.append(comment.getCustomer().getName()).append(",")
+                    .append(comment.getComment()).append(",")
+                    .append(timestamp.toString()).append("\n");
+        }
+
+        return sb.toString();
     }
     // Getters and setters
 
@@ -62,9 +68,10 @@ public class Transaction {
         return comments;
     }
 
-    public void addComment(Customer customer, Comments c){
-        comments.add(c);
-        c.saveCommentToDB(customer, this);
+    public void addComment(Customer customer, String commentText, int transactionID) {
+        Comments newComment = new Comments(customer, commentText, transactionID);
+        comments.add(newComment);
+        newComment.saveCommentToDB(customer, this);
     }
 
     public int getTransactionId() { return transactionId; }

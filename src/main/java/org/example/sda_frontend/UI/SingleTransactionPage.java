@@ -248,7 +248,6 @@ public class SingleTransactionPage {
         new Thread(() -> {
             try {
                 CryptoSystem.getInstance().addCommentToTransaction(
-                        CryptoSystem.getInstance().getLoggedInCustomer(),
                         transactionID,
                         comment
                 );

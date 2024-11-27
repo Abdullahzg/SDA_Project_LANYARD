@@ -126,7 +126,7 @@ public class CoinPage {
         try {
             // Parse input amount as a float
             float amount = Float.parseFloat(inputValue);
-            CryptoSystem.getInstance().buyCoinForLoggedInCustomern(code,amount);
+            CryptoSystem.getInstance().buyCoinForLoggedInCustomer(code,amount);
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid amount entered. Please enter a numeric value.");
@@ -150,7 +150,7 @@ public class CoinPage {
         try {
             // Parse input amount as a float
             float amount = Float.parseFloat(inputValue);
-            CryptoSystem.getInstance().sellCoinForLoggedInCustomern(code,amount);
+            CryptoSystem.getInstance().sellCoinForLoggedInCustomer(code,amount);
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid amount entered. Please enter a numeric value.");

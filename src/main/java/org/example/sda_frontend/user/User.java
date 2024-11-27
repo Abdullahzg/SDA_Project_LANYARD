@@ -1,11 +1,7 @@
 package org.example.sda_frontend.user;
 
-
 import org.example.sda_frontend.db.DBHandler;
-
 import org.example.sda_frontend.db.models.user.CustomerModel;
-
-import org.example.sda_frontend.db.models.user.UserModel;
 
 import java.util.Date;
 
@@ -16,34 +12,10 @@ public class User {
     private String address;
     private String phone;
     private String email;
-    //private SpotWallet spotWallet;
-    //private FiatWallet fiatWallet;
-    //private BankDetails bankDetails;
-    //private List<Transaction> transactions;
     private static int IDs=1;
-
-
     Date accountCreationDate;
     Date lastLoginDate;
     String accountStatus= "active";
-
-    public User()
-    {
-
-    }
-    public User(int userId, String name, Date birthDate, String phone, String email,
-                Date accountCreationDate, Date lastLoginDate, String accountStatus) {
-        this.userId = userId;
-        this.name = name;
-        this.birthDate = birthDate; // Use the provided birthDate
-        this.phone = phone;
-        this.email = email;
-        this.accountCreationDate = accountCreationDate; // Use the provided accountCreationDate
-        this.lastLoginDate = lastLoginDate; // Use the provided lastLoginDate
-        this.accountStatus = accountStatus != null ? accountStatus : "active"; // Default to "active" if null // Use the provided accountStatus
-        IDs++; // Increment the static ID counter
-    }
-
     public User(int userId, String name, Date birthDate, String billingAddress, String phone, String email, Date currentDate, Date currentDate1, String active) {
 
         this.userId = userId;
@@ -65,13 +37,6 @@ public class User {
         this.accountStatus = active != null ? active : "inactive";
 
         IDs++; // Increment the static ID counter
-
-    }
-
-
-    public static void addNewUserDB(User user) {
-
-        DBHandler.saveUser(new UserModel(user.getName(), user.getBirthDate(), user.getAddress(), user.getPhone(), user.getEmail(), user.getAccountCreationDate(), user.getLastLoginDate(), user.getAccountStatus()));
 
     }
 
