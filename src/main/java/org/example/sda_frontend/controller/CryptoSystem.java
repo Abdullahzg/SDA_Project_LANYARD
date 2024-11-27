@@ -224,19 +224,22 @@ public class CryptoSystem {
             if(c.getEmail().equals(email)){
                 loggedInCustomer.performTransfer(c, amount);
 
-                String emailSubject = "Lanyard | FIAT Transfer Notification";
-                String emailBody = "You have received a FIAT transfer of $" + amount + " from " + loggedInCustomer.getName()
-                        + " (" + loggedInCustomer.getEmail() + ").";
-
-                Email email1 = new Email(c.getEmail(), emailSubject, emailBody);
-                email1.sendEmail(false);
+                notifyUser("Lanyard | FIAT Transfer Notification",
+                        "You have received a FIAT transfer of $" + amount + " from " + loggedInCustomer.getName()
+                                + " (" + loggedInCustomer.getEmail() + ").",
+                        c.getEmail());
 
                 return " ";
             }
         }
-
         return "User not found";
     }
+
+    public void notifyUser(String emailSubject, String emailBody, String recipientEmail){
+        Email email = new Email(recipientEmail, emailSubject, emailBody);
+        email.sendEmail(false);
+    }
+
     public void setLoggedInCustomer(Customer customer) {
         loggedInCustomer = customer;
         if (customer != null) {
@@ -290,13 +293,12 @@ public class CryptoSystem {
             }
         }
 
-
         if (targetTransaction != null){
             loggedInCustomer.addCommentToTransaction(transactionID, commentText, targetTransaction);
 
-            Email email = new Email(targetTransaction.getCustomer().getEmail(), "New Comment on Transaction",
-                    "A new comment has been added to your transaction of $" + targetTransaction.getAmount() + " on " + targetTransaction.coin + ".");
-            email.sendEmail(false);
+            notifyUser("New Comment on Transaction",
+                    "A new comment has been added to your transaction of $" + targetTransaction.getAmount() + " on " + targetTransaction.coin + ".",
+                    targetTransaction.getCustomer().getEmail());
 
             System.out.println("Comment added to transaction ID " + transactionID);
         } else {
